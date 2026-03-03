@@ -1,0 +1,106 @@
+/*
+Theme Name: Berghs Festival 2026
+Description: Custom theme for Berghs Festival 2026.
+Version: 1.0.0
+Text Domain: berghs-festival
+*/
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --max-width: 960px;
+    --gap: 1.5rem;
+}
+
+html { font-size: 16px; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #222; }
+a { color: #222; }
+img { max-width: 100%; height: auto; display: block; }
+
+.container { max-width: var(--max-width); margin: 0 auto; padding: 0 1rem; }
+.section { padding: 3rem 0; }
+
+/* Header */
+.site-header { border-bottom: 1px solid #ccc; padding: 0.75rem 0; position: sticky; top: 0; background: #fff; z-index: 100; }
+.site-header .container { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.site-header__logo { font-weight: 700; text-decoration: none; color: #222; }
+.site-header__logo img { height: 40px; width: auto; }
+.site-header__nav { display: flex; gap: 1rem; align-items: center; }
+.site-header__nav a { text-decoration: none; font-size: 0.875rem; color: #222; }
+.site-header__nav a:hover { text-decoration: underline; }
+.site-header__cta { background: #222; color: #fff !important; padding: 0.4rem 1rem; font-size: 0.875rem; font-weight: 600; text-decoration: none !important; }
+.nav-toggle { display: none; background: none; border: 1px solid #ccc; padding: 0.3rem 0.6rem; font-size: 0.875rem; cursor: pointer; }
+
+@media (max-width: 768px) {
+    .nav-toggle { display: block; }
+    .site-header__nav { display: none; flex-direction: column; width: 100%; padding-top: 0.75rem; }
+    .site-header__nav.is-open { display: flex; }
+    .site-header .container { flex-wrap: wrap; }
+}
+
+/* Hero */
+.hero { padding: 4rem 0; text-align: center; }
+.hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 0.75rem; }
+.hero p { color: #666; margin-bottom: 1rem; }
+.hero__cta { display: inline-block; background: #222; color: #fff; padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 600; }
+.hero__date { font-size: 0.875rem; color: #666; margin-top: 1.5rem; }
+
+/* Card grid */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--gap); }
+.card { border: 1px solid #ddd; padding: 1rem; }
+.card a { text-decoration: none; color: inherit; }
+.card__image { aspect-ratio: 3/2; background: #f0f0f0; margin-bottom: 0.75rem; overflow: hidden; }
+.card__image img { width: 100%; height: 100%; object-fit: cover; }
+.card__title { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+.card__meta { font-size: 0.8rem; color: #666; }
+
+/* Schedule */
+.schedule-list { list-style: none; }
+.schedule-item { display: flex; gap: 1.5rem; padding: 0.75rem 0; border-bottom: 1px solid #eee; }
+.schedule-item:last-child { border-bottom: none; }
+.schedule-item__time { font-weight: 700; min-width: 5rem; font-size: 0.875rem; flex-shrink: 0; }
+.schedule-item__title { font-weight: 600; }
+.schedule-item__desc { font-size: 0.875rem; color: #666; }
+
+/* Single project */
+.project-hero { padding: 2rem 0; }
+.project-hero__image { aspect-ratio: 3/2; background: #f0f0f0; margin-bottom: 1.5rem; overflow: hidden; }
+.project-hero__image img { width: 100%; height: 100%; object-fit: cover; }
+.project-content { padding: 2rem 0; }
+.project-content h2 { font-size: 1.125rem; margin-bottom: 0.5rem; padding-bottom: 0.25rem; border-bottom: 1px solid #eee; }
+.project-content p { margin-bottom: 1rem; max-width: 720px; }
+.project-video iframe { width: 100%; aspect-ratio: 16/9; border: none; }
+.project-members { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #eee; }
+.project-members ul { list-style: none; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.project-members li { padding: 0.3rem 0.75rem; border: 1px solid #ddd; font-size: 0.875rem; }
+
+/* Filter bar */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
+.filter-bar a { padding: 0.3rem 0.75rem; border: 1px solid #ccc; font-size: 0.8rem; text-decoration: none; color: #222; }
+.filter-bar a:hover, .filter-bar a.is-active { background: #222; color: #fff; border-color: #222; }
+
+/* Tags on single project */
+.project-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.project-tags a { padding: 0.2rem 0.6rem; border: 1px solid #ccc; font-size: 0.75rem; text-decoration: none; color: #222; }
+
+/* Sponsors */
+.sponsors-row { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; justify-content: center; padding: 1.5rem 0; }
+.sponsor-logo { width: 120px; height: 60px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.sponsor-logo img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+/* Footer */
+.site-footer { border-top: 1px solid #ccc; padding: 2rem 0 1rem; font-size: 0.875rem; color: #666; }
+.site-footer__cols { display: flex; flex-wrap: wrap; gap: 2rem; margin-bottom: 2rem; }
+.site-footer__col { flex: 1; min-width: 180px; }
+.site-footer__col h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; color: #999; }
+.site-footer__col ul { list-style: none; }
+.site-footer__col a { color: #666; }
+.site-footer__bottom { padding-top: 1rem; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; }
+
+/* Page content */
+.page-content h1 { font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; }
+.page-content p { max-width: 720px; margin-bottom: 1rem; }
+
+/* Utility */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.text-center { text-align: center; }

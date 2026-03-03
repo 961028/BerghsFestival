@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")"
+
+./wp core update
+./wp language core update
+./wp plugin update --all
+./wp language plugin update --all
+./wp theme update --all
+./wp language theme update --all

@@ -1,0 +1,29 @@
+services: 
+  wordpress:
+    build:
+      context: ./services/wordpress
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
+    environment:
+      XDEBUG_CONFIG:
+    extra_hosts:
+      - "${WP_HOST}:host-gateway"
+    volumes:
+      - ../:/srv/app
+
+  mysql:
+    build:
+      context: ./services/mysql
+      args:
+        PUID: ${PUID:-1000}
+        PGID: ${PGID:-1000}
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_DATABASE: "wordpress"
+    volumes:
+      - ../:/srv/app
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

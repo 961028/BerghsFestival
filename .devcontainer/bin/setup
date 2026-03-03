@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+if [[ ! -f "../../.env" ]]; then
+    cp ../.env.dev ../.env
+
+    echo "Copied .env.dev to .env"
+else
+    echo ".env already exists"
+fi
+
+if [[ ! -f "../.config.php" ]]; then
+    cp ../.config.dev.php ../.config.php
+
+    echo "Copied .config.dev.php to .config.php"
+else
+    echo ".config.php already exists"
+fi
+
+if [[ ! -f "docker-compose.override.yml" ]]; then
+    read -p "Do you want to expose the default container ports? [y/N] " -n 1 -r
+
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        cp "docker-compose.expose.yml" "docker-compose.override.yml"
+
+        echo "Copied docker-compose.expose.yml to docker-compose.override.yml"
+    fi
+else
+    echo "docker-compose.override.yml already exists"
+fi
+
+if ! grep -q berghs-festival-2026.test /etc/hosts; then
+    read -p "Do you want to add the required entries to /etc/hosts? [y/N] " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        sudo sh -c "echo >> /etc/hosts"
+        sudo sh -c "echo '# Berghs Festival 2026' >> /etc/hosts"
+        sudo sh -c "echo >> /etc/hosts"
+        sudo sh -c "echo 127.0.0.1	berghs-festival-2026.test >> /etc/hosts"
+
+        echo "Added entries to /etc/hosts"
+    fi
+else
+    echo "berghs-festival-2026.test already exists in /etc/hosts"
+fi
+
+./docker-compose build --pull

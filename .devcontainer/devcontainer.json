@@ -1,0 +1,37 @@
+{
+    "name": "berghs-festival-2026",
+    "dockerComposeFile": [
+        "docker-compose.yml",
+        "docker-compose.override.yml"
+    ],
+    "service": "wordpress",
+    "overrideCommand": false,
+    "workspaceFolder": "/srv/app",
+    "initializeCommand": "touch .devcontainer/docker-compose.override.yml",
+    "remoteUser": "www-data",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "xdebug.php-debug",
+                "bmewburn.vscode-intelephense-client",
+                "valeryanm.vscode-phpsab"
+            ],
+            "settings": {
+                "remote.autoForwardPorts": false,
+                "intelephense.files.exclude": [
+                    "**/.git/**",
+                    "**/.svn/**",
+                    "**/.hg/**",
+                    "**/CVS/**",
+                    "**/.DS_Store/**",
+                    "**/node_modules/**",
+                    "**/bower_components/**",
+                    "**/vendor/**/{Tests,tests}/**",
+                    "**/.history/**",
+                    "**/vendor/**/vendor/**",
+                    "./public/content/themes/app/**"
+                ]
+            }
+        }
+    }
+}

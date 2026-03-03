@@ -1,0 +1,12 @@
+# Config
+
+/.config.php
+/.env
+
+# Deps
+
+/vendor
+
+# Uploads
+
+/public/content/uploads/
