@@ -1,1 +1,1 @@
-<?php get_template_part( 'archive', 'project' ); ?>
+<?php get_template_part( 'archive', 'project' );
