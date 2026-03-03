@@ -59,7 +59,7 @@ $social_services = app_contact_get_social_services();
 									href="<?php echo esc_url( $social_service['url'] ); ?>"
 									target="_blank"
 									rel="noopener"
-									title="<?php esc_attr( $social_service['label'] ); ?>"
+									title="<?php echo esc_attr( $social_service['label'] ); ?>"
 								>
 									<?php
 									app_svg_img(

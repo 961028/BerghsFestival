@@ -1,12 +1,14 @@
 <?php
 
+use Dom\HTMLDocument;
+use Dom\XMLDocument;
+
 function app_svg_img( string $name, array $atts = array() ) {
 	$path = __DIR__ . "/../svg/{$name}.svg";
 
 	$content = file_get_contents( $path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
 
-	$dom = new DOMDocument();
-	@$dom->loadXML( $content ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+	$dom = XMLDocument::createFromString( $content );
 
 	$el = $dom->documentElement; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 
@@ -20,11 +22,13 @@ function app_svg_img( string $name, array $atts = array() ) {
 	$atts['height']    = $height;
 	$atts['loading'] ??= 'lazy';
 
-	$html = '<img';
-	foreach ( $atts as $name => $value ) {
-		$html .= " $name=" . '"' . esc_attr( $value ) . '"';
-	}
-	$html .= '>';
+	$dom = HTMLDocument::createFromString( '<img>', LIBXML_NOERROR );
 
-	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	$img = $dom->body->firstChild;
+
+	foreach ( $atts as $att_name => $value ) {
+		$img->setAttribute( $att_name, $value );
+	}
+
+	echo $dom->body->innerHTML; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
