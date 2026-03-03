@@ -28,7 +28,7 @@ function _app_contact_register_options() {
 
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key",
+			'key'        => "group-$key-address_phone",
 			'title'      => 'Contact',
 			'fields'     => array(
 				array(
@@ -61,7 +61,7 @@ function _app_contact_register_options() {
 	}
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key",
+			'key'        => "group-$key-social",
 			'title'      => 'Social Media',
 			'fields'     => $social_fields,
 			'location'   => array( $location ),
@@ -72,7 +72,7 @@ function _app_contact_register_options() {
 add_action( 'acf/init', '_app_contact_register_options' );
 
 function _app_contact_get( string $name ): ?string {
-	$value = get_field( 'contact_' . $name, 'options' );
+	$value = get_field( 'contact-' . $name, 'options' );
 
 	if ( ! is_string( $value ) || '' === $value ) {
 		return null;
@@ -95,19 +95,19 @@ function app_contact_get_phone(): ?string {
  * @return list<array{icon:string,label:string,url:string}>
  */
 function app_contact_get_social_services(): array {
-	$slug_to_label = array_keys( _app_contact_get_social_services() );
+	$slug_to_label = _app_contact_get_social_services();
 
 	$value = array();
 
 	foreach ( $slug_to_label as $slug => $label ) {
-		$url = get_field( "contact-{$slug}_url" );
+		$url = get_field( "contact-{$slug}_url", 'options' );
 
 		if ( ! is_string( $url ) || '' === $url ) {
 			continue;
 		}
 
 		$value[] = array(
-			'icon'  => $slug,
+			'icon'  => "social/$slug",
 			'label' => $label,
 			'url'   => $url,
 		);

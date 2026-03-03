@@ -35,10 +35,11 @@ function _app_sponsors_register_options() {
 							'type'  => 'text',
 						),
 						array(
-							'key'   => "$key-sponsors-image",
-							'label' => 'Image',
-							'name'  => 'image',
-							'type'  => 'image',
+							'key'           => "$key-sponsors-image",
+							'label'         => 'Image',
+							'name'          => 'image',
+							'type'          => 'image',
+							'return_format' => 'id',
 						),
 						array(
 							'key'   => "$key-sponsors-url",

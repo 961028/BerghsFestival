@@ -95,6 +95,7 @@ img { max-width: 100%; height: auto; display: block; }
 .site-footer__col h4 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; color: #999; }
 .site-footer__col ul { list-style: none; }
 .site-footer__col a { color: #666; }
+.site-footer__social-icon { display: block; width: 2rem; }
 .site-footer__bottom { padding-top: 1rem; border-top: 1px solid #eee; text-align: center; font-size: 0.75rem; }
 
 /* Page content */

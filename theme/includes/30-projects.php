@@ -5,8 +5,8 @@ function _app_project_register_post_type() {
 		'project',
 		array(
 			'labels'      => array(
-				'name'          => __( 'Projects', 'app' ),
-				'singular_name' => __( 'Project', 'app' ),
+				'name'          => 'Projects',
+				'singular_name' => 'Project',
 			),
 			'menu_icon'   => 'dashicons-portfolio',
 			'public'      => true,
@@ -17,7 +17,6 @@ function _app_project_register_post_type() {
 			),
 			'supports'    => array(
 				'title',
-				'editor',
 				'revisions',
 			),
 		),
@@ -44,9 +43,42 @@ function _app_project_register_fields() {
 				),
 			),
 			'location'   => array( $location ),
-			'position'   => 'acf_after_title',
 			'menu_order' => $menu_order++,
 		),
+	);
+
+	acf_add_local_field_group(
+		array(
+			'key'        => "group-$key-video",
+			'title'      => 'Video',
+			'fields'     => array(
+				array(
+					'key'   => "$key-video",
+					'name'  => 'video',
+					'label' => '',
+					'type'  => 'oembed',
+				),
+			),
+			'location'   => array( $location ),
+			'menu_order' => $menu_order++,
+		)
+	);
+
+	acf_add_local_field_group(
+		array(
+			'key'        => "group-$key-company",
+			'title'      => 'Company',
+			'fields'     => array(
+				array(
+					'key'   => "$key-company",
+					'name'  => 'company',
+					'label' => '',
+					'type'  => 'text',
+				),
+			),
+			'location'   => array( $location ),
+			'menu_order' => $menu_order++,
+		)
 	);
 
 	acf_add_local_field_group(
@@ -74,62 +106,61 @@ function _app_project_register_fields() {
 							'name'    => 'class',
 							'type'    => 'select',
 							'choices' => array(
-								''                         => '',
-								'Public Relations'         => 'Public Relations',
-								'Strategisk kommunikation' => 'Strategisk kommunikation',
-								'Digital Design & Strategy' => 'Digital Design & Strategy',
-								'Growth Marketing'         => 'Growth Marketing',
-								'Produktionsledning'       => 'Produktionsledning',
-								'Art Director'             => 'Art Director',
-								'Copywriter'               => 'Copywriter',
-								'Communication Design'     => 'Communication Design',
-								'Handledare'               => 'Handledare',
+								''      => '',
+								'AD'    => 'Art Director',
+								'CD'    => 'Communication Design',
+								'CE'    => 'Content Engineering',
+								'CW'    => 'Copywriter',
+								'DDS'   => 'Digital Design & Strategy',
+								'GM'    => 'Growth Marketing',
+								'PL'    => 'Produktionsledning',
+								'PR'    => 'Public Relations',
+								'SK'    => 'Strategisk kommunikation',
+								'Tutor' => 'Handledare',
 							),
 						),
 					),
 				),
 			),
 			'location'   => array( $location ),
-			'position'   => 'acf_after_title',
 			'menu_order' => $menu_order++,
 		),
 	);
 
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key-preamble",
-			'title'      => 'Preamble',
+			'key'        => "group-$key-content",
+			'title'      => 'Innehåll',
 			'fields'     => array(
 				array(
-					'key'          => "$key-preamble",
-					'label'        => '',
-					'name'         => 'preamble',
+					'key'          => $key . '-content-company',
+					'label'        => 'The Company',
+					'name'         => 'content-company',
 					'type'         => 'wysiwyg',
-					'media_upload' => 0,
+					'toolbar'      => 'basic',
+					'media_upload' => false,
 				),
+				array(
+					'key'          => $key . '-content-background',
+					'label'        => 'Background',
+					'name'         => 'content-background',
+					'type'         => 'wysiwyg',
+					'toolbar'      => 'basic',
+					'media_upload' => false,
+				),
+				array(
+					'key'          => $key . '-content-solution',
+					'label'        => 'Solution',
+					'name'         => 'content-solution',
+					'type'         => 'wysiwyg',
+					'toolbar'      => 'basic',
+					'media_upload' => false,
+				),
+
 			),
 			'location'   => array( $location ),
-			'position'   => 'acf_after_title',
 			'menu_order' => $menu_order++,
 		),
-	);
-
-	acf_add_local_field_group(
-		array(
-			'key'        => "group-$key-video",
-			'title'      => 'Video',
-			'fields'     => array(
-				array(
-					'key'   => "$key-video",
-					'name'  => 'video',
-					'label' => '',
-					'type'  => 'oembed',
-				),
-			),
-			'location'   => array( $location ),
-			'position'   => 'acf_after_title',
-			'menu_order' => $menu_order++,
-		)
 	);
 }
 add_action( 'acf/init', '_app_project_register_fields' );

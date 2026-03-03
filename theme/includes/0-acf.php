@@ -9,7 +9,7 @@ function app_acf_get_options_page_location( string $slug ): array {
 		array(
 			'param'    => 'options_page',
 			'operator' => '==',
-			'value'    => "{$slug}.php",
+			'value'    => $slug,
 		),
 	);
 }

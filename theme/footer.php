@@ -20,7 +20,7 @@ $social_services = app_contact_get_social_services();
 						href="<?php echo esc_url( $sponsor['url'] ); ?>"
 						target="_blank"
 						rel="noopener"
-						title="<?php esc_attr( $sponsor['title'] ); ?>"
+						title="<?php echo esc_attr( $sponsor['name'] ); ?>"
 					>
 						<?php app_attachment_img( $sponsor['image'] ); ?>
 					</a>
@@ -61,7 +61,14 @@ $social_services = app_contact_get_social_services();
 									rel="noopener"
 									title="<?php esc_attr( $social_service['label'] ); ?>"
 								>
-									<?php app_svg_img( $social_service['icon'] ); ?>
+									<?php
+									app_svg_img(
+										$social_service['icon'],
+										array(
+											'class' => 'site-footer__social-icon',
+										)
+									);
+									?>
 								</a>
 							</li>
 						<?php endforeach; ?>
