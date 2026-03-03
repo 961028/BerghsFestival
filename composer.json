@@ -8,11 +8,33 @@
             "email": "contact@stefanfisk.com"
         }
     ],
+    "config": {
+        "platform": {
+            "php": "8.4"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "bump-after-update": true
+    },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "vlucas/phpdotenv": "^5.6@dev"
     },
     "require-dev": {
-        "wp-cli/wp-cli-bundle": "^2.12@dev"
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.2",
+        "phpcompatibility/phpcompatibility-wp": "*",
+        "sirbrillig/phpcs-variable-analysis": "^2.11",
+        "squizlabs/php_codesniffer": "^3.13",
+        "wp-cli/wp-cli-bundle": "^2.12",
+        "wp-coding-standards/wpcs": "^3"
+    },
+    "scripts": {
+        "format": "phpcbf --standard=phpcs.xml.dist --report-summary --report-source",
+        "lint": "phpcs --standard=phpcs.xml.dist",
+        "standards:check": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcs",
+        "standards:fix": "@php ./vendor/squizlabs/php_codesniffer/bin/phpcbf"
     }
 }
