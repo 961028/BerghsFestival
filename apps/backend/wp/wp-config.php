@@ -6,14 +6,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
  * Load .env
  */
 
-Dotenv\Dotenv::createMutable( __DIR__ . '/..' )->load();
+Dotenv\Dotenv::createMutable( __DIR__ . '/../../..' )->load();
 
 /*
  * Load .config.php
  */
 
-if ( file_exists( __DIR__ . '/../.config.php' ) ) {
-	require_once __DIR__ . '/../.config.php';
+if ( file_exists( __DIR__ . '/../../../.config.php' ) ) {
+	require_once __DIR__ . '/../../../.config.php';
 }
 
 /*
@@ -28,8 +28,8 @@ define( 'WP_ENVIRONMENT_TYPE', $_ENV['WP_ENVIRONMENT_TYPE'] ?? 'production' );
 
 define( 'WP_HOME', $_ENV['WP_HOME'] );
 define( 'WP_SITEURL', WP_HOME . '/wp' );
-define( 'WP_CONTENT_URL', WP_HOME . '/content' );
-define( 'WP_CONTENT_DIR', realpath( __DIR__ . '/content' ) );
+// define( 'WP_CONTENT_URL', WP_HOME . '/content' );
+// define( 'WP_CONTENT_DIR', realpath( __DIR__ . '/../content' ) );
 
 /*
  * DB
@@ -70,7 +70,7 @@ define( 'WP_CACHE_KEY_SALT', sha1( WP_HOME ) );
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', __DIR__ . '/wp/' );
+	define( 'ABSPATH', __DIR__ );
 }
 
 require_once ABSPATH . 'wp-settings.php';

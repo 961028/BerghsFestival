@@ -1,10 +1,11 @@
 services: 
-  wordpress:
+  app:
     build:
-      context: ./services/wordpress
+      context: ./services/app
       args:
         PUID: ${PUID:-1000}
         PGID: ${PGID:-1000}
+        WP_HOST: ${WP_HOST}
     environment:
       XDEBUG_CONFIG:
     extra_hosts:

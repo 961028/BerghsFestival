@@ -4,7 +4,7 @@
         "docker-compose.yml",
         "docker-compose.override.yml"
     ],
-    "service": "wordpress",
+    "service": "app",
     "overrideCommand": false,
     "workspaceFolder": "/srv/app",
     "initializeCommand": "touch .devcontainer/docker-compose.override.yml",
@@ -12,9 +12,10 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "xdebug.php-debug",
+                "astro-build.astro-vscode",
                 "bmewburn.vscode-intelephense-client",
-                "valeryanm.vscode-phpsab"
+                "valeryanm.vscode-phpsab",
+                "xdebug.php-debug"
             ],
             "settings": {
                 "remote.autoForwardPorts": false,

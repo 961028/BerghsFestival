@@ -51,10 +51,11 @@ COPY xdebug.ini /usr/local/etc/php/conf.d/app-xdebug.ini
 
 # Configure Apache
 
-ENV APACHE_DOCUMENT_ROOT /srv/app/public
+ARG WP_HOST
+ENV WP_HOST ${WP_HOST}
 
-RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+COPY app.conf /etc/apache2/sites-available/
+RUN cd /etc/apache2/sites-enabled/ && ln -s ../sites-available/app.conf
 
 RUN a2enmod rewrite
 
