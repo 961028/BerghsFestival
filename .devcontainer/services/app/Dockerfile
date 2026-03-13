@@ -51,8 +51,8 @@ COPY xdebug.ini /usr/local/etc/php/conf.d/app-xdebug.ini
 
 # Configure Apache
 
-ARG WP_HOST
-ENV WP_HOST ${WP_HOST}
+ARG APP_HOST
+ENV APP_HOST ${APP_HOST}
 
 COPY app.conf /etc/apache2/sites-available/
 RUN cd /etc/apache2/sites-enabled/ && ln -s ../sites-available/app.conf

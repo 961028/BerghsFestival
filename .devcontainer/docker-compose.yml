@@ -5,11 +5,11 @@ services:
       args:
         PUID: ${PUID:-1000}
         PGID: ${PGID:-1000}
-        WP_HOST: ${WP_HOST}
+        APP_HOST: ${APP_HOST}
     environment:
       XDEBUG_CONFIG:
     extra_hosts:
-      - "${WP_HOST}:host-gateway"
+      - "${APP_HOST}:host-gateway"
     volumes:
       - ../:/srv/app
 
