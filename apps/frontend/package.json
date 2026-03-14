@@ -12,6 +12,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.0.4"
+    "astro": "^6.0.4",
+    "jsdom": "^28.1.0",
+    "wp-types": "^4.69.0"
+  },
+  "devDependencies": {
+    "@types/jsdom": "^28.0.0"
   }
 }

@@ -1,0 +1,69 @@
+---
+import WpImage from "../../components/WpImage.astro";
+import WpVideo from "../../components/WpVideo.astro";
+import Layout from "../../layouts/Layout.astro";
+
+import { getAllProjects, getProjectBySlug } from "./_api";
+
+const { slug } = Astro.params;
+
+const project = await getProjectBySlug(slug);
+
+export async function getStaticPaths() {
+	let projects = await getAllProjects();
+
+	return projects.map((project) => ({
+		params: { slug: project.slug },
+		props: { project },
+	}));
+}
+---
+
+<Layout title={project.title}>
+	<article class="article">
+		<h1 class="page-title" set:html={project.title} />
+
+		<div class="company">{project.company}</div>
+
+		{!project.image || <WpImage class="image" image={project.image} />}
+
+		{!project.video || <WpVideo class="video" video={project.video} />}
+
+		<ul class="team-members">
+			{
+				project.teamMembers.map((teamMember) => (
+					<li class="team-member">
+						<div class="team-member__name">{teamMember.name}</div>
+						<div class="team-member__class">{teamMember.class}</div>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="content">
+			<h2 class="content-title">The Company</h2>
+
+			<div class="content-wrapper" set:html={project.content.company} />
+
+			<h2 class="content-title">Background</h2>
+
+			<div
+				class="content-wrapper"
+				set:html={project.content.background}
+			/>
+
+			<h2 class="content-title">Solution</h2>
+
+			<div class="content-wrapper" set:html={project.content.solution} />
+		</div>
+	</article>
+</Layout>
+
+<style>
+	.image,
+	.video {
+		display: block;
+		max-width: 100%;
+		height: auto;
+	}
+</style>

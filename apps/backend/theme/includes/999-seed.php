@@ -40,7 +40,7 @@ function _app_seed_command(): void {
 
 	// Add some images
 
-	$sideload_image = function ( string $image_url, ?string $filename = null ) {
+	$sideload_image = function ( string $image_url, ?string $filename = null ) use ( $faker ) {
 		if ( null === $filename ) {
 			$filename = sprintf( '%s.%s', uniqid( 'image-' ), pathinfo( $image_url, PATHINFO_EXTENSION ) );
 		}
@@ -66,7 +66,7 @@ function _app_seed_command(): void {
 			'tmp_name' => $image_tmp_file,
 		);
 
-		$image_id = media_handle_sideload( $image_file_arr, 0 );
+		$image_id = media_handle_sideload( $image_file_arr );
 
 		if ( file_exists( $image_tmp_file ) ) {
 			unlink( $image_tmp_file ); // phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
@@ -75,6 +75,8 @@ function _app_seed_command(): void {
 		if ( is_wp_error( $image_id ) ) {
 			WP_CLI::Error( $image_id->get_error_message() );
 		}
+
+		update_post_meta( $image_id, '_wp_attachment_image_alt', wp_slash( $faker->sentence() ) );
 
 		return $image_id;
 	};

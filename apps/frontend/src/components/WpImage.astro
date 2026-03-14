@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets";
+import type { ComponentProps } from "astro/types";
+
+import { getMedia } from "../lib/wp-api";
+
+type ImageProps = ComponentProps<typeof Image>;
+
+type Props = Omit<
+	ImageProps,
+	"src" | "alt" | "inferSize" | "width" | "height" | "densities"
+> & {
+	image: number;
+	alt?: string;
+};
+
+let { image: imageId, alt, ...attrs } = Astro.props;
+
+const image = await getMedia(imageId);
+
+if (image.media_type !== "image") {
+	throw new Error(
+		`Media ${imageId} type is ${image.media_type}, must be image.`,
+	);
+}
+
+alt ??= image.alt_text;
+
+const src = image.source_url;
+---
+
+<Image src={src} alt={alt} inferSize {...attrs} />

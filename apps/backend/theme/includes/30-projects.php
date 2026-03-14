@@ -4,21 +4,22 @@ function _app_project_register_post_type() {
 	register_post_type(
 		'project',
 		array(
-			'labels'      => array(
+			'labels'       => array(
 				'name'          => 'Projects',
 				'singular_name' => 'Project',
 			),
-			'menu_icon'   => 'dashicons-portfolio',
-			'public'      => true,
-			'has_archive' => false,
-			'rewrite'     => array(
+			'menu_icon'    => 'dashicons-portfolio',
+			'public'       => true,
+			'has_archive'  => false,
+			'rewrite'      => array(
 				'slug'       => 'projects',
 				'with_front' => false,
 			),
-			'supports'    => array(
+			'supports'     => array(
 				'title',
 				'revisions',
 			),
+			'show_in_rest' => true,
 		),
 	);
 }
@@ -31,44 +32,9 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key-image",
-			'title'      => 'Image',
-			'fields'     => array(
-				array(
-					'key'          => "$key-image",
-					'label'        => '',
-					'name'         => 'image',
-					'type'         => 'image',
-					'preview_size' => '3_2',
-				),
-			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
-		),
-	);
-
-	acf_add_local_field_group(
-		array(
-			'key'        => "group-$key-video",
-			'title'      => 'Video',
-			'fields'     => array(
-				array(
-					'key'   => "$key-video",
-					'name'  => 'video',
-					'label' => '',
-					'type'  => 'oembed',
-				),
-			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
-		)
-	);
-
-	acf_add_local_field_group(
-		array(
-			'key'        => "group-$key-company",
-			'title'      => 'Company',
-			'fields'     => array(
+			'key'          => "group-$key-company",
+			'title'        => 'Company',
+			'fields'       => array(
 				array(
 					'key'   => "$key-company",
 					'name'  => 'company',
@@ -76,16 +42,55 @@ function _app_project_register_fields() {
 					'type'  => 'text',
 				),
 			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
 		)
 	);
 
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key-team_members",
-			'title'      => 'Team Members',
-			'fields'     => array(
+			'key'          => "group-$key-image",
+			'title'        => 'Image',
+			'fields'       => array(
+				array(
+					'key'           => "$key-image",
+					'label'         => '',
+					'name'          => 'image',
+					'type'          => 'image',
+					'preview_size'  => '3_2',
+					'return_format' => 'id',
+				),
+			),
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
+		),
+	);
+
+	acf_add_local_field_group(
+		array(
+			'key'          => "group-$key-video",
+			'title'        => 'Video',
+			'fields'       => array(
+				array(
+					'key'   => "$key-video",
+					'name'  => 'video',
+					'label' => '',
+					'type'  => 'oembed',
+				),
+			),
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
+		)
+	);
+
+	acf_add_local_field_group(
+		array(
+			'key'          => "group-$key-team_members",
+			'title'        => 'Team Members',
+			'fields'       => array(
 				array(
 					'key'          => "$key-team_members",
 					'label'        => '',
@@ -122,16 +127,17 @@ function _app_project_register_fields() {
 					),
 				),
 			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
 		),
 	);
 
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key-content",
-			'title'      => 'Innehåll',
-			'fields'     => array(
+			'key'          => "group-$key-content",
+			'title'        => 'Innehåll',
+			'fields'       => array(
 				array(
 					'key'          => $key . '-content-company',
 					'label'        => 'The Company',
@@ -158,24 +164,10 @@ function _app_project_register_fields() {
 				),
 
 			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
 		),
 	);
 }
 add_action( 'acf/init', '_app_project_register_fields' );
-
-function _app_project_filter_wpseo_add_opengraph_images( $image_container ) {
-	if ( ! is_singular( 'project' ) ) {
-		return;
-	}
-
-	$image = get_field( 'image' );
-
-	if ( ! $image ) {
-		return;
-	}
-
-	$image_container->add_image_by_id( $image['id'] );
-}
-add_action( 'wpseo_add_opengraph_images', '_app_project_filter_wpseo_add_opengraph_images' );

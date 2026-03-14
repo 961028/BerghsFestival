@@ -18,9 +18,9 @@ function _app_sponsors_register_options() {
 
 	acf_add_local_field_group(
 		array(
-			'key'      => "group-$key",
-			'title'    => 'Sponsors',
-			'fields'   => array(
+			'key'          => "group-$key",
+			'title'        => 'Sponsors',
+			'fields'       => array(
 				array(
 					'key'          => "$key-sponsors",
 					'label'        => '',
@@ -50,18 +50,32 @@ function _app_sponsors_register_options() {
 					),
 				),
 			),
-			'location' => array( $location ),
+			'location'     => array( $location ),
+			'show_in_rest' => true,
 		)
 	);
 }
 add_action( 'acf/init', '_app_sponsors_register_options' );
 
-function app_sponsors_get(): array {
+function _app_sponsors_on_rest_api_init() {
+	register_rest_route(
+		'app/v1',
+		'sponsors',
+		array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => '_app_sponsors_rest_api_callback',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', '_app_sponsors_on_rest_api_init' );
+
+function _app_sponsors_rest_api_callback(): WP_REST_Response {
 	$value = get_field( 'sponsors', 'options' );
 
 	if ( ! is_array( $value ) ) {
-		return array();
+		$value = array();
 	}
 
-	return $value;
+	return rest_ensure_response( $value );
 }

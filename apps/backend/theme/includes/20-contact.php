@@ -1,6 +1,6 @@
 <?php
 
-function _app_contact_get_social_services(): array {
+function _app_contact_get_social_service_slug_to_label(): array {
 	return array(
 		'instagram' => 'Instagram',
 		'facebook'  => 'Facebook',
@@ -51,7 +51,7 @@ function _app_contact_register_options() {
 
 	$social_fields = array();
 
-	foreach ( _app_contact_get_social_services() as $service_slug => $service_label ) {
+	foreach ( _app_contact_get_social_service_slug_to_label() as $service_slug => $service_label ) {
 		$social_fields[] = array(
 			'key'   => "$key-{$service_slug}_url",
 			'name'  => "contact-{$service_slug}_url",
@@ -81,11 +81,11 @@ function _app_contact_get( string $name ): ?string {
 	return $value;
 }
 
-function app_contact_get_address(): ?string {
+function _app_contact_get_address(): ?string {
 	return _app_contact_get( 'address' );
 }
 
-function app_contact_get_phone(): ?string {
+function _app_contact_get_phone(): ?string {
 	return _app_contact_get( 'phone' );
 }
 
@@ -94,8 +94,8 @@ function app_contact_get_phone(): ?string {
  *
  * @return list<array{icon:string,label:string,url:string}>
  */
-function app_contact_get_social_services(): array {
-	$slug_to_label = _app_contact_get_social_services();
+function _app_contact_get_social_services(): array {
+	$slug_to_label = _app_contact_get_social_service_slug_to_label();
 
 	$value = array();
 
@@ -114,4 +114,27 @@ function app_contact_get_social_services(): array {
 	}
 
 	return $value;
+}
+
+function _app_contact_on_rest_api_init() {
+	register_rest_route(
+		'app/v1',
+		'contact',
+		array(
+			'methods'             => WP_REST_Server::READABLE,
+			'callback'            => '_app_contact_rest_api_callback',
+			'permission_callback' => '__return_true',
+		)
+	);
+}
+add_action( 'rest_api_init', '_app_contact_on_rest_api_init' );
+
+function _app_contact_rest_api_callback(): WP_REST_Response {
+	return rest_ensure_response(
+		array(
+			'address'         => _app_contact_get_address(),
+			'phone'           => _app_contact_get_phone(),
+			'social_services' => _app_contact_get_social_services(),
+		)
+	);
 }

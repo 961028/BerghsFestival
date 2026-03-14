@@ -2,8 +2,8 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "command": "./node_modules/.bin/astro dev",
-            "name": "Development server",
+            "command": "cd apps/frontend && ./node_modules/.bin/astro dev",
+            "name": "Astro Development server",
             "request": "launch",
             "type": "node-terminal"
         },
