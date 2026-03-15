@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 
-import WpImage from './WpImage.astro';
+import WpImage from '../elements/WpImage.astro';
 
 const sponsors = (await getCollection('sponsors')).sort(
   (a, b) => a.data.id - b.data.id,

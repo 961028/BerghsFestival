@@ -1,6 +1,6 @@
 ---
 import { getCollection } from "astro:content";
-import WpImage from "../../components/WpImage.astro";
+import WpImage from "../../components/elements/WpImage.astro";
 import Layout from "../../layouts/Layout.astro";
 
 const projects = (await getCollection("projects")).map((entry) => entry.data);

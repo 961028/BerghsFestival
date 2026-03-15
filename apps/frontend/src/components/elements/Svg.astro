@@ -7,7 +7,7 @@ interface Props extends HTMLAttributes<"svg"> {
 
 const { name, ...rest } = Astro.props
 
-const svgs = import.meta.glob<{ default: (_props: HTMLAttributes<"svg">) => any }>('../svg/**/*.svg', {
+const svgs = import.meta.glob<{ default: (_props: HTMLAttributes<"svg">) => any }>('../../svg/**/*.svg', {
   eager: true,
 })
 
