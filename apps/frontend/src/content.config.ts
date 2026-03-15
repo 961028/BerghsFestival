@@ -1,12 +1,16 @@
 import { defineCollection, reference, type BaseSchema } from 'astro:content';
 import { z } from 'astro/zod';
-import type { WP_REST_API_Settings } from 'wp-types';
+import {
+    type WP_REST_API_Menu_Item,
+    type WP_REST_API_Menu_Locations,
+    type WP_REST_API_Settings,
+} from 'wp-types';
 
 import { type Media, wpGet, wpGetAll, type Post } from './lib/wp-api';
 import { stripHtml } from './lib/html';
 
 type WithId = {
-    id: number,
+    id: string,
 };
 
 type WithoutId<T> = Omit<T, 'id'>;
@@ -14,7 +18,7 @@ type WithoutId<T> = Omit<T, 'id'>;
 type PaginatedCollectionConfig<I, E extends WithId, S extends BaseSchema> = {
     path: string,
     schema: S,
-    mapItemToEntry(post: I): E,
+    mapItemToEntry(item: I): E,
 };
 
 const definePaginatedCollection = <I, E extends WithId, S extends BaseSchema>({ path, schema, mapItemToEntry }: PaginatedCollectionConfig<I, E, S>) => defineCollection({
@@ -77,42 +81,84 @@ const settings = defineSingletonCollection({
     }),
 })
 
+const menuLocations = defineCollection({
+    schema: z.object({
+        id: z.string(),
+        menu: z.number(),
+    }),
+    loader: {
+        name: 'wp/v2/menu-locations',
+        load: async ({ store, parseData }) => {
+            const items = await wpGet<WP_REST_API_Menu_Locations>('wp/v2/menu-locations');
+
+            for (const item of Object.values(items)) {
+                const rawData = ({
+                    id: item.name,
+                    menu: item.menu,
+                });
+
+                const data = await parseData({ id: rawData.id, data: rawData });
+
+                store.set({ id: data.id, data });
+            }
+        },
+    },
+});
+
+const menuItems = definePaginatedCollection({
+    path: 'wp/v2/menu-items',
+    schema: z.object({
+        id: z.string(),
+        menu: z.number(),
+        order: z.number(),
+        title: z.string(),
+        url: z.string(),
+    }),
+    mapItemToEntry: (item: WP_REST_API_Menu_Item) => ({
+        id: String(item.id),
+        menu: item.menus,
+        order: item.menu_order,
+        title: typeof item.title === "string" ? item.title : stripHtml(item.title.rendered ?? ''),
+        url: item.url,
+    }),
+});
+
 const media = definePaginatedCollection({
     path: 'wp/v2/media',
     schema: z.object({
-        id: z.number(),
+        id: z.string(),
         type: z.string(),
         sourceUrl: z.string(),
         altText: z.string(),
     }),
-    mapItemToEntry: (post: Media) => ({
-        id: post.id,
-        type: post.media_type,
-        sourceUrl: post.source_url,
-        altText: post.alt_text,
+    mapItemToEntry: (item: Media) => ({
+        id: String(item.id),
+        type: item.media_type,
+        sourceUrl: item.source_url,
+        altText: item.alt_text,
     }),
 });
 
 const pages = definePaginatedCollection({
     path: 'wp/v2/pages',
     schema: z.object({
-        id: z.number(),
+        id: z.string(),
         slug: z.string(),
         parent: reference('pages').nullable(),
         title: z.string(),
     }),
-    mapItemToEntry: (post: Post) => ({
-        id: post.id,
-        slug: post.slug,
-        parent: post.parent ? String(post.parent) : null,
-        title: stripHtml(post.title.rendered),
+    mapItemToEntry: (item: Post) => ({
+        id: String(item.id),
+        slug: item.slug,
+        parent: item.parent ? String(item.parent) : null,
+        title: stripHtml(item.title.rendered),
     }),
 });
 
 const projects = definePaginatedCollection({
     path: 'wp/v2/projects',
     schema: z.object({
-        id: z.number(),
+        id: z.string(),
         slug: z.string(),
         title: z.string(),
         company: z.string(),
@@ -129,31 +175,31 @@ const projects = definePaginatedCollection({
             }),
         }))
     }),
-    mapItemToEntry: (post: Post) => ({
-        id: post.id,
-        slug: post.slug,
-        title: stripHtml(post.title.rendered),
-        company: post.acf.company,
-        image: post.acf.image ? String(post.acf.image) : null,
-        video: post.acf.video,
-        teamMembers: post.acf.team_members,
+    mapItemToEntry: (item: Post) => ({
+        id: String(item.id),
+        slug: item.slug,
+        title: stripHtml(item.title.rendered),
+        company: item.acf.company,
+        image: item.acf.image ? String(item.acf.image) : null,
+        video: item.acf.video,
+        teamMembers: item.acf.team_members,
         contentSections: [
             {
                 title: 'The Company',
                 content: {
-                    html: post.acf['content-company'],
+                    html: item.acf['content-company'],
                 },
             },
             {
                 title: 'Background',
                 content: {
-                    html: post.acf['content-background'],
+                    html: item.acf['content-background'],
                 },
             },
             {
                 title: 'Solution',
                 content: {
-                    html: post.acf['content-solution'],
+                    html: item.acf['content-solution'],
                 },
             },
         ]
@@ -163,13 +209,13 @@ const projects = definePaginatedCollection({
 const sponsors = definePaginatedCollection({
     path: 'app/v1/sponsors',
     schema: z.object({
-        id: z.number(),
+        id: z.string(),
         name: z.string(),
         image: reference('media'),
         url: z.string(),
     }),
     mapItemToEntry: (item: Record<string, unknown>) => ({
-        id: item.id as number,
+        id: String(item.id),
         name: item.name,
         image: String(item.image),
         url: item.url,
@@ -194,11 +240,30 @@ const contact = defineSingletonCollection({
     }),
 });
 
+const iq = defineSingletonCollection({
+    path: 'app/v1/iq',
+    schema: z.object({
+        title: z.string(),
+        content: z.object({
+            html: z.string(),
+        }),
+    }),
+    mapItemToEntry: (item: Record<string, unknown>) => ({
+        title: item.title,
+        content: {
+            html: item.content,
+        },
+    }),
+});
+
 export const collections = {
     settings,
+    menuLocations,
+    menuItems,
     media,
     pages,
     projects,
     sponsors,
     contact,
+    iq,
 };

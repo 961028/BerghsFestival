@@ -1,7 +1,6 @@
 <?php
 
 function _app_sponsors_register_options() {
-
 	acf_add_options_page(
 		array(
 			'page_title' => 'Sponsor Options',

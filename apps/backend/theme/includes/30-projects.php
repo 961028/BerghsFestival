@@ -10,7 +10,8 @@ function _app_project_register_post_type() {
 			),
 			'menu_icon'    => 'dashicons-portfolio',
 			'public'       => true,
-			'has_archive'  => false,
+			'has_archive'  => true,
+			'show_in_menu' => true,
 			'rewrite'      => array(
 				'slug'       => 'projects',
 				'with_front' => false,

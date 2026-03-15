@@ -26,7 +26,8 @@ define( 'WP_ENVIRONMENT_TYPE', $_ENV['WP_ENVIRONMENT_TYPE'] ?? 'production' );
  * URLs & Dirs
  */
 
-define( 'WP_HOME', $_ENV['APP_HOME'] . '/wp' );
+define( 'WP_HOME', $_ENV['APP_HOME'] );
+define( 'WP_SITEURL', WP_HOME . '/wp' );
 
 /*
  * DB

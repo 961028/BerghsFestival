@@ -1,0 +1,11 @@
+---
+import { getCollection } from "astro:content";
+
+const { title, content } = (await getCollection("iq"))[0].data;
+---
+
+<div>
+	<h2>{title}</h2>
+
+	<div class="content" set:html={content.html} />
+</div>

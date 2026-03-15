@@ -1,0 +1,31 @@
+---
+import { getCollection, getEntry } from "astro:content";
+
+const menuLocation = await getEntry("menuLocations", "primary");
+const menuItems = (
+	await getCollection(
+		"menuItems",
+		(item) => item.data.menu === menuLocation?.data.menu,
+	)
+).sort((a, b) => a.data.order - b.data.order);
+---
+
+<header>
+	<nav class="menu">
+		{
+			menuItems.map((menuItem) => (
+				<a class="menu-item-" href={menuItem.data.url}>
+					{menuItem.data.title}
+				</a>
+			))
+		}
+	</nav>
+</header>
+
+<style>
+	.menu {
+		display: flex;
+		gap: 1rem;
+		justify-content: space-between;
+	}
+</style>
