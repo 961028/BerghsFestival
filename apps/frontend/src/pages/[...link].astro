@@ -3,22 +3,26 @@ import { getCollection, render } from "astro:content";
 
 import { resolvePageLink } from "../lib/content";
 
-import Layout from "../layouts/Layout.astro";
+import Page from "../templates/Page.astro";
 
 export async function getStaticPaths() {
+	const settings = (await getCollection("settings"))[0].data;
+
 	const pages = await getCollection("pages");
 
 	return await Promise.all(
-		pages.map(async (page) => ({
-			params: { link: await resolvePageLink(page) },
-			props: { page },
-		})),
+		pages
+			.filter((page) => page.id !== settings.homePage.id)
+			.map(async (page) => ({
+				params: { link: await resolvePageLink(page) },
+				props: {
+					page,
+				},
+			})),
 	);
 }
 
 const { page } = Astro.props;
 ---
 
-<Layout title={page.data.title}>
-	<h1>{page.data.title}</h1>
-</Layout>
+<Page page={page} />

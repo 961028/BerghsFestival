@@ -75,9 +75,11 @@ const settings = defineSingletonCollection({
     path: 'wp/v2/settings',
     schema: z.object({
         title: z.string(),
+        homePage: reference('pages'),
     }),
     mapItemToEntry: (item: WP_REST_API_Settings) => ({
         title: item.title,
+        homePage: item.page_on_front ? String(item.page_on_front) : null,
     }),
 })
 
@@ -146,12 +148,18 @@ const pages = definePaginatedCollection({
         slug: z.string(),
         parent: reference('pages').nullable(),
         title: z.string(),
+        content: z.object({
+            html: z.string(),
+        }),
     }),
     mapItemToEntry: (item: Post) => ({
         id: String(item.id),
         slug: item.slug,
         parent: item.parent ? String(item.parent) : null,
         title: stripHtml(item.title.rendered),
+        content: {
+            html: item.content.rendered,
+        },
     }),
 });
 

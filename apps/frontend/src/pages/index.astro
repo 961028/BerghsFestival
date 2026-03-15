@@ -1,10 +1,11 @@
 ---
 import { getEntry } from "astro:content";
-import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import Page from "../templates/Page.astro";
 
-const settings = await getEntry("settings", "0");
+const settings = (await getCollection("settings"))[0].data;
+
+const page = await getEntry(settings.homePage);
 ---
 
-<Layout title="Welcome">
-	<h1>{settings.data.title}</h1>
-</Layout>
+<Page page={page} />
