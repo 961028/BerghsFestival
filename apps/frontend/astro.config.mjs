@@ -15,10 +15,10 @@ assert(APP_HOME);
 // https://astro.build/config
 export default defineConfig({
     site: APP_HOME,
-    server: ({ command }) => ({
+    server: {
         allowedHosts: [APP_HOST],
         host: '127.0.0.1', // Apache needs this
-    }),
+    },
     vite: {
         server: {
             strictPort: true,

@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { getSettings } from '../lib/wp-api';
+import { getEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 
-const settings = await getSettings();
+const settings = await getEntry("settings", "0");
 ---
 
 <Layout title="Welcome">
-	<h1>{settings.title}</h1>
+	<h1>{settings.data.title}</h1>
 </Layout>

@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+
+import WpImage from './WpImage.astro';
+
+const sponsors = (await getCollection('sponsors')).sort(
+  (a, b) => a.data.id - b.data.id,
+);
+---
+<div>
+    <ul>
+        {sponsors.map((sponsor) => (
+            <li>
+                <a
+                    href={sponsor.data.url}
+                    title={sponsor.data.name}
+                >
+                    <WpImage class="logo" image={sponsor.data.image} />
+                </a>
+            </li>
+        ))}
+    </ul>
+</div>

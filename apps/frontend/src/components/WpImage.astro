@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import type { ComponentProps } from "astro/types";
 import { getEntry } from "astro:content";
+import type { ReferenceDataEntry } from "astro:content";
 
 type ImageProps = ComponentProps<typeof Image>;
 
@@ -9,13 +10,13 @@ type Props = Omit<
 	ImageProps,
 	"src" | "alt" | "inferSize" | "width" | "height" | "densities"
 > & {
-	image: number;
+	image: ReferenceDataEntry<"media">;
 	alt?: string;
 };
 
 let { image: imageId, alt, ...attrs } = Astro.props;
 
-const image = await getEntry("media", String(imageId));
+const image = await getEntry(imageId);
 
 if (!image) {
 	return;

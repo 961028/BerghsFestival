@@ -71,11 +71,39 @@ function _app_sponsors_on_rest_api_init() {
 add_action( 'rest_api_init', '_app_sponsors_on_rest_api_init' );
 
 function _app_sponsors_rest_api_callback(): WP_REST_Response {
-	$value = get_field( 'sponsors', 'options' );
+	$rows = get_field( 'sponsors', 'options' );
 
-	if ( ! is_array( $value ) ) {
-		$value = array();
+	if ( ! is_array( $rows ) ) {
+		$rows = array();
 	}
 
-	return rest_ensure_response( $value );
+	$items = [];
+
+	$id = 1;
+
+	foreach ($rows as $row) {
+		$name = $row['name'] ?? null;
+		if (!is_string($name) || $name === '') {
+			continue;
+		}
+
+		$imageId = $row['image'] ?? null;
+		if (!is_int($imageId) || $imageId <=0) {
+			continue;
+		}
+
+		$url = $row['url'] ?? null;
+		if (!is_string($url) || $url === '') {
+			continue;
+		}
+
+		$items[] = [
+			'id'    => $id++,
+			'name'  => $name,
+			'image' => $imageId,
+			'url'   => $url,
+		];
+	}
+
+	return rest_ensure_response( $items );
 }
