@@ -57,7 +57,7 @@ ENV APP_HOST ${APP_HOST}
 COPY app.conf /etc/apache2/sites-available/
 RUN cd /etc/apache2/sites-enabled/ && ln -s ../sites-available/app.conf
 
-RUN a2enmod rewrite
+RUN a2enmod proxy proxy_http proxy_wstunnel rewrite
 
 # Setup the user
 
