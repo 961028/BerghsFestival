@@ -8,6 +8,10 @@
     "overrideCommand": false,
     "workspaceFolder": "/srv/app",
     "initializeCommand": "touch .devcontainer/docker-compose.override.yml",
+    "postCreateCommand": {
+        "composer": "cd /srv/app/apps/backend && composer install",
+        "npm": "cd /srv/app/apps/frontend && npm ci"
+    },
     "remoteUser": "www-data",
     "customizations": {
         "vscode": {
