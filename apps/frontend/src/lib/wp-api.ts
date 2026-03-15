@@ -29,7 +29,7 @@ type ACF_Partial = {
 
 export type Post = WP_REST_API_Post & ACF_Partial;
 
-export type Media = WP_REST_API_Attachment;
+export type Media = WP_REST_API_Attachment & ACF_Partial;
 
 /**
  * Fetch any wp-json endpoint and return the parsed JSON response.
@@ -128,26 +128,4 @@ export async function wpGetAll<T = unknown>(
   );
 
   return [firstPage, ...remaining].flat();
-}
-
-export async function getPostBySlug(postType: string, slug: string): Promise<Post> {
-  const posts = await wpGet<Post[]>(`wp/v2/${postType}`, { slug: slug });
-
-  if (posts.length === 0) {
-    throw new Error(`Post of type ${postType} with slug ${slug} not found.`);
-  }
-
-  return posts[0];
-}
-
-export async function getAllPosts(postType: string): Promise<Post[]> {
-  return wpGetAll<Post>(`wp/v2/${postType}`);
-}
-
-export async function getMedia(id: Number): Promise<Media> {
-  return wpGet<Media>(`wp/v2/media/${id}`);
-}
-
-export async function getSettings(): Promise<WP_REST_API_Settings> {
-  return wpGet<WP_REST_API_Settings>('wp/v2/settings');
 }

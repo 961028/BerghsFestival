@@ -20,6 +20,7 @@ function _app_project_register_post_type() {
 				'revisions',
 			),
 			'show_in_rest' => true,
+			'rest_base'    => 'projects',
 		),
 	);
 }

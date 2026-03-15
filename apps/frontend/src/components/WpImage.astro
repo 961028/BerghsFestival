@@ -1,8 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import type { ComponentProps } from "astro/types";
-
-import { getMedia } from "../lib/wp-api";
+import { getEntry } from "astro:content";
 
 type ImageProps = ComponentProps<typeof Image>;
 
@@ -16,17 +15,21 @@ type Props = Omit<
 
 let { image: imageId, alt, ...attrs } = Astro.props;
 
-const image = await getMedia(imageId);
+const image = await getEntry("media", String(imageId));
 
-if (image.media_type !== "image") {
+if (!image) {
+	return;
+}
+
+if (image.data.type !== "image") {
 	throw new Error(
-		`Media ${imageId} type is ${image.media_type}, must be image.`,
+		`Media ${imageId} type is ${image.data.type}, must be image.`,
 	);
 }
 
-alt ??= image.alt_text;
+alt ??= image.data.altText;
 
-const src = image.source_url;
+const src = image.data.sourceUrl;
 ---
 
 <Image src={src} alt={alt} inferSize {...attrs} />

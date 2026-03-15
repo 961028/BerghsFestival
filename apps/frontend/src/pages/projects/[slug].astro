@@ -1,31 +1,29 @@
 ---
+import { getCollection } from "astro:content";
+
 import WpImage from "../../components/WpImage.astro";
 import WpVideo from "../../components/WpVideo.astro";
 import Layout from "../../layouts/Layout.astro";
 
-import { getAllProjects, getProjectBySlug } from "./_api";
-
-const { slug } = Astro.params;
-
-const project = await getProjectBySlug(slug);
-
 export async function getStaticPaths() {
-	let projects = await getAllProjects();
+	const projects = await getCollection('projects');
 
 	return projects.map((project) => ({
-		params: { slug: project.slug },
-		props: { project },
+		params: { slug: project.data.slug },
+		props: { project: project.data },
 	}));
 }
+
+const {project} = Astro.props;
 ---
 
 <Layout title={project.title}>
 	<article class="article">
-		<h1 class="page-title" set:html={project.title} />
+		<h1 class="page-title">{project.title}</h1>
 
 		<div class="company">{project.company}</div>
 
-		{!project.image || <WpImage class="image" image={project.image} />}
+		{!project.image || <WpImage class="image" image={project.image} loading="eager" />}
 
 		{!project.video || <WpVideo class="video" video={project.video} />}
 
@@ -41,20 +39,11 @@ export async function getStaticPaths() {
 		</ul>
 
 		<div class="content">
-			<h2 class="content-title">The Company</h2>
+			{project.contentSections.map((contentSection) => [
+				<h2 class="content-title">{contentSection.title}</h2>
 
-			<div class="content-wrapper" set:html={project.content.company} />
-
-			<h2 class="content-title">Background</h2>
-
-			<div
-				class="content-wrapper"
-				set:html={project.content.background}
-			/>
-
-			<h2 class="content-title">Solution</h2>
-
-			<div class="content-wrapper" set:html={project.content.solution} />
+				<div class="content-wrapper" set:html={contentSection.content.html} />
+			])}
 		</div>
 	</article>
 </Layout>

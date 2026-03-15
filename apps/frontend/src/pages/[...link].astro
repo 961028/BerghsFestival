@@ -1,0 +1,22 @@
+---
+import { getCollection, render } from "astro:content";
+
+import { resolveHierarchicalPostLink } from "../lib/content-utils";
+
+import Layout from "../layouts/Layout.astro";
+
+export async function getStaticPaths() {
+	const pages = await getCollection("pages");
+
+	return await Promise.all(
+		pages.map(async (page) => ({
+			params: { link: await resolveHierarchicalPostLink('pages', page.data.id) },
+			props: { page },
+		})),
+	);
+}
+
+const { page } = Astro.props;
+---
+
+<Layout title={page.data.title} <Content />

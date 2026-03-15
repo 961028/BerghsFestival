@@ -1,10 +1,9 @@
 ---
+import { getCollection } from "astro:content";
 import WpImage from "../../components/WpImage.astro";
 import Layout from "../../layouts/Layout.astro";
 
-import { getAllProjects } from "./_api";
-
-let projects = await getAllProjects();
+const projects = (await getCollection("projects")).map((entry) => entry.data);
 ---
 
 <Layout title="Projects">
@@ -12,7 +11,7 @@ let projects = await getAllProjects();
 		{
 			projects.map((project) => (
 				<li class="item">
-					<a class="anchor" href={`./${project.slug}`}>
+					<a class="anchor" href={`/projects/${project.slug}`}>
 						{!project.image || (
 							<WpImage class="image" image={project.image} />
 						)}
