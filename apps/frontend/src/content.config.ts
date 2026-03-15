@@ -176,10 +176,29 @@ const sponsors = definePaginatedCollection({
     }),
 });
 
+const contact = defineSingletonCollection({
+    path: 'app/v1/contact',
+    schema: z.object({
+        address: z.string(),
+        phone: z.string(),
+        socialServices: z.array(z.object({
+            icon: z.string(),
+            label: z.string(),
+            url: z.string(),
+        })),
+    }),
+    mapItemToEntry: (item: Record<string, unknown>) => ({
+        address: item.address,
+        phone: item.phone,
+        socialServices: item.social_services,
+    }),
+});
+
 export const collections = {
     settings,
     media,
     pages,
     projects,
     sponsors,
+    contact,
 };
