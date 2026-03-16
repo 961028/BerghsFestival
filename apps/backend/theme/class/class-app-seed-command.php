@@ -21,10 +21,11 @@ final class App_Seed_Command {
 
 		$this->sideload_generic_images();
 
-		$home_page_id  = $this->insert_home_page();
-		$about_page_id = $this->insert_about_page();
+		$home_page_id       = $this->insert_home_page();
+		$happenings_page_id = $this->insert_happenings_page();
+		$about_page_id      = $this->insert_about_page();
 
-		$this->insert_primary_menu( $home_page_id, $about_page_id );
+		$this->insert_primary_menu( $home_page_id, $happenings_page_id, $about_page_id );
 
 		$this->set_contact_options();
 
@@ -200,6 +201,71 @@ final class App_Seed_Command {
 		return $page_id;
 	}
 
+	private function insert_happenings_page(): int {
+		WP_CLI::line( 'Inserting happenings page' );
+
+		$page_id = $this->insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Happenings',
+				'post_content' => "This is <strong>the About Berghs</strong> page.\n\nWe'll fill it with content later.'",
+				'meta_input'   => array(
+					'_wp_page_template' => 'page-happenings.php',
+				),
+			)
+		);
+
+		$schedule = array();
+
+		foreach ( array( 'Saturday', 'Sunday' ) as $day ) {
+			$events = array();
+
+			for ( $i = 0; $i < 10; $i++ ) {
+				$events[] = array(
+					'start_time' => sprintf( '%02d:00', $i + 10 ),
+					'title'      => ucwords( $this->faker->words( 3, true ) ),
+				);
+			}
+
+			$schedule[] = array(
+				'day'    => $day,
+				'events' => $events,
+			);
+		}
+
+		update_field( _app_page_happenings_field_key( 'schedule' ), $schedule, $page_id );
+
+		$groups = array();
+
+		foreach ( array( 'Artists', 'Food', 'Other' ) as $group_title ) {
+			$group_description = wpautop( esc_html( $this->faker->paragraph() ) );
+
+			$items = array();
+
+			for ( $i = 0; $i < 10; $i++ ) {
+				$item_name = ucwords( $this->faker->words( 3, true ) );
+
+				$items[] = array(
+					'name'        => $item_name,
+					'image'       => $this->get_rand_generic_image(),
+					'description' => wpautop( esc_html( $this->faker->paragraph() ) ),
+					'url'         => 0 === $i % 3 ? sprintf( 'https://www.%s.com/', sanitize_title( $item_name ) ) : '',
+				);
+			}
+
+			$groups[] = array(
+				'title'       => $group_title,
+				'description' => $group_description,
+				'items'       => $items,
+			);
+		}
+
+		update_field( _app_page_happenings_field_key( 'groups' ), $groups, $page_id );
+
+		return $page_id;
+	}
+
 	private function insert_about_page(): int {
 		WP_CLI::line( 'Inserting about page' );
 
@@ -213,7 +279,7 @@ final class App_Seed_Command {
 		);
 	}
 
-	private function insert_primary_menu( int $home_page_id, int $about_page_id ): void {
+	private function insert_primary_menu( int $home_page_id, int $happenings_page_id, int $about_page_id ): void {
 		WP_CLI::line( 'Inserting primary menu' );
 
 		foreach ( wp_get_nav_menus() as $menu ) {
@@ -235,9 +301,10 @@ final class App_Seed_Command {
 		$this->create_menu_item(
 			$primary_menu_id,
 			array(
-				'menu-item-type'  => 'custom',
-				'menu-item-url'   => '/happenings/',
-				'menu-item-title' => 'Happenings',
+				'menu-item-type'      => 'post_type',
+				'menu-item-object'    => 'page',
+				'menu-item-object-id' => $happenings_page_id,
+				'menu-item-title'     => '',
 			)
 		);
 
@@ -334,7 +401,7 @@ final class App_Seed_Command {
 
 		$sponors = array();
 		for ( $i = 0; $i < 10; $i++ ) {
-			$sponsor_name  = mb_ucfirst( $this->faker->word() );
+			$sponsor_name  = ucwords( $this->faker->word() );
 			$sponsor_image = $logo_ids[ $i % count( $logo_ids ) ];
 			$sponsor_url   = sprintf( 'https://www.%s.com', sanitize_title( $sponsor_name ) );
 
