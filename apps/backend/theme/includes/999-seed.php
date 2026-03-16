@@ -11,7 +11,7 @@ function _app_seed_command(): void {
 
 	// Delete existing posts
 
-	foreach ( array( 'post', 'page', 'project', 'attachment' ) as $post_type ) {
+	foreach ( array( 'nav_menu_item', 'post', 'page', 'project', 'attachment' ) as $post_type ) {
 
 		WP_CLI::line( "Deleting all posts of type \"$post_type\"..." );
 
@@ -95,6 +95,124 @@ function _app_seed_command(): void {
 
 	$get_rand_image = fn() => $image_ids[ array_rand( $image_ids ) ];
 
+	// Add home page
+
+	$insert_post = function ( array $postarr ): int {
+		$post_id = wp_insert_post( wp_slash( $postarr ), true );
+
+		if ( is_wp_error( $post_id ) ) {
+			WP_CLI::Error( $post_id->get_error_message() );
+		}
+
+		return $post_id;
+	};
+
+	$home_page_id = $insert_post(
+		array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_title'   => 'Home',
+			'post_content' => "This is <strong>the home page</strong>.\n\nWe'll fill it with content later.'",
+		)
+	);
+	update_option( 'show_on_front', 'page', true );
+	update_option( 'page_on_front', $home_page_id );
+
+	$about_page_id = $insert_post(
+		array(
+			'post_type'    => 'page',
+			'post_status'  => 'publish',
+			'post_title'   => 'About Berghs',
+			'post_content' => "This is <strong>the About Berghs</strong> page.\n\nWe'll fill it with content later.'",
+		)
+	);
+
+	// Setup menus
+
+	foreach ( wp_get_nav_menus() as $menu ) {
+		wp_delete_nav_menu( $menu->term_id );
+	}
+
+	$create_menu = function ( string $name ): int {
+		$menu_id = wp_create_nav_menu( $name );
+		if ( is_wp_error( $menu_id ) ) {
+			WP_CLI::Error( $menu_id );
+		}
+
+		return $menu_id;
+	};
+
+	$create_menu_item = function ( int $menu_id, array $args ): int {
+		$item_id = wp_update_nav_menu_item(
+			$menu_id,
+			0,
+			array(
+				'menu-item-status' => 'publish',
+				...$args,
+			)
+		);
+
+		if ( is_wp_error( $item_id ) ) {
+			WP_CLI::Error( $item_id );
+		}
+
+		return $item_id;
+	};
+
+	$primary_menu_id = $create_menu( 'Primary' );
+
+	$create_menu_item(
+		$primary_menu_id,
+		array(
+			'menu-item-type'      => 'post_type',
+			'menu-item-object'    => 'page',
+			'menu-item-object-id' => $home_page_id,
+			'menu-item-title'     => '',
+		)
+	);
+
+	$create_menu_item(
+		$primary_menu_id,
+		array(
+			'menu-item-type'  => 'custom',
+			'menu-item-url'   => '/happenings/',
+			'menu-item-title' => 'Happenings',
+		)
+	);
+
+	$create_menu_item(
+		$primary_menu_id,
+		array(
+			'menu-item-type'   => 'custom',
+			'menu-item-object' => 'custom',
+			'menu-item-url'    => '/installations/',
+			'menu-item-title'  => 'Installations',
+		)
+	);
+
+	$create_menu_item(
+		$primary_menu_id,
+		array(
+			'menu-item-type'  => 'custom',
+			'menu-item-url'   => '/projects/',
+			'menu-item-title' => 'Projects',
+		)
+	);
+
+	$create_menu_item(
+		$primary_menu_id,
+		array(
+			'menu-item-type'      => 'post_type',
+			'menu-item-object'    => 'page',
+			'menu-item-object-id' => $about_page_id,
+			'menu-item-title'     => '',
+		)
+	);
+
+	$locations            = get_theme_mod( 'nav_menu_locations', array() );
+	$locations['primary'] = $primary_menu_id;
+	set_theme_mod( 'nav_menu_locations', $locations );
+
 	// Set contact options
 
 	WP_CLI::line( 'Setting contact options...' );
@@ -152,7 +270,7 @@ function _app_seed_command(): void {
 
 	WP_CLI::line( 'Inserting projects...' );
 
-	for ( $i = 0; $i < 10; $i++ ) {
+	for ( $i = 0; $i < 30; $i++ ) {
 		WP_CLI::line( "Inserting project $i..." );
 		$project_title              = ucwords( $faker->words( 5, true ) );
 		$project_image              = $get_rand_image();
