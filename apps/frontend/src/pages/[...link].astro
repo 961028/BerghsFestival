@@ -2,27 +2,35 @@
 import { getCollection } from "astro:content";
 
 import { resolvePageLink } from "../lib/content";
-
-import Page from "../templates/Page.astro";
+import PageTemplate from "../components/PageTemplate.astro";
+import type { PageEntry } from "../content.config";
 
 export async function getStaticPaths() {
     const settings = (await getCollection("settings"))[0].data;
 
+    async function staticPathForPage(page: PageEntry) {
+        let link;
+
+        if (page.id === settings.homePage.id) {
+            link = undefined;
+        } else {
+            link = await resolvePageLink(page);
+        }
+
+        return {
+            params: { link },
+            props: {
+                page,
+            },
+        };
+    }
+
     const pages = await getCollection("pages");
 
-    return await Promise.all(
-        pages
-            .filter((page) => page.id !== settings.homePage.id)
-            .map(async (page) => ({
-                params: { link: await resolvePageLink(page) },
-                props: {
-                    page,
-                },
-            })),
-    );
+    return await Promise.all(pages.map(staticPathForPage));
 }
 
 const { page } = Astro.props;
 ---
 
-<Page page={page} />
+<PageTemplate page={page} />
