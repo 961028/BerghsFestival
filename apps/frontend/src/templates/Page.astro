@@ -1,14 +1,15 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import type { PageDefaultData } from "../content.config";
+
 import Layout from "../layouts/Layout.astro";
 
 type Props = {
-    page: CollectionEntry<"pages">;
+    page: PageDefaultData;
 };
 
 const { page } = Astro.props;
 
-const { title, content } = page.data;
+const { title, content } = page;
 ---
 
 <Layout title={title}>

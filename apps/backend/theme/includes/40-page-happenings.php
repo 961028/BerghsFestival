@@ -62,6 +62,7 @@ function _app_page_happenings_register_fields() {
 			),
 			'location'   => array( $location ),
 			'menu_order' => $menu_order++,
+			'show_in_rest'=>true,
 		)
 	);
 
@@ -87,7 +88,7 @@ function _app_page_happenings_register_fields() {
 						array(
 							'key'          => _app_page_happenings_field_key( 'groups', 'description' ),
 							'label'        => 'Description',
-							'name'         => 'installations_description',
+							'name'         => 'description',
 							'type'         => 'wysiwyg',
 							'media_upload' => 0,
 						),
@@ -132,6 +133,7 @@ function _app_page_happenings_register_fields() {
 			),
 			'location'   => array( $location ),
 			'menu_order' => $menu_order++,
+			'show_in_rest'=>true,
 		),
 	);
 }

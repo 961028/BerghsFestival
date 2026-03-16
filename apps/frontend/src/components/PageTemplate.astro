@@ -1,0 +1,19 @@
+---
+import PageDefault from "../templates/Page.astro";
+import PageHappenings from "../templates/PageHappenings.astro";
+import type { PageEntry } from "../content.config";
+
+interface Props {
+    page: PageEntry;
+}
+
+const page = Astro.props.page.data;
+---
+
+{
+    page.template === "page-happenings.php" ? (
+        <PageHappenings page={page} />
+    ) : (
+        <PageDefault page={page} />
+    )
+}

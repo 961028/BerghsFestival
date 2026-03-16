@@ -73,6 +73,7 @@ function _app_page_installations_register_fields() {
 			),
 			'location'   => array( $location ),
 			'menu_order' => $menu_order++,
+			'show_in_rest'=>true,
 		),
 	);
 }
