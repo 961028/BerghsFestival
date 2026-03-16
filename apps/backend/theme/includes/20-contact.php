@@ -1,5 +1,13 @@
 <?php
 
+function _app_contact_group_key( string ...$slugs ): string {
+	return app_acf_get_group_key( app_acf_get_options_key_prefix( 'contact' ), ...$slugs );
+}
+
+function _app_contact_field_key( string ...$slugs ): string {
+	return app_acf_get_field_key( app_acf_get_options_key_prefix( 'contact' ), ...$slugs );
+}
+
 function _app_contact_get_social_service_slug_to_label(): array {
 	return array(
 		'instagram' => 'Instagram',
@@ -22,23 +30,22 @@ function _app_contact_register_options() {
 		)
 	);
 
-	$key        = app_acf_get_options_key( 'contact' );
 	$location   = app_acf_get_options_page_location( 'app-contact' );
 	$menu_order = 0;
 
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key-address_phone",
+			'key'        => _app_contact_group_key( 'address_phone' ),
 			'title'      => 'Contact',
 			'fields'     => array(
 				array(
-					'key'   => "$key-address",
+					'key'   => _app_contact_field_key( 'address' ),
 					'name'  => 'contact-address',
 					'label' => 'Address',
 					'type'  => 'textarea',
 				),
 				array(
-					'key'   => "$key-phone",
+					'key'   => _app_contact_group_key( 'phone' ),
 					'name'  => 'contact-phone',
 					'label' => 'Phone',
 					'type'  => 'text',
@@ -53,15 +60,15 @@ function _app_contact_register_options() {
 
 	foreach ( _app_contact_get_social_service_slug_to_label() as $service_slug => $service_label ) {
 		$social_fields[] = array(
-			'key'   => "$key-{$service_slug}_url",
-			'name'  => "contact-{$service_slug}_url",
+			'key'   => _app_contact_field_key( $service_slug, 'url' ),
+			'name'  => "contact-{$service_slug}-url",
 			'label' => "{$service_label} URL",
 			'type'  => 'text',
 		);
 	}
 	acf_add_local_field_group(
 		array(
-			'key'        => "group-$key-social",
+			'key'        => _app_contact_group_key( 'social' ),
 			'title'      => 'Social Media',
 			'fields'     => $social_fields,
 			'location'   => array( $location ),
@@ -92,7 +99,7 @@ function _app_contact_get_social_services(): array {
 	$value = array();
 
 	foreach ( $slug_to_label as $slug => $label ) {
-		$url = get_field( "contact-{$slug}_url", 'options' );
+		$url = get_field( "contact-{$slug}-url", 'options' );
 
 		if ( ! is_string( $url ) || '' === $url ) {
 			continue;

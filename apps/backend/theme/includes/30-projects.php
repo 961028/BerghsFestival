@@ -1,5 +1,13 @@
 <?php
 
+function _app_projects_group_key( string ...$slugs ): string {
+	return app_acf_get_group_key( app_acf_get_post_type_key_prefix( 'projects' ), ...$slugs );
+}
+
+function _app_projects_field_key( string ...$slugs ): string {
+	return app_acf_get_field_key( app_acf_get_post_type_key_prefix( 'projects' ), ...$slugs );
+}
+
 function _app_project_register_post_type() {
 	register_post_type(
 		'project',
@@ -28,17 +36,16 @@ function _app_project_register_post_type() {
 add_action( 'init', '_app_project_register_post_type' );
 
 function _app_project_register_fields() {
-	$key        = app_acf_get_post_type_key( 'project' );
 	$location   = app_acf_get_post_type_location( 'project' );
 	$menu_order = 0;
 
 	acf_add_local_field_group(
 		array(
-			'key'          => "group-$key-company",
+			'key'          => _app_projects_group_key( 'company' ),
 			'title'        => 'Company',
 			'fields'       => array(
 				array(
-					'key'   => "$key-company",
+					'key'   => _app_projects_field_key( 'company' ),
 					'name'  => 'company',
 					'label' => '',
 					'type'  => 'text',
@@ -52,11 +59,11 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'          => "group-$key-image",
+			'key'          => _app_projects_group_key( 'image' ),
 			'title'        => 'Image',
 			'fields'       => array(
 				array(
-					'key'           => "$key-image",
+					'key'           => _app_projects_field_key( 'image' ),
 					'label'         => '',
 					'name'          => 'image',
 					'type'          => 'image',
@@ -72,11 +79,11 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'          => "group-$key-video",
+			'key'          => _app_projects_group_key( 'video' ),
 			'title'        => 'Video',
 			'fields'       => array(
 				array(
-					'key'   => "$key-video",
+					'key'   => _app_projects_field_key( 'video' ),
 					'name'  => 'video',
 					'label' => '',
 					'type'  => 'oembed',
@@ -90,11 +97,11 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'          => "group-$key-team_members",
+			'key'          => _app_projects_group_key( 'team_members' ),
 			'title'        => 'Team Members',
 			'fields'       => array(
 				array(
-					'key'          => "$key-team_members",
+					'key'          => _app_projects_field_key( 'team_members' ),
 					'label'        => '',
 					'name'         => 'team_members',
 					'type'         => 'repeater',
@@ -102,13 +109,13 @@ function _app_project_register_fields() {
 					'button_label' => 'Add Member',
 					'sub_fields'   => array(
 						array(
-							'key'   => "$key-team_members-name",
+							'key'   => _app_projects_field_key( 'team_members', 'name' ),
 							'label' => 'Name',
 							'name'  => 'name',
 							'type'  => 'text',
 						),
 						array(
-							'key'     => "$key-team_members-class",
+							'key'     => _app_projects_field_key( 'team_members', 'class' ),
 							'label'   => 'Class',
 							'name'    => 'class',
 							'type'    => 'select',
@@ -137,11 +144,11 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'          => "group-$key-content",
+			'key'          => _app_projects_group_key( 'content' ),
 			'title'        => 'Innehåll',
 			'fields'       => array(
 				array(
-					'key'          => $key . '-content-company',
+					'key'          => _app_projects_field_key( 'content', 'company' ),
 					'label'        => 'The Company',
 					'name'         => 'content-company',
 					'type'         => 'wysiwyg',
@@ -149,7 +156,7 @@ function _app_project_register_fields() {
 					'media_upload' => false,
 				),
 				array(
-					'key'          => $key . '-content-background',
+					'key'          => _app_projects_field_key( 'content', 'background' ),
 					'label'        => 'Background',
 					'name'         => 'content-background',
 					'type'         => 'wysiwyg',
@@ -157,7 +164,7 @@ function _app_project_register_fields() {
 					'media_upload' => false,
 				),
 				array(
-					'key'          => $key . '-content-solution',
+					'key'          => _app_projects_field_key( 'content', 'solution' ),
 					'label'        => 'Solution',
 					'name'         => 'content-solution',
 					'type'         => 'wysiwyg',

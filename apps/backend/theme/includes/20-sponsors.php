@@ -1,5 +1,13 @@
 <?php
 
+function _app_sponsors_group_key( string ...$slugs ): string {
+	return app_acf_get_group_key( app_acf_get_options_key_prefix( 'sponsors' ), ...$slugs );
+}
+
+function _app_sponsors_field_key( string ...$slugs ): string {
+	return app_acf_get_field_key( app_acf_get_options_key_prefix( 'sponsors' ), ...$slugs );
+}
+
 function _app_sponsors_register_options() {
 	acf_add_options_page(
 		array(
@@ -12,36 +20,36 @@ function _app_sponsors_register_options() {
 		)
 	);
 
-	$key      = app_acf_get_options_key( 'sponsors' );
-	$location = app_acf_get_options_page_location( 'app-sponsors' );
+	$location   = app_acf_get_options_page_location( 'app-sponsors' );
+	$menu_order = 0;
 
 	acf_add_local_field_group(
 		array(
-			'key'          => "group-$key",
+			'key'          => _app_sponsors_group_key(),
 			'title'        => 'Sponsors',
 			'fields'       => array(
 				array(
-					'key'          => "$key-sponsors",
+					'key'          => _app_sponsors_field_key( 'sponsors' ),
 					'label'        => '',
 					'name'         => 'sponsors',
 					'type'         => 'repeater',
 					'button_label' => 'Add Sponsor',
 					'sub_fields'   => array(
 						array(
-							'key'   => "$key-sponsors-name",
+							'key'   => _app_sponsors_field_key( 'sponsors', 'name' ),
 							'label' => 'Name',
 							'name'  => 'name',
 							'type'  => 'text',
 						),
 						array(
-							'key'           => "$key-sponsors-image",
+							'key'           => _app_sponsors_field_key( 'sponsors', 'image' ),
 							'label'         => 'Image',
 							'name'          => 'image',
 							'type'          => 'image',
 							'return_format' => 'id',
 						),
 						array(
-							'key'   => "$key-sponsors-url",
+							'key'   => _app_sponsors_field_key( 'sponsors', 'url' ),
 							'label' => 'URL',
 							'name'  => 'url',
 							'type'  => 'text',
@@ -50,6 +58,7 @@ function _app_sponsors_register_options() {
 				),
 			),
 			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
 			'show_in_rest' => true,
 		)
 	);

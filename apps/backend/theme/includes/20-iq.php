@@ -1,5 +1,13 @@
 <?php
 
+function _app_iq_group_key( string ...$slugs ): string {
+	return app_acf_get_group_key( app_acf_get_options_key_prefix( 'iq' ), ...$slugs );
+}
+
+function _app_iq_field_key( string ...$slugs ): string {
+	return app_acf_get_field_key( app_acf_get_options_key_prefix( 'iq' ), ...$slugs );
+}
+
 function _app_iq_register_options() {
 	acf_add_options_page(
 		array(
@@ -12,23 +20,22 @@ function _app_iq_register_options() {
 		)
 	);
 
-	$key        = app_acf_get_options_key( 'iq' );
 	$location   = app_acf_get_options_page_location( 'app-iq' );
 	$menu_order = 0;
 
 	acf_add_local_field_group(
 		array(
-			'key'        => 'group-' . $key,
+			'key'        => _app_iq_group_key(),
 			'title'      => 'Content',
 			'fields'     => array(
 				array(
-					'key'   => $key . '-title',
+					'key'   => _app_iq_field_key( 'title' ),
 					'label' => 'Title',
 					'name'  => 'iq-title',
 					'type'  => 'text',
 				),
 				array(
-					'key'          => $key . '-content',
+					'key'          => _app_iq_field_key( 'content' ),
 					'label'        => '',
 					'name'         => 'iq-content',
 					'type'         => 'wysiwyg',

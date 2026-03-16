@@ -217,10 +217,10 @@ function _app_seed_command(): void {
 
 	WP_CLI::line( 'Setting contact options...' );
 
-	update_option( '_options_contact-address', 'app-options-contact-address' );
+	update_option( '_options_contact-address', _app_contact_field_key( 'address' ) );
 	update_option( 'options_contact-address', "Berghs School of Communication\nBobergsgatan 48\n111 93 Stockholm" );
 
-	update_option( '_options_contact-phone', 'app-options-contact-phone' );
+	update_option( '_options_contact-phone', _app_contact_field_key( 'phone' ) );
 	update_option( 'options_contact-phone', '+46 8 587 550 00' );
 
 	foreach ( array(
@@ -230,8 +230,8 @@ function _app_seed_command(): void {
 		'linkedin'  => 'https://se.linkedin.com/school/berghs-school-of-communication/',
 		'facebook'  => 'https://www.facebook.com/BerghsSoC/',
 	) as $service_slug => $service_url ) {
-		update_option( "_options_contact-{$service_slug}_url", "app-options-contact-{$service_slug}_url" );
-		update_option( "options_contact-{$service_slug}_url", $service_url );
+		update_option( "_options_contact-{$service_slug}-url", _app_contact_field_key( $service_slug, 'url' ) );
+		update_option( "options_contact-{$service_slug}-url", $service_url );
 
 	}
 
@@ -248,7 +248,7 @@ function _app_seed_command(): void {
 
 	update_field( 'sponsors', array(), 'options' );
 
-	update_option( '_options_sponsors', 'app-options-sponsors-sponsors' );
+	update_option( '_options_sponsors', _app_sponsors_field_key( 'sponsors' ) );
 	update_option( 'options_sponsors', '10' );
 
 	for ( $i = 0; $i < 10; $i++ ) {
@@ -256,23 +256,23 @@ function _app_seed_command(): void {
 		$sponsor_image = $logo_ids[ $i % count( $logo_ids ) ];
 		$sponsor_url   = sprintf( 'https://www.%s.com', sanitize_title( $sponsor_name ) );
 
-		update_option( "_options_sponsors_{$i}_name", 'app-options-sponsors-sponsors-name' );
+		update_option( "_options_sponsors_{$i}_name", _app_sponsors_field_key( 'sponsors', 'name' ) );
 		update_option( "options_sponsors_{$i}_name", $sponsor_name );
 
-		update_option( "_options_sponsors_{$i}_image", 'app-options-sponsors-sponsors-image' );
+		update_option( "_options_sponsors_{$i}_image", _app_sponsors_field_key( 'sponsors', 'image' ) );
 		update_option( "options_sponsors_{$i}_image", $sponsor_image );
 
-		update_option( "_options_sponsors_{$i}_url", 'app-options-sponsors-sponsors-url' );
+		update_option( "_options_sponsors_{$i}_url", _app_sponsors_field_key( 'sponsors', 'url' ) );
 		update_option( "options_sponsors_{$i}_url", $sponsor_url );
 	}
 
 	// Set IQ options
 
-	update_option('_options_iq-title', 'app-options-id-title');
-	update_option('options_iq-title', 'Drink Responsibly');
+	update_option( '_options_iq-title', _app_iq_field_key( 'title' ) );
+	update_option( 'options_iq-title', 'Drink Responsibly' );
 
-	update_option('_options_iq-content', 'app-options-id-content');
-	update_option('options_iq-content', 'We strive to promote responsible alcohol consumption and encourage all our participants to make conscious and healthy choices. Beverage sales at the event are for individuals over 18 years old, and we also offer a wide range of non-alcoholic options to ensure everyone can enjoy the experience.For more information on responsible alcohol consumption, visit IQ.se.');
+	update_option( '_options_iq-content', _app_iq_field_key( 'content' ) );
+	update_option( 'options_iq-content', 'We strive to promote responsible alcohol consumption and encourage all our participants to make conscious and healthy choices. Beverage sales at the event are for individuals over 18 years old, and we also offer a wide range of non-alcoholic options to ensure everyone can enjoy the experience.For more information on responsible alcohol consumption, visit IQ.se.' );
 
 	// Insert projects
 
@@ -290,18 +290,21 @@ function _app_seed_command(): void {
 		$project_content_solution   = $faker->paragraphs( 3, true );
 
 		$meta_input = array(
-			'image'              => $project_image,
-			'video'              => $project_video,
-			'company'            => $project_company,
-			'team_members'       => $project_team_members,
-			'content-company'    => $project_content_company,
-			'content-background' => $project_content_background,
-			'content-solution'   => $project_content_solution,
+			'_image'              => _app_projects_field_key( 'image' ),
+			'image'               => $project_image,
+			'_video'              => _app_projects_field_key( 'video' ),
+			'video'               => $project_video,
+			'_company'            => _app_projects_field_key( 'company' ),
+			'company'             => $project_company,
+			'_team_members'       => _app_projects_field_key( 'team_members' ),
+			'team_members'        => $project_team_members,
+			'_content-company'    => _app_projects_field_key( 'content', 'company' ),
+			'content-company'     => $project_content_company,
+			'_content-background' => _app_projects_field_key( 'content', 'background' ),
+			'content-background'  => $project_content_background,
+			'_content-solution'   => _app_projects_field_key( 'content', 'solution' ),
+			'content-solution'    => $project_content_solution,
 		);
-
-		foreach ( array_keys( $meta_input ) as $meta_key ) {
-			$meta_input[ '_' . $meta_key ] = 'app-post_type-project-' . $meta_key;
-		}
 
 		for ( $j = 0; $j < $project_team_members; $j++ ) {
 			$project_team_member_name  = ucwords( $faker->words( 2, true ) );
@@ -320,9 +323,9 @@ function _app_seed_command(): void {
 				)
 			);
 
-			$meta_input[ "_team_members_{$j}_name" ]  = 'app-post_type-project-team_members-name';
+			$meta_input[ "_team_members_{$j}_name" ]  = _app_projects_field_key( 'team_members', 'name' );
 			$meta_input[ "team_members_{$j}_name" ]   = $project_team_member_name;
-			$meta_input[ "_team_members_{$j}_class" ] = 'app-post_type-project-team_members-class';
+			$meta_input[ "_team_members_{$j}_class" ] = _app_projects_field_key( 'team_members', 'class' );
 			$meta_input[ "team_members_{$j}_class" ]  = $project_team_member_class;
 		}
 

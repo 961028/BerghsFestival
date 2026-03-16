@@ -1,5 +1,6 @@
 <?php get_header(); ?>
 
-Page left intentionally blank.
+<?php echo esc_html( basename( __FILE__ ) ); ?>
 
-<?php get_footer(); ?>
+<?php
+get_footer();
