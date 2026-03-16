@@ -1,8 +1,8 @@
 // @ts-check
 
-import { strict as assert } from 'node:assert';
+import { strict as assert } from "node:assert";
 
-import { defineConfig } from 'astro/config';
+import { defineConfig } from "astro/config";
 import { loadEnv } from "vite";
 
 const { NODE_ENV } = process.env;
@@ -17,7 +17,7 @@ export default defineConfig({
     site: APP_HOME,
     server: {
         allowedHosts: [APP_HOST],
-        host: '127.0.0.1', // Apache needs this
+        host: "127.0.0.1", // Apache needs this
     },
     vite: {
         server: {
@@ -26,6 +26,6 @@ export default defineConfig({
     },
     image: {
         domains: [APP_HOST],
-        layout: 'constrained',
+        layout: "constrained",
     },
 });

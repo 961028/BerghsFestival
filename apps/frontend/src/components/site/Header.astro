@@ -4,39 +4,39 @@ import Svg from "../elements/Svg.astro";
 
 const menuLocation = await getEntry("menuLocations", "primary");
 const menuItems = (
-	await getCollection(
-		"menuItems",
-		(item) => item.data.menu === menuLocation?.data.menu,
-	)
+    await getCollection(
+        "menuItems",
+        (item) => item.data.menu === menuLocation?.data.menu,
+    )
 ).sort((a, b) => a.data.order - b.data.order);
 ---
 
 <header>
-	<nav class="menu">
-		<a class="menu-item" href="https://www.berghs.se/" target="_blank">
-			<Svg name="berghs-soc" class="berghs-logo" alt="" />
-		</a>
+    <nav class="menu">
+        <a class="menu-item" href="https://www.berghs.se/" target="_blank">
+            <Svg name="berghs-soc" class="berghs-logo" alt="" />
+        </a>
 
-		{
-			menuItems.map((menuItem) => (
-				<a class="menu-item" href={menuItem.data.url}>
-					{menuItem.data.title}
-				</a>
-			))
-		}
-	</nav>
+        {
+            menuItems.map((menuItem) => (
+                <a class="menu-item" href={menuItem.data.url}>
+                    {menuItem.data.title}
+                </a>
+            ))
+        }
+    </nav>
 </header>
 
 <style>
-	.menu {
-		display: flex;
-		gap: 1rem;
-		justify-content: space-between;
-		padding: 1rem 0;
-	}
+    .menu {
+        display: flex;
+        gap: 1rem;
+        justify-content: space-between;
+        padding: 1rem 0;
+    }
 
-	.berghs-logo {
-		width: auto;
-		height: 1rem;
-	}
+    .berghs-logo {
+        width: auto;
+        height: 1rem;
+    }
 </style>

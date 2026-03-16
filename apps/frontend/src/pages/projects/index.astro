@@ -7,42 +7,42 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 ---
 
 <Layout title="Projects">
-	<ul class="list">
-		{
-			projects.map((project) => (
-				<li class="item">
-					<a class="anchor" href={`/projects/${project.slug}`}>
-						{!project.image || (
-							<WpImage class="image" image={project.image} />
-						)}
+    <ul class="list">
+        {
+            projects.map((project) => (
+                <li class="item">
+                    <a class="anchor" href={`/projects/${project.slug}`}>
+                        {!project.image || (
+                            <WpImage class="image" image={project.image} />
+                        )}
 
-						<h2>{project.title}</h2>
-					</a>
-				</li>
-			))
-		}
-	</ul>
+                        <h2>{project.title}</h2>
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
 </Layout>
 
 <style>
-	.list {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-	}
+    .list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
 
-	.item + .item {
-		margin-top: 1rem;
-	}
+    .item + .item {
+        margin-top: 1rem;
+    }
 
-	.anchor {
-		display: block;
-		background: #f0f0f0;
-	}
+    .anchor {
+        display: block;
+        background: #f0f0f0;
+    }
 
-	.image {
-		display: block;
-		max-width: 100%;
-		height: auto;
-	}
+    .image {
+        display: block;
+        max-width: 100%;
+        height: auto;
+    }
 </style>

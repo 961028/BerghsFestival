@@ -1,24 +1,24 @@
 ---
-import type { HTMLAttributes } from 'astro/types'
+import type { HTMLAttributes } from "astro/types";
 
 interface Props extends HTMLAttributes<"svg"> {
-  name: string,
-  alt: string,
+    name: string;
+    alt: string;
 }
 
-const { name, ...rest } = Astro.props
+const { name, ...rest } = Astro.props;
 
-const svgs = import.meta.glob<{ default: (_props: HTMLAttributes<"svg">) => any }>('../../svg/**/*.svg', {
-  eager: true,
-})
+const svgs = import.meta.glob<{
+    default: (_props: HTMLAttributes<"svg">) => unknown;
+}>("../../svg/**/*.svg", { eager: true });
 
-const key = Object.keys(svgs).find(k => k.endsWith(`/${name}.svg`))
+const key = Object.keys(svgs).find((k) => k.endsWith(`/${name}.svg`));
 
 if (!key) {
-    throw new Error(`SVG not found: ${name}`)
+    throw new Error(`SVG not found: ${name}`);
 }
 
-const Icon = svgs[key].default
+const Icon = svgs[key].default;
 ---
 
 <Icon {...rest} />

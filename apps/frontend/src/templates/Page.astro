@@ -1,9 +1,9 @@
 ---
-import type { CollectionEntry } from 'astro:content'
-import Layout from '../layouts/Layout.astro';
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 
 type Props = {
-    page: CollectionEntry<"pages">,
+    page: CollectionEntry<"pages">;
 };
 
 const { page } = Astro.props;
@@ -12,7 +12,7 @@ const { title, content } = page.data;
 ---
 
 <Layout title={title}>
-	<h1>{title}</h1>
+    <h1>{title}</h1>
 
-	<div set:html={content.html} />
+    <div set:html={content.html} />
 </Layout>

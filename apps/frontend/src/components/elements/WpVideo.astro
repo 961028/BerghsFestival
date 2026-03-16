@@ -1,69 +1,69 @@
 ---
 interface Props {
-	video: string;
-	class?: string;
-	[key: string]: unknown;
+    video: string;
+    class?: string;
+    [key: string]: unknown;
 }
 
 const { video, class: className, ...attrs } = Astro.props;
 
 function getVimeoId(url: string): string | null {
-	// Handle formats:
-	// https://vimeo.com/123456789
-	// https://vimeo.com/channels/channel/123456789
-	// https://vimeo.com/groups/group/videos/123456789
-	// https://player.vimeo.com/video/123456789
-	// 123456789 (raw ID)
-	const match = url.match(
-		/(?:vimeo\.com\/(?:video\/|channels\/[^/]+\/|groups\/[^/]+\/videos\/)?|^)(\d+)(?:[/?#]|$)/,
-	);
+    // Handle formats:
+    // https://vimeo.com/123456789
+    // https://vimeo.com/channels/channel/123456789
+    // https://vimeo.com/groups/group/videos/123456789
+    // https://player.vimeo.com/video/123456789
+    // 123456789 (raw ID)
+    const match = url.match(
+        /(?:vimeo\.com\/(?:video\/|channels\/[^/]+\/|groups\/[^/]+\/videos\/)?|^)(\d+)(?:[/?#]|$)/,
+    );
 
-	return match ? match[1] : null;
+    return match ? match[1] : null;
 }
 
 const videoId = getVimeoId(video);
 
 const embedUrl = videoId
-	? `https://player.vimeo.com/video/${videoId}?dnt=1`
-	: null;
+    ? `https://player.vimeo.com/video/${videoId}?dnt=1`
+    : null;
 ---
 
 <div class:list={["outer", className]} {...attrs}>
-	{
-		embedUrl ? (
-			<iframe
-				class="iframe"
-				src={embedUrl}
-				allow="fullscreen; picture-in-picture"
-				allowfullscreen
-				title=""
-			/>
-		) : (
-			<div class="error">
-				<p>Invalid Vimeo Video: {video}</p>
-			</div>
-		)
-	}
+    {
+        embedUrl ? (
+            <iframe
+                class="iframe"
+                src={embedUrl}
+                allow="fullscreen; picture-in-picture"
+                allowfullscreen
+                title="Lorem"
+            />
+        ) : (
+            <div class="error">
+                <p>Invalid Vimeo Video: {video}</p>
+            </div>
+        )
+    }
 </div>
 
 <style>
-	.outer {
-		position: relative;
-		aspect-ratio: 16 / 9;
-	}
+    .outer {
+        position: relative;
+        aspect-ratio: 16 / 9;
+    }
 
-	.iframe {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		border: 0;
-	}
+    .iframe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
 
-	.error {
-		position: absolute;
-		inset: 0;
-		display: grid;
-		place-items: center;
-	}
+    .error {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+    }
 </style>

@@ -7,11 +7,11 @@ import type { ReferenceDataEntry } from "astro:content";
 type ImageProps = ComponentProps<typeof Image>;
 
 type Props = Omit<
-	ImageProps,
-	"src" | "alt" | "inferSize" | "width" | "height" | "densities"
+    ImageProps,
+    "src" | "alt" | "inferSize" | "width" | "height" | "densities"
 > & {
-	image: ReferenceDataEntry<"media">;
-	alt?: string;
+    image: ReferenceDataEntry<"media">;
+    alt?: string;
 };
 
 let { image: imageId, alt, ...attrs } = Astro.props;
@@ -19,13 +19,13 @@ let { image: imageId, alt, ...attrs } = Astro.props;
 const image = await getEntry(imageId);
 
 if (!image) {
-	return;
+    return;
 }
 
 if (image.data.type !== "image") {
-	throw new Error(
-		`Media ${imageId} type is ${image.data.type}, must be image.`,
-	);
+    throw new Error(
+        `Media ${imageId} type is ${image.data.type}, must be image.`,
+    );
 }
 
 alt ??= image.data.altText;

@@ -18,11 +18,12 @@
             "extensions": [
                 "astro-build.astro-vscode",
                 "bmewburn.vscode-intelephense-client",
+                "dbaeumer.vscode-eslint",
                 "valeryanm.vscode-phpsab",
                 "xdebug.php-debug"
             ],
             "settings": {
-                "remote.autoForwardPorts": false,
+                "eslint.format.enable": true,
                 "intelephense.files.exclude": [
                     "**/.git/**",
                     "**/.svn/**",
@@ -35,7 +36,17 @@
                     "**/.history/**",
                     "**/vendor/**/vendor/**",
                     "./public/content/themes/app/**"
-                ]
+                ],
+                "remote.autoForwardPorts": false,
+                "[astro]": {
+                    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+                },
+                "[javascript]": {
+                    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+                },
+                "[typescript]": {
+                    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+                }
             }
         }
     }
