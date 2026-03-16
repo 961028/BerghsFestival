@@ -217,10 +217,10 @@ function _app_seed_command(): void {
 
 	WP_CLI::line( 'Setting contact options...' );
 
-	update_option( '_options_contact-address', 'options_contact-address' );
+	update_option( '_options_contact-address', 'app-options-contact-address' );
 	update_option( 'options_contact-address', "Berghs School of Communication\nBobergsgatan 48\n111 93 Stockholm" );
 
-	update_option( '_options_contact-phone', 'options_contact-phone' );
+	update_option( '_options_contact-phone', 'app-options-contact-phone' );
 	update_option( 'options_contact-phone', '+46 8 587 550 00' );
 
 	foreach ( array(
@@ -265,6 +265,14 @@ function _app_seed_command(): void {
 		update_option( "_options_sponsors_{$i}_url", 'app-options-sponsors-sponsors-url' );
 		update_option( "options_sponsors_{$i}_url", $sponsor_url );
 	}
+
+	// Set IQ options
+
+	update_option('_options_iq-title', 'app-options-id-title');
+	update_option('options_iq-title', 'Drink Responsibly');
+
+	update_option('_options_iq-content', 'app-options-id-content');
+	update_option('options_iq-content', 'We strive to promote responsible alcohol consumption and encourage all our participants to make conscious and healthy choices. Beverage sales at the event are for individuals over 18 years old, and we also offer a wide range of non-alcoholic options to ensure everyone can enjoy the experience.For more information on responsible alcohol consumption, visit IQ.se.');
 
 	// Insert projects
 
