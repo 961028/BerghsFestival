@@ -31,6 +31,8 @@ const definePaginatedCollection = <I, E extends WithId, S extends BaseSchema>({
         loader: {
             name: path,
             load: async ({ store, parseData }) => {
+                store.clear();
+
                 const items = await wpGetAll<I>(path);
 
                 for (const item of items) {
@@ -109,6 +111,8 @@ const menuLocations = defineCollection({
     loader: {
         name: "wp/v2/menu-locations",
         load: async ({ store, parseData }) => {
+            store.clear();
+
             const items = await wpGet<WP_REST_API_Menu_Locations>(
                 "wp/v2/menu-locations",
             );
