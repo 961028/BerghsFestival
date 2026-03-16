@@ -74,7 +74,7 @@ add_action( 'acf/init', '_app_contact_register_options' );
 function _app_contact_get( string $name ): string {
 	$value = get_field( 'contact-' . $name, 'options' );
 
-	if ( ! is_string( $value )) {
+	if ( ! is_string( $value ) ) {
 		return '';
 	}
 
@@ -124,8 +124,8 @@ add_action( 'rest_api_init', '_app_contact_on_rest_api_init' );
 function _app_contact_rest_api_callback(): WP_REST_Response {
 	return rest_ensure_response(
 		array(
-			'address'         => _app_contact_get('address'),
-			'phone'           => _app_contact_get('phone'),
+			'address'         => _app_contact_get( 'address' ),
+			'phone'           => _app_contact_get( 'phone' ),
 			'social_services' => _app_contact_get_social_services(),
 		)
 	);

@@ -76,32 +76,32 @@ function _app_sponsors_rest_api_callback(): WP_REST_Response {
 		$rows = array();
 	}
 
-	$items = [];
+	$items = array();
 
 	$id = 1;
 
-	foreach ($rows as $row) {
+	foreach ( $rows as $row ) {
 		$name = $row['name'] ?? null;
-		if (!is_string($name) || $name === '') {
+		if ( ! is_string( $name ) || '' === $name ) {
 			continue;
 		}
 
-		$imageId = $row['image'] ?? null;
-		if (!is_int($imageId) || $imageId <=0) {
+		$image_id = $row['image'] ?? null;
+		if ( ! is_int( $image_id ) || 0 >= $image_id ) {
 			continue;
 		}
 
 		$url = $row['url'] ?? null;
-		if (!is_string($url) || $url === '') {
+		if ( ! is_string( $url ) || '' === $url ) {
 			continue;
 		}
 
-		$items[] = [
+		$items[] = array(
 			'id'    => $id++,
 			'name'  => $name,
-			'image' => $imageId,
+			'image' => $image_id,
 			'url'   => $url,
-		];
+		);
 	}
 
 	return rest_ensure_response( $items );
