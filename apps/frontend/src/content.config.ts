@@ -1,9 +1,4 @@
-import {
-    defineCollection,
-    reference,
-    type BaseSchema,
-    type CollectionEntry,
-} from "astro:content";
+import { defineCollection, reference, type BaseSchema } from "astro:content";
 import { z } from "astro/zod";
 import {
     type WP_REST_API_Menu_Item,
@@ -173,196 +168,23 @@ const media = definePaginatedCollection({
     }),
 });
 
-const BasePage = z.object({
-    id: z.string(),
-    slug: z.string(),
-    parent: reference("pages").nullable(),
-    title: z.string(),
-    content: z.object({
-        html: z.string(),
+const pages = definePaginatedCollection({
+    path: "wp/v2/pages",
+    schema: z.object({
+        id: z.coerce.string(),
+        slug: z.string(),
+        parent: reference("pages").nullable(),
+        template: z.string().nullable().default(null),
+        title: z.string(),
+        content: z.object({
+            html: z.string(),
+        }),
+        acf: z.preprocess(
+            (val) => (Array.isArray(val) ? {} : val),
+            z.record(z.string(), z.unknown()),
+        ),
     }),
-});
-
-const PageDefault = BasePage.extend({
-    template: z.literal(undefined),
-});
-
-const PageHappeningsScheduleEvent = z.object({
-    startTime: z.string(),
-    title: z.string(),
-});
-
-const PageHappeningsScheduleDay = z.object({
-    day: z.string(),
-    events: z.array(PageHappeningsScheduleEvent),
-});
-
-const PageHappeningsGroupItem = z.object({
-    name: z.string(),
-    image: reference("media").nullable(),
-    description: z.object({
-        html: z.string(),
-    }),
-});
-
-const PageHappeningsGroup = z.object({
-    title: z.string(),
-    description: z.object({
-        html: z.string(),
-    }),
-    items: z.array(PageHappeningsGroupItem),
-});
-
-const PageHappenings = BasePage.extend({
-    template: z.literal("page-happenings.php"),
-    schedule: z.array(PageHappeningsScheduleDay),
-    groups: z.array(PageHappeningsGroup),
-});
-
-export type PageEntry = CollectionEntry<"pages">;
-export type PageDefaultData = z.infer<typeof PageDefault>;
-export type PageHappeningsData = z.infer<typeof PageHappenings>;
-
-const Page = z.discriminatedUnion("template", [PageHappenings, PageDefault]);
-
-function mapPageItemToPageHappeningsScheduleEntry(
-    item: Post,
-): z.infer<typeof PageHappeningsScheduleDay>[] {
-    if (!Array.isArray(item.acf.schedule)) {
-        return [];
-    }
-
-    const days: z.infer<typeof PageHappeningsScheduleDay>[] = [];
-
-    for (const itemDay of item.acf.schedule) {
-        if (typeof item !== "object") {
-            continue;
-        }
-
-        const { day, events: itemEvents } = itemDay;
-
-        if (typeof day !== "string") {
-            continue;
-        }
-
-        if (!Array.isArray(itemEvents)) {
-            continue;
-        }
-
-        const events: z.infer<typeof PageHappeningsScheduleEvent>[] = [];
-
-        for (const itemEvent of itemEvents) {
-            if (typeof itemEvent !== "object") {
-                continue;
-            }
-
-            const { start_time: startTime, title } = itemEvent;
-
-            if (typeof startTime !== "string") {
-                continue;
-            }
-
-            if (typeof title !== "string") {
-                continue;
-            }
-
-            events.push({
-                startTime,
-                title,
-            });
-        }
-
-        days.push({
-            day,
-            events,
-        });
-    }
-
-    return days;
-}
-
-function mapPageItemToPageHappeningsGroupsEntry(
-    item: Post,
-): z.infer<typeof PageHappeningsGroup>[] {
-    if (!Array.isArray(item.acf.groups)) {
-        return [];
-    }
-
-    const groups: z.infer<typeof PageHappeningsGroup>[] = [];
-
-    for (const itemGroup of item.acf.groups) {
-        if (typeof itemGroup !== "object") {
-            continue;
-        }
-
-        const { title, description, items: itemItems } = itemGroup;
-
-        if (typeof title !== "string") {
-            continue;
-        }
-
-        if (typeof description !== "string") {
-            continue;
-        }
-
-        if (!Array.isArray(itemItems)) {
-            continue;
-        }
-
-        const items: z.infer<typeof PageHappeningsGroupItem>[] = [];
-
-        for (const itemItem of itemItems) {
-            if (typeof itemItem !== "object") {
-                continue;
-            }
-
-            const {
-                name: itemName,
-                image: itemImage,
-                description: itemDescription,
-            } = itemItem;
-
-            if (typeof itemName !== "string") {
-                continue;
-            }
-
-            if (
-                itemImage !== null &&
-                (typeof itemImage !== "number" || itemImage <= 0)
-            ) {
-                continue;
-            }
-
-            if (typeof itemDescription !== "string") {
-                continue;
-            }
-
-            items.push({
-                name: itemName,
-                image: {
-                    collection: "media",
-                    id: String(itemImage),
-                },
-                description: {
-                    html: itemDescription,
-                },
-            });
-        }
-
-        groups.push({
-            title,
-            description: {
-                html: description,
-            },
-            items,
-        });
-    }
-
-    return groups;
-}
-
-function mapPageItemToEntry(item: Post) {
-    const entry = {
+    mapItemToEntry: (item: Post) => ({
         id: String(item.id),
         slug: item.slug,
         parent: item.parent ? String(item.parent) : null,
@@ -371,26 +193,8 @@ function mapPageItemToEntry(item: Post) {
         content: {
             html: item.content.rendered,
         },
-    };
-
-    if (item.template === "page-happenings.php") {
-        return {
-            ...entry,
-            schedule: mapPageItemToPageHappeningsScheduleEntry(item),
-            groups: mapPageItemToPageHappeningsGroupsEntry(item),
-        };
-    }
-
-    return {
-        ...entry,
-        template: undefined,
-    };
-}
-
-const pages = definePaginatedCollection({
-    path: "wp/v2/pages",
-    schema: Page,
-    mapItemToEntry: mapPageItemToEntry,
+        acf: item.acf,
+    }),
 });
 
 const projects = definePaginatedCollection({

@@ -1,19 +1,28 @@
 ---
+import type { CollectionEntry } from "astro:content";
+
 import PageDefault from "../templates/Page.astro";
 import PageHappenings from "../templates/PageHappenings.astro";
-import type { PageEntry } from "../content.config";
 
 interface Props {
-    page: PageEntry;
+    page: CollectionEntry<"pages">;
+}
+
+const SLUG_TO_TEMPLATE = {
+    "page-happenings.php": PageHappenings,
+};
+
+function isValidTemplate(
+    slug: string | null,
+): slug is keyof typeof SLUG_TO_TEMPLATE {
+    return slug !== null && slug in SLUG_TO_TEMPLATE;
 }
 
 const page = Astro.props.page.data;
+
+const Template = isValidTemplate(page.template)
+    ? SLUG_TO_TEMPLATE[page.template]
+    : PageDefault;
 ---
 
-{
-    page.template === "page-happenings.php" ? (
-        <PageHappenings page={page} />
-    ) : (
-        <PageDefault page={page} />
-    )
-}
+<Template page={page} />
