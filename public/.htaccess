@@ -1,6 +1,7 @@
 # BEGIN Astro
 
 RewriteEngine On
+RewriteRule ^dist/(.*)$ /$1 [R=301,L]
 RewriteRule ^$ dist/ [L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
