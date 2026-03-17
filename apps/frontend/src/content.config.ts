@@ -198,12 +198,12 @@ const PageHappeningsScheduleDay = z.object({
 });
 
 const PageHappeningsGroupItem = z.object({
-            name: z.string(),
-            image: reference("media").nullable(),
-            description: z.object({
-                html: z.string(),
-            }),
-        });
+    name: z.string(),
+    image: reference("media").nullable(),
+    description: z.object({
+        html: z.string(),
+    }),
+});
 
 const PageHappeningsGroup = z.object({
     title: z.string(),
@@ -235,13 +235,13 @@ function mapPageItemToPageHappeningsScheduleEntry(
     const days: z.infer<typeof PageHappeningsScheduleDay>[] = [];
 
     for (const itemDay of item.acf.schedule) {
-        if (typeof item !== 'object') {
+        if (typeof item !== "object") {
             continue;
         }
 
         const { day, events: itemEvents } = itemDay;
 
-        if (typeof day !== 'string') {
+        if (typeof day !== "string") {
             continue;
         }
 
@@ -252,17 +252,17 @@ function mapPageItemToPageHappeningsScheduleEntry(
         const events: z.infer<typeof PageHappeningsScheduleEvent>[] = [];
 
         for (const itemEvent of itemEvents) {
-             if (typeof itemEvent !== 'object') {
+            if (typeof itemEvent !== "object") {
                 continue;
             }
 
-            const {start_time: startTime, title } = itemEvent;
+            const { start_time: startTime, title } = itemEvent;
 
-            if (typeof startTime !== 'string') {
+            if (typeof startTime !== "string") {
                 continue;
             }
 
-            if (typeof title !== 'string') {
+            if (typeof title !== "string") {
                 continue;
             }
 
@@ -291,17 +291,17 @@ function mapPageItemToPageHappeningsGroupsEntry(
     const groups: z.infer<typeof PageHappeningsGroup>[] = [];
 
     for (const itemGroup of item.acf.groups) {
-        if (typeof itemGroup !== 'object') {
+        if (typeof itemGroup !== "object") {
             continue;
         }
 
         const { title, description, items: itemItems } = itemGroup;
 
-        if (typeof title !== 'string') {
+        if (typeof title !== "string") {
             continue;
         }
 
-        if (typeof description !== 'string') {
+        if (typeof description !== "string") {
             continue;
         }
 
@@ -312,21 +312,28 @@ function mapPageItemToPageHappeningsGroupsEntry(
         const items: z.infer<typeof PageHappeningsGroupItem>[] = [];
 
         for (const itemItem of itemItems) {
-             if (typeof itemItem !== 'object') {
+            if (typeof itemItem !== "object") {
                 continue;
             }
 
-            const {name: itemName,image: itemImage,description:itemDescription } = itemItem;
+            const {
+                name: itemName,
+                image: itemImage,
+                description: itemDescription,
+            } = itemItem;
 
-            if (typeof itemName !== 'string') {
+            if (typeof itemName !== "string") {
                 continue;
             }
 
-            if (itemImage !== null && (typeof itemImage !== 'number' || itemImage <= 0) ) {
+            if (
+                itemImage !== null &&
+                (typeof itemImage !== "number" || itemImage <= 0)
+            ) {
                 continue;
             }
 
-            if (typeof itemDescription !== 'string') {
+            if (typeof itemDescription !== "string") {
                 continue;
             }
 
