@@ -14,9 +14,9 @@ function _app_page_installations_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'        => _app_page_installations_group_key( 'groups' ),
-			'title'      => 'Installations',
-			'fields'     => array(
+			'key'          => _app_page_installations_group_key( 'groups' ),
+			'title'        => 'Installations',
+			'fields'       => array(
 				array(
 					'key'          => _app_page_installations_field_key( 'groups' ),
 					'label'        => 'Groups',
@@ -71,9 +71,9 @@ function _app_page_installations_register_fields() {
 					),
 				),
 			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
-			'show_in_rest'=>true,
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
 		),
 	);
 }

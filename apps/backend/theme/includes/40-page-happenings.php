@@ -14,9 +14,9 @@ function _app_page_happenings_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'        => _app_page_happenings_group_key( 'schedule' ),
-			'title'      => 'Schedule',
-			'fields'     => array(
+			'key'          => _app_page_happenings_group_key( 'schedule' ),
+			'title'        => 'Schedule',
+			'fields'       => array(
 				array(
 					'key'          => _app_page_happenings_field_key( 'schedule' ),
 					'label'        => '',
@@ -60,17 +60,17 @@ function _app_page_happenings_register_fields() {
 					),
 				),
 			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
-			'show_in_rest'=>true,
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
 		)
 	);
 
 	acf_add_local_field_group(
 		array(
-			'key'        => _app_page_happenings_group_key( 'groups' ),
-			'title'      => 'Happenings',
-			'fields'     => array(
+			'key'          => _app_page_happenings_group_key( 'groups' ),
+			'title'        => 'Happenings',
+			'fields'       => array(
 				array(
 					'key'          => _app_page_happenings_field_key( 'groups' ),
 					'label'        => 'Groups',
@@ -131,9 +131,9 @@ function _app_page_happenings_register_fields() {
 					),
 				),
 			),
-			'location'   => array( $location ),
-			'menu_order' => $menu_order++,
-			'show_in_rest'=>true,
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'show_in_rest' => true,
 		),
 	);
 }
