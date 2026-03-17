@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 
 import PageDefault from "../templates/Page.astro";
 import PageHappenings from "../templates/PageHappenings.astro";
+import PageInstallations from "../templates/PageInstallations.astro";
 
 interface Props {
     page: CollectionEntry<"pages">;
@@ -10,6 +11,7 @@ interface Props {
 
 const SLUG_TO_TEMPLATE = {
     "page-happenings.php": PageHappenings,
+    "page-installations.php": PageInstallations,
 };
 
 function isValidTemplate(
