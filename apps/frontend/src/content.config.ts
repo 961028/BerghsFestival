@@ -1,31 +1,42 @@
-import { defineCollection, reference, type BaseSchema } from "astro:content";
-import { z } from "astro/zod";
 import {
-    type WP_REST_API_Menu_Item,
-    type WP_REST_API_Menu_Locations,
-    type WP_REST_API_Settings,
-} from "wp-types";
+    defineCollection,
+    reference,
+    type BaseSchema,
+    type DataEntryMap,
+} from "astro:content";
+import { z } from "astro/zod";
 
-import { type Media, wpGet, wpGetAll, type Post } from "./lib/wp-api";
+import { wpGet, wpGetAll } from "./lib/wp-api";
 import { stripHtml } from "./lib/html";
 
-type WithId = {
-    id: string;
-};
+function intId() {
+    return z.int().positive().pipe(z.coerce.string());
+}
 
-type WithoutId<T> = Omit<T, "id">;
+function nullableIntId() {
+    return z.preprocess(
+        (v) => (v === 0 ? null : v),
+        z
+            .int()
+            .positive()
+            .nullable()
+            .pipe(z.coerce.string())
+            .transform((v) => (v === "null" ? null : v)),
+    );
+}
 
-type PaginatedCollectionConfig<I, E extends WithId, S extends BaseSchema> = {
-    path: string;
-    schema: S;
-    mapItemToEntry(item: I): E;
-};
+function intReference<C extends keyof DataEntryMap>(collection: C) {
+    return intId().pipe(reference(collection));
+}
 
-const definePaginatedCollection = <I, E extends WithId, S extends BaseSchema>({
-    path,
-    schema,
-    mapItemToEntry,
-}: PaginatedCollectionConfig<I, E, S>) =>
+function nullableIntReference<C extends keyof DataEntryMap>(collection: C) {
+    return nullableIntId().pipe(reference(collection).nullable());
+}
+
+const definePaginatedCollection = <S extends BaseSchema>(
+    path: string,
+    schema: S,
+) =>
     defineCollection({
         schema,
         loader: {
@@ -33,17 +44,12 @@ const definePaginatedCollection = <I, E extends WithId, S extends BaseSchema>({
             load: async ({ store, parseData }) => {
                 store.clear();
 
-                const items = await wpGetAll<I>(path);
+                const items = await wpGetAll<Record<string, unknown>>(path);
 
                 for (const item of items) {
-                    const rawData = mapItemToEntry(item);
+                    const id = String(item.id);
 
-                    const id = String(rawData.id);
-
-                    const data = await parseData({
-                        id: id,
-                        data: rawData,
-                    });
+                    const data = await parseData({ id, data: item });
 
                     store.set({ id, data });
                 }
@@ -51,258 +57,227 @@ const definePaginatedCollection = <I, E extends WithId, S extends BaseSchema>({
         },
     });
 
-type SingletonCollectionConfig<
-    I,
-    E extends WithoutId<E>,
-    S extends BaseSchema,
-> = {
-    path: string;
-    schema: S;
-    mapItemToEntry(item: I): E;
-};
-
-const defineSingletonCollection = <
-    I,
-    E extends WithoutId<E>,
-    S extends BaseSchema,
->({
-    path,
-    schema,
-    mapItemToEntry,
-}: SingletonCollectionConfig<I, E, S>) =>
+const defineSingletonCollection = <S extends BaseSchema>(
+    path: string,
+    schema: S,
+) =>
     defineCollection({
         schema,
         loader: {
             name: path,
             load: async ({ store, parseData }) => {
-                const item = await wpGet<I>(path);
-
-                const rawData = mapItemToEntry(item);
+                const item = await wpGet<Record<string, unknown>>(path);
 
                 const id = "0";
 
-                const data = await parseData({
-                    id: id,
-                    data: rawData,
-                });
+                const data = await parseData({ id, data: item });
 
                 store.set({ id, data });
             },
         },
     });
 
-const settings = defineSingletonCollection({
-    path: "wp/v2/settings",
-    schema: z.object({
-        title: z.string(),
-        homePage: reference("pages"),
-    }),
-    mapItemToEntry: (item: WP_REST_API_Settings) => ({
-        title: item.title,
-        homePage: item.page_on_front ? String(item.page_on_front) : null,
-    }),
-});
+const settings = defineSingletonCollection(
+    "wp/v2/settings",
+    z
+        .object({
+            title: z.string(),
+            page_on_front: intReference("pages").nullable(),
+        })
+        .transform((item) => ({
+            title: item.title,
+            pageOnFront: item.page_on_front,
+        })),
+);
 
 const menuLocations = defineCollection({
-    schema: z.object({
-        id: z.string(),
-        menu: z.number(),
-    }),
+    schema: z
+        .object({
+            name: z.string().nonempty(),
+            menu: nullableIntId(),
+        })
+        .transform((val) => ({
+            id: val.name,
+            menu: val.menu,
+        })),
     loader: {
         name: "wp/v2/menu-locations",
         load: async ({ store, parseData }) => {
             store.clear();
 
-            const items = await wpGet<WP_REST_API_Menu_Locations>(
+            const items = await wpGet<Record<string, unknown>[]>(
                 "wp/v2/menu-locations",
             );
 
             for (const item of Object.values(items)) {
-                const rawData = {
-                    id: item.name,
-                    menu: item.menu,
-                };
+                const id = String(item.name);
 
-                const data = await parseData({ id: rawData.id, data: rawData });
+                const data = await parseData({ id, data: item });
 
-                store.set({ id: data.id, data });
+                store.set({ id, data });
             }
         },
     },
 });
 
-const menuItems = definePaginatedCollection({
-    path: "wp/v2/menu-items",
-    schema: z.object({
-        id: z.string(),
-        menu: z.number(),
-        order: z.number(),
-        title: z.string(),
-        url: z.string(),
-    }),
-    mapItemToEntry: (item: WP_REST_API_Menu_Item) => ({
-        id: String(item.id),
-        menu: item.menus,
-        order: item.menu_order,
-        title:
-            typeof item.title === "string"
-                ? item.title
-                : stripHtml(item.title.rendered ?? ""),
-        url: item.url,
-    }),
-});
+const menuItems = definePaginatedCollection(
+    "wp/v2/menu-items",
+    z
+        .object({
+            id: intId(),
+            menus: nullableIntId(),
+            menu_order: z.int(),
+            title: z.union([
+                z.string(),
+                z.object({ rendered: z.string().optional() }),
+            ]),
+            url: z.string(),
+        })
+        .transform((item) => ({
+            id: item.id,
+            menu: item.menus,
+            order: item.menu_order,
+            title:
+                typeof item.title === "string"
+                    ? item.title
+                    : stripHtml(item.title.rendered ?? ""),
+            url: item.url,
+        })),
+);
 
-const media = definePaginatedCollection({
-    path: "wp/v2/media",
-    schema: z.object({
-        id: z.string(),
-        type: z.string(),
-        sourceUrl: z.string(),
-        altText: z.string(),
-    }),
-    mapItemToEntry: (item: Media) => ({
-        id: String(item.id),
-        type: item.media_type,
-        sourceUrl: item.source_url,
-        altText: item.alt_text,
-    }),
-});
+const media = definePaginatedCollection(
+    "wp/v2/media",
+    z
+        .object({
+            id: intId(),
+            media_type: z.string(),
+            source_url: z.string(),
+            alt_text: z.string(),
+        })
+        .transform((item) => ({
+            id: item.id,
+            type: item.media_type,
+            sourceUrl: item.source_url,
+            altText: item.alt_text,
+        })),
+);
 
-const pages = definePaginatedCollection({
-    path: "wp/v2/pages",
-    schema: z.object({
-        id: z.coerce.string(),
-        slug: z.string(),
-        parent: reference("pages").nullable(),
-        template: z.string().nullable().default(null),
-        title: z.string(),
-        content: z.object({
-            html: z.string(),
-        }),
-        acf: z.preprocess(
-            (val) => (Array.isArray(val) ? {} : val),
-            z.record(z.string(), z.unknown()),
-        ),
-    }),
-    mapItemToEntry: (item: Post) => ({
-        id: String(item.id),
-        slug: item.slug,
-        parent: item.parent ? String(item.parent) : null,
-        template: item.template || undefined,
-        title: stripHtml(item.title.rendered),
-        content: {
-            html: item.content.rendered,
-        },
-        acf: item.acf,
-    }),
-});
+const pages = definePaginatedCollection(
+    "wp/v2/pages",
+    z
+        .object({
+            id: intId(),
+            slug: z.string().nonempty(),
+            parent: nullableIntReference("pages"),
+            template: z.string().nullable(),
+            title: z.object({ rendered: z.string() }),
+            content: z.object({ rendered: z.string() }),
+            acf: z.preprocess(
+                (val) => (Array.isArray(val) ? {} : val),
+                z.record(z.string(), z.unknown()),
+            ),
+        })
+        .transform((item) => ({
+            id: item.id,
+            slug: item.slug,
+            parent: item.parent,
+            template: item.template,
+            title: stripHtml(item.title.rendered),
+            content: { html: item.content.rendered },
+            acf: item.acf,
+        })),
+);
 
-const projects = definePaginatedCollection({
-    path: "wp/v2/projects",
-    schema: z.object({
-        id: z.string(),
-        slug: z.string(),
-        title: z.string(),
-        company: z.string(),
-        image: reference("media").nullable(),
-        video: z.string().nullable(),
-        teamMembers: z.array(
-            z.object({
-                name: z.string(),
-                class: z.string(),
+const projects = definePaginatedCollection(
+    "wp/v2/projects",
+    z
+        .object({
+            id: intId(),
+            slug: z.string().nonempty(),
+            title: z.object({ rendered: z.string() }),
+            acf: z.object({
+                company: z.string(),
+                image: nullableIntReference("media"),
+                video: z.string().nullable(),
+                team_members: z.array(
+                    z.object({
+                        name: z.string(),
+                        class: z.string(),
+                    }),
+                ),
+                "content-company": z.string(),
+                "content-background": z.string(),
+                "content-solution": z.string(),
             }),
-        ),
-        contentSections: z.array(
-            z.object({
-                title: z.string(),
-                content: z.object({
-                    html: z.string(),
-                }),
-            }),
-        ),
-    }),
-    mapItemToEntry: (item: Post) => ({
-        id: String(item.id),
-        slug: item.slug,
-        title: stripHtml(item.title.rendered),
-        company: item.acf.company,
-        image: item.acf.image ? String(item.acf.image) : null,
-        video: item.acf.video,
-        teamMembers: item.acf.team_members,
-        contentSections: [
-            {
-                title: "The Company",
-                content: {
-                    html: item.acf["content-company"],
+        })
+        .transform((item) => ({
+            id: item.id,
+            slug: item.slug,
+            title: stripHtml(item.title.rendered),
+            company: item.acf.company,
+            image: item.acf.image,
+            video: item.acf.video ?? null,
+            teamMembers: item.acf.team_members,
+            contentSections: [
+                {
+                    title: "The Company",
+                    content: { html: item.acf["content-company"] },
                 },
-            },
-            {
-                title: "Background",
-                content: {
-                    html: item.acf["content-background"],
+                {
+                    title: "Background",
+                    content: { html: item.acf["content-background"] },
                 },
-            },
-            {
-                title: "Solution",
-                content: {
-                    html: item.acf["content-solution"],
+                {
+                    title: "Solution",
+                    content: { html: item.acf["content-solution"] },
                 },
-            },
-        ],
-    }),
-});
+            ],
+        })),
+);
 
-const sponsors = definePaginatedCollection({
-    path: "app/v1/sponsors",
-    schema: z.object({
-        id: z.string(),
+const sponsors = definePaginatedCollection(
+    "app/v1/sponsors",
+    z.object({
+        id: intId(),
         name: z.string(),
-        image: reference("media"),
+        image: intReference("media"),
         url: z.string(),
     }),
-    mapItemToEntry: (item: Record<string, unknown>) => ({
-        id: String(item.id),
-        name: item.name,
-        image: String(item.image),
-        url: item.url,
-    }),
-});
+);
 
-const contact = defineSingletonCollection({
-    path: "app/v1/contact",
-    schema: z.object({
-        address: z.string(),
-        phone: z.string(),
-        socialServices: z.array(
-            z.object({
-                icon: z.string(),
-                label: z.string(),
-                url: z.string(),
-            }),
-        ),
-    }),
-    mapItemToEntry: (item: Record<string, unknown>) => ({
-        address: item.address,
-        phone: item.phone,
-        socialServices: item.social_services,
-    }),
-});
+const contact = defineSingletonCollection(
+    "app/v1/contact",
+    z
+        .object({
+            address: z.string(),
+            phone: z.string(),
+            social_services: z.array(
+                z.object({
+                    icon: z.string(),
+                    label: z.string(),
+                    url: z.string(),
+                }),
+            ),
+        })
+        .transform((item) => ({
+            address: item.address,
+            phone: item.phone,
+            socialServices: item.social_services,
+        })),
+);
 
-const iq = defineSingletonCollection({
-    path: "app/v1/iq",
-    schema: z.object({
-        title: z.string(),
-        content: z.object({
-            html: z.string(),
-        }),
-    }),
-    mapItemToEntry: (item: Record<string, unknown>) => ({
-        title: item.title,
-        content: {
-            html: item.content,
-        },
-    }),
-});
+const iq = defineSingletonCollection(
+    "app/v1/iq",
+    z
+        .object({
+            title: z.string(),
+            content: z.string(),
+        })
+        .transform((item) => ({
+            title: item.title,
+            content: { html: item.content },
+        })),
+);
 
 export const collections = {
     settings,

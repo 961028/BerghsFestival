@@ -1,5 +1,3 @@
-import type { WP_REST_API_Attachment, WP_REST_API_Post } from "wp-types";
-
 const APP_HOME = import.meta.env.APP_HOME;
 if (!APP_HOME) {
     throw new Error("import.meta.env.APP_HOME is not set.");
@@ -20,16 +18,6 @@ if (!PASSWORD) {
 const AUTH_HEADER = {
     Authorization: `Basic ${btoa(`${USERNAME}:${PASSWORD}`)}`,
 };
-
-type ACF_Partial = {
-    acf: {
-        [key: string]: unknown;
-    };
-};
-
-export type Post = WP_REST_API_Post & ACF_Partial;
-
-export type Media = WP_REST_API_Attachment & ACF_Partial;
 
 /**
  * Fetch any wp-json endpoint and return the parsed JSON response.

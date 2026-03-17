@@ -3,15 +3,15 @@ import { getCollection } from "astro:content";
 
 import { resolvePageLink } from "../lib/content";
 import PageTemplate from "../components/PageTemplate.astro";
-import type { PageEntry } from "../content.config";
+import type { CollectionEntry } from "astro:content";
 
 export async function getStaticPaths() {
     const settings = (await getCollection("settings"))[0].data;
 
-    async function staticPathForPage(page: PageEntry) {
+    async function staticPathForPage(page: CollectionEntry<"pages">) {
         let link;
 
-        if (page.id === settings.homePage.id) {
+        if (page.id === settings.pageOnFront?.id) {
             link = undefined;
         } else {
             link = await resolvePageLink(page);

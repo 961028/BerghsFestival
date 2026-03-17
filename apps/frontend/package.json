@@ -15,8 +15,7 @@
         "@astrojs/check": "^0.9.7",
         "astro": "^6.0.4",
         "jsdom": "^28.1.0",
-        "typescript": "^5.9.3",
-        "wp-types": "^4.69.0"
+        "typescript": "^5.9.3"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.4",

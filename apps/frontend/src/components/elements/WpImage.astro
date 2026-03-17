@@ -14,9 +14,9 @@ type Props = Omit<
     alt?: string;
 };
 
-let { image: imageId, alt, ...attrs } = Astro.props;
+let { image: imageRef, alt, ...attrs } = Astro.props;
 
-const image = await getEntry(imageId);
+const image = await getEntry(imageRef);
 
 if (!image) {
     return;
@@ -24,7 +24,7 @@ if (!image) {
 
 if (image.data.type !== "image") {
     throw new Error(
-        `Media ${imageId} type is ${image.data.type}, must be image.`,
+        `Media ${imageRef.id} type is ${image.data.type}, must be image.`,
     );
 }
 

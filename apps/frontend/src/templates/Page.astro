@@ -1,10 +1,9 @@
 ---
-import type { PageDefaultData } from "../content.config";
-
+import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
 type Props = {
-    page: PageDefaultData;
+    page: CollectionEntry<"pages">["data"];
 };
 
 const { page } = Astro.props;
