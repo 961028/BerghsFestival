@@ -3,6 +3,7 @@
 import { strict as assert } from "node:assert";
 
 import { defineConfig } from "astro/config";
+import sitemap from "@astrojs/sitemap";
 import { loadEnv } from "vite";
 
 const { NODE_ENV } = process.env;
@@ -28,4 +29,5 @@ export default defineConfig({
         domains: [APP_HOST],
         layout: "constrained",
     },
+    integrations: [sitemap()],
 });
