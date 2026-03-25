@@ -82,3 +82,7 @@ a {
     color: inherit;
     text-decoration: none;
 }
+
+a[aria-current="page"] {
+    font-weight: var(--font-weight-bold);
+}

@@ -19,7 +19,16 @@ const menuItems = (
 
         {
             menuItems.map((menuItem) => (
-                <a class="menu-item" href={menuItem.data.url}>
+                <a
+                    class="menu-item"
+                    href={menuItem.data.url}
+                    aria-current={
+                        Astro.url.pathname ===
+                        new URL(menuItem.data.url).pathname
+                            ? "page"
+                            : undefined
+                    }
+                >
                     {menuItem.data.title}
                 </a>
             ))
