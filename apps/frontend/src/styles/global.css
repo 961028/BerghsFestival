@@ -1,0 +1,79 @@
+/* ==========================================================================
+   Design Tokens
+   ==========================================================================
+   All visual properties are defined as CSS custom properties so the design
+   can be updated in one place once the final look is decided.
+   ========================================================================== */
+
+:root {
+    /* Colors */
+    --color-text: #000;
+    --color-bg: #fff;
+    --color-primary: #000;
+    --color-border: #000;
+
+    /* Typography */
+    --font-family-base: system-ui, -apple-system, sans-serif;
+    --font-size-base: 1rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1.125rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 2rem;
+    --font-size-xxl: 3rem;
+    --font-weight-normal: 400;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+    --line-height-base: 1.4;
+    --letter-spacing-logo: 0.125em;
+
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.25rem;
+    --space-lg: 2.5rem;
+    --space-xl: 6.25rem;
+
+    /* Layout */
+    --max-width: 64rem;
+    --site-padding-inline: 2.5rem;
+
+    /* Borders */
+    --border-default: 1px solid var(--color-border);
+}
+
+/* Responsive overrides */
+@media (max-width: 768px) {
+    :root {
+        --site-padding-inline: 1.25rem;
+        --space-xl: 2.5rem;
+        --space-lg: 1.25rem;
+        --font-size-xxl: 2rem;
+        --font-size-xl: 1.5rem;
+    }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    background: var(--color-bg);
+    line-height: var(--line-height-base);
+}

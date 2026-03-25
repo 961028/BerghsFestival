@@ -12,7 +12,20 @@ const { title, content } = page;
 ---
 
 <Layout title={title}>
-    <h1>{title}</h1>
+    <h1 class="page-title">{title}</h1>
 
-    <div set:html={content.html} />
+    <div class="page-content" set:html={content.html} />
 </Layout>
+
+<style>
+    .page-title {
+        font-size: var(--font-size-xxl);
+        font-weight: var(--font-weight-bold);
+        margin-bottom: var(--space-sm);
+    }
+
+    .page-content {
+        font-size: var(--font-size-xl);
+        line-height: var(--line-height-base);
+    }
+</style>

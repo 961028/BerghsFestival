@@ -4,8 +4,23 @@ import { getCollection } from "astro:content";
 const { title, content } = (await getCollection("iq"))[0].data;
 ---
 
-<div>
-    <h2>{title}</h2>
+<div class="iq">
+    <h2 class="iq-title">{title}</h2>
 
-    <div class="content" set:html={content.html} />
+    <div class="iq-content" set:html={content.html} />
 </div>
+
+<style>
+    .iq {
+        text-align: center;
+    }
+
+    .iq-title {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+    }
+
+    .iq-content {
+        margin-top: var(--space-xs);
+    }
+</style>

@@ -10,8 +10,8 @@ const sponsors = (await getCollection("sponsors")).sort((a, b) => {
 });
 ---
 
-<div>
-    <ul>
+<div class="sponsors">
+    <ul class="sponsors-list">
         {
             sponsors.map((sponsor) => (
                 <li>
@@ -21,7 +21,7 @@ const sponsors = (await getCollection("sponsors")).sort((a, b) => {
                         title={sponsor.data.name}
                     >
                         <WpImage
-                            class="logo"
+                            class="sponsor-logo"
                             image={sponsor.data.image}
                             alt=""
                         />
@@ -31,3 +31,19 @@ const sponsors = (await getCollection("sponsors")).sort((a, b) => {
         }
     </ul>
 </div>
+
+<style>
+    .sponsors-list {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: var(--space-md);
+    }
+
+    .sponsor-logo {
+        display: block;
+        height: 2rem;
+        width: auto;
+    }
+</style>
