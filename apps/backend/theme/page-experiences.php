@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Happenings
+ * Template Name: Experiences
  */
 ?><?php get_header(); ?>
 
