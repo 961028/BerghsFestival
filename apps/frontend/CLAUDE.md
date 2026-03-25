@@ -27,9 +27,10 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 - **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`.
 - **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo).
 
-## Design System
+## Styling
 
-All visual tokens are CSS custom properties in `src/styles/global.css`. Change colors, spacing, typography, or borders there and the entire site updates.
+- **Design tokens** (colors, spacing, typography, borders) live as CSS custom properties in `src/styles/global.css`. Only tokens and true base styles (box-sizing, body font) belong there.
+- **All other CSS** goes in component `<style>` blocks. Astro scopes these to the component automatically, so styles never leak out. Use design tokens from `global.css` via `var(--token-name)`.
 
 ## Commands
 
