@@ -1,0 +1,106 @@
+---
+import type { ReferenceDataEntry } from "astro:content";
+import WpImage from "./WpImage.astro";
+
+interface Props {
+    company: string;
+    title: string;
+    image: ReferenceDataEntry<"media"> | null;
+    teamMembers: { name: string; class: string }[];
+    href?: string;
+}
+
+const { company, title, image, teamMembers, href } = Astro.props;
+
+const Tag = href ? "a" : "div";
+---
+
+<Tag class="project-card" {href}>
+    <div class="thumbnail">
+        {image && <WpImage image={image} alt={title} />}
+    </div>
+
+    <div class="meta">
+        <p class="company">{company}</p>
+        <p class="title">{title}</p>
+    </div>
+
+    <ul class="members">
+        {
+            teamMembers.map((member) => (
+                <li>
+                    <span class="member-name">{member.name}</span>
+                    <span class="member-program">{member.class}</span>
+                </li>
+            ))
+        }
+    </ul>
+</Tag>
+
+<style>
+    .project-card {
+        background-color: var(--color-bg);
+        border: var(--border-default);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+        padding: var(--space-sm);
+        width: 100%;
+        color: var(--color-text);
+        text-decoration: none;
+    }
+
+    .thumbnail {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        background-color: rgba(204, 204, 204, 0.8);
+        overflow: hidden;
+    }
+
+    .thumbnail :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .meta {
+        padding: var(--space-xs) 0;
+    }
+
+    .company,
+    .title,
+    .members,
+    .members li {
+        margin: 0;
+        padding: 0;
+    }
+
+    .company {
+        font-size: 0.75rem;
+    }
+
+    .title {
+        font-size: var(--font-size-xl);
+        line-height: 1.2;
+    }
+
+    .members {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .members li {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .member-name {
+        font-size: var(--font-size-base);
+    }
+
+    .member-program {
+        font-size: 0.75rem;
+    }
+</style>
