@@ -153,12 +153,17 @@ const media = definePaginatedCollection(
             media_type: z.string(),
             source_url: z.string(),
             alt_text: z.string(),
+            media_details: z
+                .object({ width: z.number(), height: z.number() })
+                .optional(),
         })
         .transform((item) => ({
             id: item.id,
             type: item.media_type,
             sourceUrl: item.source_url,
             altText: item.alt_text,
+            width: item.media_details?.width,
+            height: item.media_details?.height,
         })),
 );
 
