@@ -21,12 +21,11 @@ final class App_Seed_Command {
 
 		$this->sideload_generic_images();
 
-		$home_page_id          = $this->insert_home_page();
-		$happenings_page_id    = $this->insert_happenings_page();
-		$installations_page_id = $this->insert_installations_page();
-		$about_page_id         = $this->insert_about_page();
+		$home_page_id        = $this->insert_home_page();
+		$experiences_page_id = $this->insert_experiences_page();
+		$about_page_id       = $this->insert_about_page();
 
-		$this->insert_primary_menu( $home_page_id, $happenings_page_id, $installations_page_id, $about_page_id );
+		$this->insert_primary_menu( $home_page_id, $experiences_page_id, $about_page_id );
 
 		$this->set_contact_options();
 
@@ -202,17 +201,17 @@ final class App_Seed_Command {
 		return $page_id;
 	}
 
-	private function insert_happenings_page(): int {
-		WP_CLI::line( 'Inserting "Happenings" page' );
+	private function insert_experiences_page(): int {
+		WP_CLI::line( 'Inserting "Experiences" page' );
 
 		$page_id = $this->insert_post(
 			array(
 				'post_type'    => 'page',
 				'post_status'  => 'publish',
-				'post_title'   => 'Happenings',
-				'post_content' => "This is the <strong>Happenings</strong> page.\n\nWe'll fill it with content later.'",
+				'post_title'   => 'Experiences',
+				'post_content' => "This is the <strong>Experiences</strong> page.\n\nWe'll fill it with content later.'",
 				'meta_input'   => array(
-					'_wp_page_template' => 'page-happenings.php',
+					'_wp_page_template' => 'page-experiences.php',
 				),
 			)
 		);
@@ -235,56 +234,17 @@ final class App_Seed_Command {
 			);
 		}
 
-		update_field( _app_page_happenings_field_key( 'schedule' ), $schedule, $page_id );
+		update_field( _app_page_experiences_field_key( 'schedule' ), $schedule, $page_id );
 
-		$groups = array();
-
-		foreach ( array( 'Artists', 'Food', 'Other' ) as $group_title ) {
-			$group_description = wpautop( esc_html( $this->faker->paragraph() ) );
-
-			$items = array();
-
-			for ( $i = 0; $i < 10; $i++ ) {
-				$item_name = ucwords( $this->faker->words( 3, true ) );
-
-				$items[] = array(
-					'name'        => $item_name,
-					'image'       => $this->get_rand_generic_image(),
-					'description' => wpautop( esc_html( $this->faker->paragraph() ) ),
-					'url'         => 0 === $i % 3 ? sprintf( 'https://www.%s.com/', sanitize_title( $item_name ) ) : '',
-				);
-			}
-
-			$groups[] = array(
-				'title'       => $group_title,
-				'description' => $group_description,
-				'items'       => $items,
-			);
-		}
-
-		update_field( _app_page_happenings_field_key( 'groups' ), $groups, $page_id );
-
-		return $page_id;
-	}
-
-	private function insert_installations_page(): int {
-		WP_CLI::line( 'Inserting "Installations" page' );
-
-		$page_id = $this->insert_post(
-			array(
-				'post_type'    => 'page',
-				'post_status'  => 'publish',
-				'post_title'   => 'Installations',
-				'post_content' => "This is the <strong>Installations</strong> page.\n\nWe'll fill it with content later.'",
-				'meta_input'   => array(
-					'_wp_page_template' => 'page-installations.php',
-				),
-			)
+		$group_configs = array(
+			'Food & Drink' => array( 'label' => 'vendor', 'url' => true ),
+			'Music'        => array( 'label' => 'artist', 'url' => true ),
+			'Installations' => array( 'label' => 'installation', 'url' => false ),
 		);
 
 		$groups = array();
 
-		foreach ( array( 'Process', 'Student' ) as $group_title ) {
+		foreach ( $group_configs as $group_title => $config ) {
 			$group_description = wpautop( esc_html( $this->faker->paragraph() ) );
 
 			$items = array();
@@ -296,6 +256,7 @@ final class App_Seed_Command {
 					'name'        => $item_name,
 					'image'       => $this->get_rand_generic_image(),
 					'description' => wpautop( esc_html( $this->faker->paragraph() ) ),
+					'url'         => $config['url'] && 0 === $i % 3 ? sprintf( 'https://www.%s.com/', sanitize_title( $item_name ) ) : '',
 				);
 			}
 
@@ -306,7 +267,7 @@ final class App_Seed_Command {
 			);
 		}
 
-		update_field( _app_page_installations_field_key( 'groups' ), $groups, $page_id );
+		update_field( _app_page_experiences_field_key( 'groups' ), $groups, $page_id );
 
 		return $page_id;
 	}
@@ -326,8 +287,7 @@ final class App_Seed_Command {
 
 	private function insert_primary_menu(
 		int $home_page_id,
-		int $happenings_page_id,
-		int $installations_page_id,
+		int $experiences_page_id,
 		int $about_page_id,
 	): void {
 		WP_CLI::line( 'Inserting primary menu' );
@@ -353,17 +313,7 @@ final class App_Seed_Command {
 			array(
 				'menu-item-type'      => 'post_type',
 				'menu-item-object'    => 'page',
-				'menu-item-object-id' => $happenings_page_id,
-				'menu-item-title'     => '',
-			)
-		);
-
-		$this->create_menu_item(
-			$primary_menu_id,
-			array(
-				'menu-item-type'      => 'post_type',
-				'menu-item-object'    => 'page',
-				'menu-item-object-id' => $installations_page_id,
+				'menu-item-object-id' => $experiences_page_id,
 				'menu-item-title'     => '',
 			)
 		);

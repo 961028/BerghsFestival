@@ -51,9 +51,17 @@ const { page } = Astro.props;
 
 const { title, content, acf } = page;
 
-const schedule = ScheduleSchema.parse(acf.schedule);
+const schedule = ScheduleSchema.parse(acf.schedule ?? []);
 
-const groups = GroupsSchema.parse(acf.groups);
+const groups = GroupsSchema.parse(acf.groups ?? []);
+
+const tabs = [
+    { id: "all", label: "All" },
+    { id: "food-drink", label: "Food & Drink" },
+    { id: "music", label: "Music" },
+    { id: "installations", label: "Installations" },
+    { id: "more", label: "More" },
+];
 ---
 
 <Layout title={title}>
@@ -82,10 +90,31 @@ const groups = GroupsSchema.parse(acf.groups);
 
     <h2>Groups</h2>
 
-    <ul class="groups">
+    <nav class="tabs" role="tablist">
+        {
+            tabs.map((tab, i) => (
+                <button
+                    role="tab"
+                    class="tab"
+                    data-tab={tab.id}
+                    aria-selected={i === 0 ? "true" : "false"}
+                >
+                    {tab.label}
+                </button>
+            ))
+        }
+    </nav>
+
+    <ul class="groups" id="groups-list">
         {
             groups.map((group) => (
-                <li class="group">
+                <li
+                    class="group"
+                    data-group={group.title
+                        .toLowerCase()
+                        .replace(/\s*&\s*/g, "-")
+                        .replace(/\s+/g, "-")}
+                >
                     <h3 class="group-title">{group.title}</h3>
 
                     <div
@@ -124,6 +153,27 @@ const groups = GroupsSchema.parse(acf.groups);
     </ul>
 </Layout>
 
+<script>
+    const tabs = document.querySelectorAll<HTMLButtonElement>("[data-tab]");
+    const groups = document.querySelectorAll<HTMLLIElement>(
+        "#groups-list .group",
+    );
+
+    tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+            const selected = tab.dataset.tab!;
+
+            tabs.forEach((t) => t.setAttribute("aria-selected", "false"));
+            tab.setAttribute("aria-selected", "true");
+
+            groups.forEach((group) => {
+                const slug = group.dataset.group ?? "";
+                group.hidden = selected !== "all" && slug !== selected;
+            });
+        });
+    });
+</script>
+
 <style>
     .page-title {
         font-size: var(--font-size-xxl);
@@ -134,6 +184,39 @@ const groups = GroupsSchema.parse(acf.groups);
     .page-content {
         font-size: var(--font-size-xl);
         line-height: var(--line-height-base);
+    }
+
+    .tabs {
+        display: flex;
+        gap: 0;
+        margin-bottom: var(--space-md);
+        border-bottom: var(--border-default);
+    }
+
+    .tab {
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        padding: var(--space-xs) var(--space-sm);
+        font-size: var(--font-size-base);
+        font-family: inherit;
+        cursor: pointer;
+        color: var(--color-text);
+        margin-bottom: -1px;
+        white-space: nowrap;
+    }
+
+    .tab[aria-selected="true"] {
+        font-weight: var(--font-weight-bold);
+        border-bottom-color: var(--color-text);
+    }
+
+    .tab:hover:not([aria-selected="true"]) {
+        opacity: 0.6;
+    }
+
+    .groups li[hidden] {
+        display: none;
     }
 
     .group-item-image {
