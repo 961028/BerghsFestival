@@ -19,28 +19,27 @@ const { project } = Astro.props;
 
 <Layout title={project.title}>
     <article class="article">
-        <h1 class="page-title">{project.title}</h1>
-
-        <div class="company">{project.company}</div>
-
         {
             !project.image || (
                 <WpImage class="image" image={project.image} loading="eager" />
             )
         }
 
-        {!project.video || <WpVideo class="video" video={project.video} />}
+        <div class="meta">
+            <div class="company">{project.company}</div>
+            <h1 class="page-title">{project.title}</h1>
 
-        <ul class="team-members">
-            {
-                project.teamMembers.map((teamMember) => (
-                    <li class="team-member">
-                        <div class="team-member__name">{teamMember.name}</div>
-                        <div class="team-member__class">{teamMember.class}</div>
-                    </li>
-                ))
-            }
-        </ul>
+            <ul class="team-members">
+                {
+                    project.teamMembers.map((teamMember) => (
+                        <li class="team-member">
+                            <div class="team-member__name">{teamMember.name}</div>
+                            <div class="team-member__class">{teamMember.class}</div>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
 
         <div class="content">
             {
@@ -56,6 +55,8 @@ const { project } = Astro.props;
                 ))
             }
         </div>
+
+        {!project.video || <WpVideo class="video" video={project.video} />}
     </article>
 </Layout>
 
