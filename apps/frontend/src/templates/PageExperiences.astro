@@ -29,39 +29,36 @@ const ScheduleSchema = z.array(
 );
 
 const GroupsSchema = z.array(
-    z.object({
-        title: z.string(),
-        description: z.string().transform((val) => ({ html: val })),
-        items: z.array(
-            z.object({
-                name: z.string(),
-                image: z.coerce
-                    .string()
-                    .transform((val) =>
-                        reference("media").nullable().parse(val),
-                    ),
-                description: z.string().transform((val) => ({ html: val })),
-                url: z.string().optional(),
-            }),
-        ),
-    }),
+    z
+        .object({
+            title: z.string(),
+            description: z.string().transform((val) => ({ html: val })),
+            items: z.array(
+                z.object({
+                    name: z.string(),
+                    image: z.coerce
+                        .string()
+                        .transform((val) =>
+                            reference("media").nullable().parse(val),
+                        ),
+                    description: z.string().transform((val) => ({ html: val })),
+                    url: z.string().optional(),
+                }),
+            ),
+        })
+        .transform((val) => ({
+            ...val,
+            slug: z.string().slugify().parse(val.title),
+        })),
 );
 
 const { page } = Astro.props;
 
 const { title, content, acf } = page;
 
-const schedule = ScheduleSchema.parse(acf.schedule ?? []);
+const schedule = ScheduleSchema.parse(acf.schedule);
 
-const groups = GroupsSchema.parse(acf.groups ?? []);
-
-const tabs = [
-    { id: "all", label: "All" },
-    { id: "food-drink", label: "Food & Drink" },
-    { id: "music", label: "Music" },
-    { id: "installations", label: "Installations" },
-    { id: "more", label: "More" },
-];
+const groups = GroupsSchema.parse(acf.groups);
 ---
 
 <Layout title={title}>
@@ -92,14 +89,14 @@ const tabs = [
 
     <nav class="tabs" role="tablist">
         {
-            tabs.map((tab, i) => (
+            groups.map((group, i) => (
                 <button
                     role="tab"
                     class="tab"
-                    data-tab={tab.id}
+                    data-tab={group.slug}
                     aria-selected={i === 0 ? "true" : "false"}
                 >
-                    {tab.label}
+                    {group.title}
                 </button>
             ))
         }
@@ -108,13 +105,7 @@ const tabs = [
     <ul class="groups" id="groups-list">
         {
             groups.map((group) => (
-                <li
-                    class="group"
-                    data-group={group.title
-                        .toLowerCase()
-                        .replace(/\s*&\s*/g, "-")
-                        .replace(/\s+/g, "-")}
-                >
+                <li class="group" data-group={group.slug}>
                     <h3 class="group-title">{group.title}</h3>
 
                     <div
