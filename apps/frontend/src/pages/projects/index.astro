@@ -7,10 +7,16 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 ---
 
 <Layout title="Projects">
+    <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Projects</button>
+        <button class="filter-btn" data-filter="group">Group</button>
+        <button class="filter-btn" data-filter="individual">Individual</button>
+    </div>
+
     <ul class="list">
         {
             projects.map((project) => (
-                <li>
+                <li data-team-size={project.teamMembers.length > 1 ? "group" : "individual"}>
                     <ProjectCard
                         company={project.company}
                         title={project.title}
@@ -24,7 +30,45 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
     </ul>
 </Layout>
 
+<script>
+    const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
+    const items = document.querySelectorAll<HTMLLIElement>(".list li");
+
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            buttons.forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+
+            const filter = btn.dataset.filter;
+            items.forEach((item) => {
+                const show = filter === "all" || item.dataset.teamSize === filter;
+                item.style.display = show ? "" : "none";
+            });
+        });
+    });
+</script>
+
 <style>
+    .filters {
+        display: flex;
+        gap: var(--space-xs);
+        margin-bottom: var(--space-sm);
+    }
+
+    .filter-btn {
+        background: none;
+        border: var(--border-default);
+        padding: var(--space-xs) var(--space-sm);
+        cursor: pointer;
+        color: var(--color-text);
+        font-size: var(--font-size-base);
+    }
+
+    .filter-btn.active {
+        background-color: var(--color-text);
+        color: var(--color-bg);
+    }
+
     .list {
         list-style: none;
         margin: 0;
