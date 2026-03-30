@@ -3,6 +3,7 @@ import { getCollection } from "astro:content";
 
 import WpImage from "../../components/elements/WpImage.astro";
 import WpVideo from "../../components/elements/WpVideo.astro";
+import ProjectCard from "../../components/elements/ProjectCard.astro";
 import Layout from "../../layouts/Layout.astro";
 
 export async function getStaticPaths() {
@@ -10,11 +11,16 @@ export async function getStaticPaths() {
 
     return projects.map((project) => ({
         params: { slug: project.data.slug },
-        props: { project: project.data },
+        props: { project: project.data, allProjects: projects.map((p) => p.data) },
     }));
 }
 
-const { project } = Astro.props;
+const { project, allProjects } = Astro.props;
+
+const relatedProjects = allProjects
+    .filter((p) => p.slug !== project.slug)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3);
 ---
 
 <Layout title={project.title}>
@@ -25,39 +31,57 @@ const { project } = Astro.props;
             )
         }
 
-        <div class="meta">
-            <div class="company">{project.company}</div>
-            <h1 class="page-title">{project.title}</h1>
+        <div class="body">
+            <div class="meta">
+                <div class="company">{project.company}</div>
+                <h1 class="page-title">{project.title}</h1>
 
-            <ul class="team-members">
+                <ul class="team-members">
+                    {
+                        project.teamMembers.map((teamMember) => (
+                            <li class="team-member">
+                                <div class="team-member__name">{teamMember.name}</div>
+                                <div class="team-member__class">{teamMember.class}</div>
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+
+            <div class="content">
                 {
-                    project.teamMembers.map((teamMember) => (
-                        <li class="team-member">
-                            <div class="team-member__name">{teamMember.name}</div>
-                            <div class="team-member__class">{teamMember.class}</div>
-                        </li>
+                    project.contentSections.map((contentSection) => (
+                        <>
+                            <h2 class="content-title">{contentSection.title}</h2>
+
+                            <div
+                                class="content-wrapper"
+                                set:html={contentSection.content.html}
+                            />
+                        </>
                     ))
                 }
-            </ul>
-        </div>
-
-        <div class="content">
-            {
-                project.contentSections.map((contentSection) => (
-                    <>
-                        <h2 class="content-title">{contentSection.title}</h2>
-
-                        <div
-                            class="content-wrapper"
-                            set:html={contentSection.content.html}
-                        />
-                    </>
-                ))
-            }
+            </div>
         </div>
 
         {!project.video || <WpVideo class="video" video={project.video} />}
     </article>
+
+    <ul class="related">
+        {
+            relatedProjects.map((related) => (
+                <li>
+                    <ProjectCard
+                        company={related.company}
+                        title={related.title}
+                        image={related.image}
+                        teamMembers={related.teamMembers}
+                        href={`/projects/${related.slug}`}
+                    />
+                </li>
+            ))
+        }
+    </ul>
 </Layout>
 
 <style>
@@ -66,5 +90,32 @@ const { project } = Astro.props;
         display: block;
         max-width: 100%;
         height: auto;
+    }
+
+    .body {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+    }
+
+    @media (min-width: 640px) {
+        .body {
+            grid-template-columns: 1fr 2fr;
+        }
+    }
+
+    .related {
+        list-style: none;
+        margin: var(--space-sm) 0 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+    }
+
+    @media (min-width: 640px) {
+        .related {
+            grid-template-columns: repeat(3, 1fr);
+        }
     }
 </style>
