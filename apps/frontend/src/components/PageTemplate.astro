@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 
 import PageDefault from "../templates/Page.astro";
+import PageAbout from "../templates/PageAbout.astro";
 import PageExperiences from "../templates/PageExperiences.astro";
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 }
 
 const SLUG_TO_TEMPLATE = {
+    "page-about.php": PageAbout,
     "page-experiences.php": PageExperiences,
 };
 
