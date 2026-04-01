@@ -202,8 +202,10 @@ const groups = GroupsSchema.parse(acf.groups);
         border-bottom-color: var(--color-text);
     }
 
-    .tab:hover:not([aria-selected="true"]) {
-        opacity: 0.6;
+    @media (any-hover: hover) and (any-pointer: fine) {
+        .tab:hover:not([aria-selected="true"]) {
+            opacity: 0.6;
+        }
     }
 
     .groups li[hidden] {

@@ -46,7 +46,10 @@ const { title } = Astro.props;
 <style>
     .wrapper {
         max-width: var(--max-width);
-        margin: 0 auto;
+        margin-inline: auto;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        min-height: 100dvh;
     }
 
     main {

@@ -53,7 +53,7 @@ const Tag = href ? "a" : "div";
     .thumbnail {
         width: 100%;
         aspect-ratio: 1 / 1;
-        background-color: rgba(204, 204, 204, 0.8);
+        background-color: color-mix(in oklch, var(--color-border), transparent 80%);
         overflow: hidden;
     }
 
@@ -77,12 +77,13 @@ const Tag = href ? "a" : "div";
     }
 
     .company {
-        font-size: 0.75rem;
+        font-size: var(--font-size-xs);
     }
 
     .title {
         font-size: var(--font-size-xl);
         line-height: 1.2;
+        text-wrap: balance;
     }
 
     .members {
@@ -101,6 +102,6 @@ const Tag = href ? "a" : "div";
     }
 
     .member-program {
-        font-size: 0.75rem;
+        font-size: var(--font-size-xs);
     }
 </style>

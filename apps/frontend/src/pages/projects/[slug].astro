@@ -85,37 +85,28 @@ const relatedProjects = allProjects
 </Layout>
 
 <style>
-    .image,
-    .video {
+    .image {
         display: block;
         max-width: 100%;
         height: auto;
     }
 
-    .body {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: var(--space-sm);
+    .video {
+        width: 100%;
     }
 
-    @media (min-width: 640px) {
-        .body {
-            grid-template-columns: 1fr 2fr;
-        }
+    .body {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+        gap: var(--space-sm);
     }
 
     .related {
         list-style: none;
-        margin: var(--space-sm) 0 0;
+        margin-block-start: var(--space-sm);
         padding: 0;
         display: grid;
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
         gap: var(--space-sm);
-    }
-
-    @media (min-width: 640px) {
-        .related {
-            grid-template-columns: repeat(3, 1fr);
-        }
     }
 </style>
