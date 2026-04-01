@@ -46,6 +46,6 @@ npm run build    # Production build
 
 At the end of every session:
 
-1. Update `CHANGES.md` with any notable changes made during the session.
-2. Ask the user if they want to commit. If yes, stage the relevant files and commit with a descriptive commit message reflecting the work done.
-3. Review `CLAUDE.md` and update it to reflect any new files, templates, patterns, or conventions introduced during the session.
+1. Update `berghs-festival-2026-ia.md` with any notable design decisions, content decisions, or UX choices made during the session.
+2. Review `CLAUDE.md` and update it to reflect any new files, templates, patterns, or conventions introduced during the session.
+3. Ask the user if they want to commit. If yes, stage the relevant files and commit with a descriptive commit message reflecting the work done.

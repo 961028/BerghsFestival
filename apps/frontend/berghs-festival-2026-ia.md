@@ -121,12 +121,55 @@ The grid uses `auto-fit` with a minimum column width of 20rem, so the number of 
 
 - Three buttons at the top of the page: All, Group, Individual.
 - Defaults to "All" selected.
-- Replaces the previous approach of listing individual projects in a separate section at the bottom of a long page.
+- Group and individual projects are mixed together in the same grid rather than separated into distinct sections. This is my decision — previous years kept them separate, but mixing them and adding a filter gives every project a fair and equal position in the listing.
+- One of the main reasons to mix them is fairness in the random ordering (see below).
+
+### Project ordering
+
+Projects are displayed in a random order to give every project an equal chance of being seen. This has been the approach in previous years.
+
+My change from previous years: the order is randomised once per visitor session rather than on every page refresh. Per-refresh randomisation causes projects to reorder mid-visit, which is a poor experience. Per-session randomisation keeps the order stable while a visitor is browsing, while still being random across visitors.
+
+### Project name length
+
+There is no enforced maximum length on project names, but the display will truncate with an ellipsis beyond a set limit.
+
+The limit may differ by context:
+
+- **Listing page (card):** shorter limit — less space available per card.
+- **Detail page (heading):** potentially longer — more space and prominence.
+
+Exact limits are TBD.
 
 ### Detail page
 
 - Detail pages show a selection of related projects at the bottom.
 - Allows visitors to continue browsing without returning to the listing.
+
+### Project content sections
+
+Each project detail page is structured into three fixed sections. Berghs decided the headings are permanent — used across all years so they can display projects from previous festivals alongside current ones consistently.
+
+| Section | Heading |
+| ------- | ----------- |
+| 1 | The Company |
+| 2 | Background |
+| 3 | Solution |
+
+**Editorial note:** Students must use these headings exactly as written. They are not editable.
+
+**Text length constraints:**
+
+Each section has a minimum and maximum character count, and there is a total cap across all three sections combined. These limits are a decision made for this project to keep detail pages consistent in length and readable without the need for editorial review of every submission.
+
+| Section | Min | Max |
+| ----------- | --- | --- |
+| The Company | TBD | TBD |
+| Background | TBD | TBD |
+| Solution | TBD | TBD |
+| **Total** | — | TBD |
+
+*Limits will be enforced in the content collection schema (Zod validation at build time).*
 
 ---
 
