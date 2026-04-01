@@ -26,6 +26,22 @@ Add an entry each time you make a meaningful change — a new feature, a design 
 
 ## Content
 
+### Projects page
+
+A projects listing page was added with a fluid card grid, filter controls, and individual detail pages. Each card shows a 3:2 thumbnail, client name, project title, and team member names with programme. Filtering by All / Group / Individual is handled client-side by toggling visibility. Detail pages show a selection of related projects at the bottom.
+
+**Why:** Graduation projects are a central part of the festival — visitors need to browse them quickly and dive into individual work without friction.
+
+**Technical notes:** The listing is at `src/pages/projects/index.astro`, detail pages at `src/pages/projects/[slug].astro`. The `ProjectCard` component handles both contexts. Grid layout uses `auto-fit` with `minmax(min(100%, 20rem), 1fr)` for fluid column count. Thumbnail aspect ratio is 3:2.
+
+### Experiences page
+
+The Experiences page was built as a tabbed layout driven by ACF field groups. Each group (e.g. Installations, Food & drink) becomes a tab; switching tabs shows only that group's items. A schedule section above the tabs lists timed events by day.
+
+**Why:** The experiences content is heterogeneous — grouping it into named tabs avoids a long, hard-to-scan single-column page while keeping everything on one URL.
+
+**Technical notes:** Tabs are implemented with `role="tab"` / `aria-selected` and client-side JS in `src/templates/PageExperiences.astro`. Group slugs are derived from titles at parse time. Schedule and groups are parsed from ACF fields using Zod schemas defined in the same file.
+
 ### About Berghs — institutional intro
 
 Four sections introducing Berghs School of Communication were added to the About page: Power of creativity, Action-based learning, Perspective, and Applied learning and amplified intelligence. A link to berghs.se closes the section.

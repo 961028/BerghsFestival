@@ -4,18 +4,18 @@
 
 ## Site structure
 
-Five pages. Same nav on every page.
+Four pages. Same nav on every page.
 
-| Nav label    | Purpose                                               |
-|--------------|-------------------------------------------------------|
-| Home         | Emotional sell, logistics, theme manifesto            |
-| Experiences  | Everything on the festival                            |
-| Projects     | Graduation work from the class of 2026                |
-| About        | Berghs intro + the team behind the festival           |
+| Nav label   | Purpose                                     |
+| ----------- | ------------------------------------------- |
+| Home        | Emotional sell, logistics, theme manifesto  |
+| Experiences | Everything on the festival and schedule     |
+| Projects    | Graduation work from the class of 2026      |
+| About       | Berghs intro + the team behind the festival |
 
 ### Changes from previous years
 
-- "Installations" and "Happening" merged to **Experiences** to cover installations, food, drink, tattoo studios, and everything else.
+- "Installations" and "Happening" merged to **Experiences** to cover schedule, installations, food, drink, tattoo studios, and everything else.
 - **About** expanded to include a new "The team" section crediting students and teachers, organized by festival role.
 
 ---
@@ -30,29 +30,21 @@ Five pages. Same nav on every page.
 - Schedule overview (Friday and Saturday at a glance).
 - Registration CTA (in addition to persistent header CTA).
 
-### Schedule
-
-- Timed program only: music acts, DJ sets, live performances.
-- Visual timeline, ideally showing parallel tracks if events overlap across spaces.
-- Artist profiles with photo, short bio, and Instagram link.
-
 ### Experiences
 
-Three clear sections within one page:
+Four clear sections within one page:
 
 1. **Installations** — interactive and immersive experiences, themed to the year's concept. Each with a name and short description.
 2. **Food and drink** — vendor profiles with what they serve.
 3. **Other activities** — tattoo studio, merch shop, or similar.
-4. **Schedule** - Visual timeline, ideally showing parallel tracks if events overlap across spaces.
-
-Artist profiles with photo, short bio, and Instagram link.
+4. **Schedule** — visual timeline, ideally showing parallel tracks if events overlap across spaces. Artist profiles with photo, short bio, and Instagram link.
 
 ### Projects
 
-- Toggle between **Group** and **Individual** projects at the top of the page.
-- Grid layout with square thumbnail images and minimal text per card (project title + client name).
+- Filter between **All**, **Group**, and **Individual** projects at the top of the page.
+- Grid layout with 3:2 thumbnail images and minimal text per card (project title + client name).
 - Each card links to a detail page.
-- Detail pages include **previous/next navigation** so visitors can browse without returning to the listing.
+- Detail pages show a selection of related projects.
 
 ### About
 
@@ -75,7 +67,7 @@ Two sections:
 ### Navigation header
 
 - Festival logo/name on the left.
-- Nav items: Schedule, Experiences, Projects, About.
+- Nav items: Experiences, Projects, About.
 - Register button on the right.
 - Sticky on scroll.
 
@@ -97,14 +89,14 @@ Two sections:
 
 ## Projects page — design decisions
 
-### Layout: 3-column grid with team names (variant C-2)
+### Layout: fluid grid with team names
 
 Chosen over alternatives for the following reasons:
 
-- Large enough square images to show the quality of the work.
+- Large enough 3:2 images to show the quality of the work.
 - Room for client name, project title, and team member names on each card.
 - Balances visual impact with information density.
-- Scales from 2 columns on mobile to 3 columns on desktop.
+- Fluid grid adapts to available space — narrower on mobile, wider on desktop.
 
 ### Card structure
 
@@ -117,27 +109,24 @@ Each card contains:
 
 ### Image requirements
 
-- **Format:** square (3:2 aspect ratio) only.
-- **Minimum resolution:** 1200 x 1200px to support retina displays at the 2-column desktop size.
-- Students provide one square image per project. No other formats are needed.
+- **Format:** 3:2 aspect ratio only.
+- **Minimum resolution:** 1200 x 800px to support retina displays.
+- Students provide one image per project. No other formats are needed.
 
 ### Responsive behavior
 
-| Breakpoint   | Columns | Notes                          |
-|--------------|---------|--------------------------------|
-| Mobile       | 1       | Text below each image          |
-| Desktop      | 2       | Team names visible on cards    |
+The grid uses `auto-fit` with a minimum column width of 20rem, so the number of columns adjusts fluidly to the viewport width rather than switching at fixed breakpoints.
 
-### Group/Individual toggle
+### Group/Individual filter
 
-- Pill-style toggle at the top of the page.
-- Defaults to "Group" selected.
+- Three buttons at the top of the page: All, Group, Individual.
+- Defaults to "All" selected.
 - Replaces the previous approach of listing individual projects in a separate section at the bottom of a long page.
 
-### Detail page navigation
+### Detail page
 
-- Previous/next links between project detail pages.
-- Allows sequential browsing without returning to the listing.
+- Detail pages show a selection of related projects at the bottom.
+- Allows visitors to continue browsing without returning to the listing.
 
 ---
 
