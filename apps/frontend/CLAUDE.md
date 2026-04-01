@@ -16,16 +16,16 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
   - `20-iq.php` — IQ section (title, content)
   - `20-sponsors.php` — Sponsors repeater (name, image, url)
   - `30-projects.php` — Project post type and fields
-  - `40-page-happenings.php` — Happenings page template (schedule, groups)
-  - `40-page-installations.php` — Installations page template (groups)
+  - `40-page-experiences.php` — Experiences page template (groups)
 - When adding or modifying content collection schemas in `src/content.config.ts`, read the corresponding ACF file to verify field names and types.
 
 ## Frontend (Astro)
 
-- **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data.
+- **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), and collection utilities (`content.ts`).
 - **Layouts** (`src/layouts/`) — `Layout.astro` is the main shell (header, main, footer).
-- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`.
-- **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo).
+- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageExperiences.astro` handles the experiences page (derives tabs from groups).
+- **Pages** — `src/pages/[...link].astro` handles WP pages dynamically. `src/pages/projects/index.astro` and `[slug].astro` handle the project listing and detail pages.
+- **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo, ProjectCard).
 
 ## Styling
 
