@@ -10,20 +10,23 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 
 - **Advanced Custom Fields (ACF)** defines the content model — field groups, repeaters, options pages.
 - ACF field definitions are in `../backend/theme/includes/` (numbered for load order):
-  - `0-acf.php` — ACF helper functions
-  - `10-menus.php` — Menu registrations (`primary`, `footer`)
-  - `20-contact.php` — Contact options (address, phone, social)
-  - `20-iq.php` — IQ section (title, content)
-  - `20-sponsors.php` — Sponsors repeater (name, image, url)
-  - `30-projects.php` — Project post type and fields
-  - `40-page-experiences.php` — Experiences page template (groups)
+    - `0-acf.php` — ACF helper functions
+    - `10-menus.php` — Menu registrations (`primary`, `footer`)
+    - `20-contact.php` — Contact options (address, phone, social)
+    - `20-iq.php` — IQ section (title, content)
+    - `20-sponsors.php` — Sponsors repeater (name, image, url)
+    - `30-projects.php` — Project post type and fields
+    - `40-page-experiences.php` — Experiences page template (groups)
+- WordPress page templates (in `../backend/theme/`) register named templates for the WP admin. Current templates:
+    - `page-about.php` — About page
+    - `page-experiences.php` — Experiences page
 - When adding or modifying content collection schemas in `src/content.config.ts`, read the corresponding ACF file to verify field names and types.
 
 ## Frontend (Astro)
 
 - **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), and collection utilities (`content.ts`).
 - **Layouts** (`src/layouts/`) — `Layout.astro` is the main shell (header, main, footer).
-- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageExperiences.astro` handles the experiences page (derives tabs from groups).
+- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageAbout.astro` handles the About page (hardcoded institutional content); `PageExperiences.astro` handles the experiences page (derives tabs from groups).
 - **Pages** — `src/pages/[...link].astro` handles WP pages dynamically. `src/pages/projects/index.astro` and `[slug].astro` handle the project listing and detail pages.
 - **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo, ProjectCard).
 
@@ -38,3 +41,11 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 npm run dev      # Start dev server
 npm run build    # Production build
 ```
+
+## End of session
+
+At the end of every session:
+
+1. Update `CHANGES.md` with any notable changes made during the session.
+2. Ask the user if they want to commit. If yes, stage the relevant files and commit with a descriptive commit message reflecting the work done.
+3. Review `CLAUDE.md` and update it to reflect any new files, templates, patterns, or conventions introduced during the session.
