@@ -15,7 +15,7 @@ Four pages. Same nav on every page.
 
 ### Changes from previous years
 
-- "Installations" and "Happening" merged to **Experiences** to cover schedule, installations, food, drink, tattoo studios, and everything else.
+- "Installations" and "Happening" merged to **Experiences**, now organized as three tabs: Schedule, Installations, Food & drink.
 - **About** expanded to include a new "The team" section crediting students and teachers, organized by festival role.
 
 ---
@@ -32,12 +32,19 @@ Four pages. Same nav on every page.
 
 ### Experiences
 
-Four clear sections within one page:
+Three tabs within one page. Schedule is preselected on load.
 
-1. **Installations** — interactive and immersive experiences, themed to the year's concept. Each with a name and short description.
-2. **Food and drink** — vendor profiles with what they serve.
-3. **Other activities** — tattoo studio, merch shop, or similar.
-4. **Schedule** — visual timeline, ideally showing parallel tracks if events overlap across spaces. Artist profiles with photo, short bio, and Instagram link.
+1. **Schedule** — two-day timeline (Friday evening, Saturday daytime). Both days are always visible; the relevant day is preselected based on the current date. Before or after the festival, Friday is preselected. On Saturday, Saturday is preselected. Events without artist data render as compact rows; events with an image and description render as richer rows with the artist name, a short description (2–4 sentences), and a square image.
+2. **Installations** — full-width gallery. One installation per row with a large landscape image, name, and description. Installations are art pieces and get visual presence accordingly.
+3. **Food & drink** — compact 2-column card grid. Vendor name, short description, and image. Density signals "there are options" and makes this section feel browsable and distinct from Installations.
+
+"Other activities" has been dropped.
+
+Each tab has a distinct layout treatment. This is intentional: the three content types have different data shapes and different browsing behaviors. Uniform treatment would either force awkward compromises or make the tabs feel pointless.
+
+**Why Schedule is preselected:** It's the most time-sensitive content. During the festival, people want to know what's on now or next. Before the festival, the schedule builds anticipation. It's the natural entry point.
+
+**Why both days are always accessible:** An earlier approach hid Saturday during Friday evening. This was overengineered. Simple preselection is less code, less confusing, and more respectful of user autonomy.
 
 ### Projects
 
@@ -150,11 +157,11 @@ Exact limits are TBD.
 
 Each project detail page is structured into three fixed sections. Berghs decided the headings are permanent — used across all years so they can display projects from previous festivals alongside current ones consistently.
 
-| Section | Heading |
+| Section | Heading     |
 | ------- | ----------- |
-| 1 | The Company |
-| 2 | Background |
-| 3 | Solution |
+| 1       | The Company |
+| 2       | Background  |
+| 3       | Solution    |
 
 **Editorial note:** Students must use these headings exactly as written. They are not editable.
 
@@ -162,14 +169,14 @@ Each project detail page is structured into three fixed sections. Berghs decided
 
 Each section has a minimum and maximum character count, and there is a total cap across all three sections combined. These limits are a decision made for this project to keep detail pages consistent in length and readable without the need for editorial review of every submission.
 
-| Section | Min | Max |
+| Section     | Min | Max |
 | ----------- | --- | --- |
 | The Company | TBD | TBD |
-| Background | TBD | TBD |
-| Solution | TBD | TBD |
-| **Total** | — | TBD |
+| Background  | TBD | TBD |
+| Solution    | TBD | TBD |
+| **Total**   | —   | TBD |
 
-*Limits will be enforced in the content collection schema (Zod validation at build time).*
+_Limits will be enforced in the content collection schema (Zod validation at build time)._
 
 ---
 
