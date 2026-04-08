@@ -40,6 +40,11 @@
 
         /* Borders */
         --border-default: 1px solid var(--color-border);
+        --border-radius-lg: 0.75rem;
+        --border-radius-pill: 999px;
+
+        /* Secondary text */
+        --color-text-secondary: rgb(from var(--color-text) r g b / 0.55);
     }
 
     html {
