@@ -178,6 +178,13 @@ const { title } = Astro.props;
         setColors(el, triple); // applied immediately to avoid flash on load
 
         setTimeout(() => strobe(el, triple), staggerMs[i]);
+
+        if (region === "cta") {
+            setInterval(() => {
+                const newTriple = pickTriple(triple.primary);
+                strobe(el, newTriple);
+            }, 8000);
+        }
     });
 </script>
 
