@@ -2,6 +2,7 @@
 
 @layer reset, theme, global;
 
+
 /* ==========================================================================
    Theme — design tokens
    ========================================================================== */
@@ -23,7 +24,8 @@
 
         /* Derived */
         --color-border:      rgb(from var(--color-accent-3) r g b / 0.15);
-        --color-text-muted:  rgb(from #ffffff r g b / 0.5);
+        --color-text-on-bg:  #ffffff;
+        --color-text-muted:  rgb(from var(--color-text-on-bg) r g b / 0.5);
 
         /* Typography */
         --font-family-base:    'Inria Sans', system-ui, sans-serif;
@@ -110,7 +112,7 @@
     body {
         font-family: var(--font-family-base);
         font-size: var(--font-size-base);
-        color: #ffffff;
+        color: var(--color-text-on-bg);
         background: var(--color-bg);
         line-height: var(--line-height-base);
         text-wrap: pretty;

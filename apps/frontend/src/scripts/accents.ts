@@ -10,7 +10,7 @@ export const ACCENTS = [
 
 export type Triple = { primary: string; secondary: string; tertiary: string };
 
-function pickDifferentFrom(...excluded: string[]): string {
+export function pickDifferentFrom(...excluded: string[]): string {
     const choices = ACCENTS.filter((c) => !excluded.includes(c));
     return choices[Math.floor(Math.random() * choices.length)];
 }
