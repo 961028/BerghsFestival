@@ -74,7 +74,7 @@ const { title, acf } = page;
 const schedule = ScheduleSchema.parse(acf.schedule);
 const groups = GroupsSchema.parse(acf.groups);
 
-const tabs = [
+const sections = [
     { id: "schedule", label: "Schedule" },
     ...groups.map((g) => ({ id: g.slug, label: g.title })),
 ];
@@ -83,29 +83,12 @@ const tabs = [
 <Layout title={title}>
     <h1 class="page-title">{title}</h1>
 
-    <!-- Tab bar -->
-    <nav role="tablist">
-        {
-            tabs.map((tab, i) => (
-                <button
-                    role="tab"
-                    data-tab={tab.id}
-                    aria-selected={i === 0 ? "true" : "false"}
-                    aria-controls={`panel-${tab.id}`}
-                    id={`tab-${tab.id}`}
-                >
-                    {tab.label}
-                </button>
-            ))
-        }
+    <nav aria-label="Page sections">
+        {sections.map((s) => <a href={`#${s.id}`}>{s.label}</a>)}
     </nav>
 
-    <!-- Schedule panel -->
-    <section
-        id="panel-schedule"
-        role="tabpanel"
-        aria-labelledby="tab-schedule"
-    >
+    <!-- Schedule -->
+    <section id="schedule">
         <div role="group" aria-label="Select day">
             {
                 schedule.map((dayData, i) => (
@@ -153,15 +136,10 @@ const tabs = [
         }
     </section>
 
-    <!-- Group panels (Installations, Food & drink) -->
+    <!-- Group sections -->
     {
         groups.map((group) => (
-            <section
-                id={`panel-${group.slug}`}
-                role="tabpanel"
-                aria-labelledby={`tab-${group.slug}`}
-                hidden
-            >
+            <section id={group.slug}>
                 <div set:html={group.description.html} />
 
                 {group.layout === "music" && (
@@ -196,23 +174,6 @@ const tabs = [
 </Layout>
 
 <script>
-    // Tab switching
-    const tabs = document.querySelectorAll<HTMLButtonElement>("[role='tab']");
-    const panels = document.querySelectorAll<HTMLElement>("[role='tabpanel']");
-
-    function selectTab(tabId: string) {
-        tabs.forEach((t) => {
-            t.setAttribute("aria-selected", String(t.dataset.tab === tabId));
-        });
-        panels.forEach((p) => {
-            p.hidden = p.id !== `panel-${tabId}`;
-        });
-    }
-
-    tabs.forEach((tab) => {
-        tab.addEventListener("click", () => selectTab(tab.dataset.tab!));
-    });
-
     // Day toggle
     const dayPills = document.querySelectorAll<HTMLButtonElement>("[data-day]");
     const dayPanels =
@@ -252,35 +213,45 @@ const tabs = [
 </script>
 
 <style>
-    /* Tab bar */
-    nav[role="tablist"] {
+    /* Anchor nav */
+    nav {
+        --nav-height: 3rem;
         display: flex;
+        gap: var(--space-xs);
         border-block-end: var(--border-default);
         margin-block-end: var(--space-lg);
+        background: var(--color-bg);
+        position: sticky;
+        top: 0;
+        z-index: 10;
     }
 
-    [role="tab"] {
-        background: none;
-        border: none;
-        border-block-end: 2px solid transparent;
+    @media (width < 48rem) {
+        nav {
+            position: static;
+            flex-direction: column;
+            gap: 0;
+        }
+    }
+
+    nav a {
         padding: var(--space-xs) var(--space-sm);
         font-size: var(--font-size-base);
-        font-family: inherit;
         color: var(--color-text-secondary);
-        margin-block-end: -1px;
         white-space: nowrap;
+        border-block-end: 2px solid transparent;
+        margin-block-end: -1px;
+        text-decoration: none;
     }
 
-    [role="tab"][aria-selected="true"] {
-        font-weight: var(--font-weight-semibold);
-        border-block-end-color: var(--color-text);
-        color: var(--color-text);
+    nav a:hover {
+        opacity: 0.7;
     }
 
-    @media (any-hover: hover) and (any-pointer: fine) {
-        [role="tab"]:hover:not([aria-selected="true"]) {
-            opacity: 0.7;
-        }
+    /* Sections */
+    section {
+        scroll-margin-top: var(--nav-height, 3rem);
+        margin-block-end: var(--space-xl);
     }
 
     /* Day toggle */
@@ -370,7 +341,7 @@ const tabs = [
     }
 
     /* Group intro */
-    [role="tabpanel"] > div:first-child {
+    section > div:first-child {
         font-size: var(--font-size-sm);
         color: var(--color-text-secondary);
         max-width: var(--prose-width);
@@ -378,7 +349,7 @@ const tabs = [
     }
 
     /* Food & drink */
-    [role="tabpanel"] > ul {
+    section > ul {
         --food-col-min: 12rem;
         list-style: none;
         margin: 0;
@@ -388,30 +359,30 @@ const tabs = [
         gap: var(--space-xs);
     }
 
-    [role="tabpanel"] > ul li {
+    section > ul li {
         border: var(--border-default);
         border-radius: var(--border-radius-lg);
         overflow: hidden;
     }
 
-    [role="tabpanel"] > ul li :global(img) {
+    section > ul li :global(img) {
         display: block;
         width: 100%;
         aspect-ratio: 2 / 1;
         object-fit: cover;
     }
 
-    [role="tabpanel"] > ul li > div {
+    section > ul li > div {
         padding: var(--space-xs);
     }
 
-    [role="tabpanel"] > ul li p {
+    section > ul li p {
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-semibold);
         margin-block-end: var(--space-xxs);
     }
 
-    [role="tabpanel"] > ul li div > div {
+    section > ul li div > div {
         font-size: var(--font-size-xs);
         color: var(--color-text-secondary);
         margin: 0;
