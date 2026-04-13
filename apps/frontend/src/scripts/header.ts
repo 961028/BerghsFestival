@@ -1,5 +1,30 @@
 import { ACCENTS } from "./accents";
 
+// ── Config ────────────────────────────────────────────────────────────────────
+
+// Fonts cycled on nav link hover/active. Add or remove fonts freely.
+const FONTS = [
+    "'Inria Sans', sans-serif",
+    "Georgia, serif",
+    "Impact, sans-serif",
+    "'Courier New', monospace",
+    "'Arial Black', sans-serif",
+    "'Times New Roman', serif",
+    "Verdana, sans-serif",
+];
+
+// How fast each font/color swap happens during cycling (milliseconds).
+const CYCLE_INTERVAL_MS = 50;
+
+// Logo strobe on page load: how long it runs and how fast it flickers.
+const LOGO_STROBE_DURATION_MS = 600;
+const LOGO_STROBE_INTERVAL_MS = 50;
+
+// Extra pixel padding added to each nav link's reserved width.
+const NAV_LINK_WIDTH_PADDING_PX = 4;
+
+// ─────────────────────────────────────────────────────────────────────────────
+
 const toggle = document.querySelector(".menu-toggle") as HTMLButtonElement;
 const menu = document.getElementById("mobile-menu")!;
 
@@ -27,16 +52,6 @@ menu.querySelectorAll("a").forEach((link) => {
 
 // ── Font cycling ──
 
-const FONTS = [
-    "'Inria Sans', sans-serif",
-    "Georgia, serif",
-    "Impact, sans-serif",
-    "'Courier New', monospace",
-    "'Arial Black', sans-serif",
-    "'Times New Roman', serif",
-    "Verdana, sans-serif",
-];
-
 function randomAccent() {
     return ACCENTS[Math.floor(Math.random() * ACCENTS.length)];
 }
@@ -44,8 +59,8 @@ function randomAccent() {
 function strobeAccentFill(
     el: SVGSVGElement,
     resetTo: string,
-    duration = 600,
-    interval = 50,
+    duration = LOGO_STROBE_DURATION_MS,
+    interval = LOGO_STROBE_INTERVAL_MS,
 ): ReturnType<typeof setInterval> {
     const timer = setInterval(() => {
         el.style.fill = randomAccent();
@@ -61,7 +76,7 @@ function startCycling(span: HTMLElement): ReturnType<typeof setInterval> {
     return setInterval(() => {
         span.style.fontFamily = FONTS[Math.floor(Math.random() * FONTS.length)];
         span.style.color = randomAccent();
-    }, 20);
+    }, CYCLE_INTERVAL_MS);
 }
 
 function stopCycling(span: HTMLElement, timer: ReturnType<typeof setInterval>) {
@@ -97,7 +112,7 @@ document.querySelectorAll<HTMLElement>(".nav-link-text").forEach((span) => {
     }
 
     span.style.display = "inline-block";
-    span.style.width = `${Math.ceil(maxWidth) + 4}px`;
+    span.style.width = `${Math.ceil(maxWidth) + NAV_LINK_WIDTH_PADDING_PX}px`;
     span.style.textAlign = "center";
     span.style.overflow = "hidden";
     span.style.whiteSpace = "nowrap";
@@ -120,7 +135,7 @@ if (logoLink && logoSvg) {
     logoLink.addEventListener("mouseenter", () => {
         logoTimer = setInterval(() => {
             logoSvg.style.fill = randomAccent();
-        }, 20);
+        }, CYCLE_INTERVAL_MS);
     });
 
     logoLink.addEventListener("mouseleave", () => {

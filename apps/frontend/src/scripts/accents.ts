@@ -1,6 +1,12 @@
-// The four signal colors from the design system. All flicker/strobe effects
-// draw from this list. To add or remove colors, edit this array only.
-export const ACCENTS = ["#00ff00", "#ff0000", "#1e00ff", "#eeff00"];
+// ── Config ────────────────────────────────────────────────────────────────────
+// Signal colors used in all flicker/strobe effects. Add, remove, or change
+// colors here — no other file needs to be touched.
+export const ACCENTS = [
+    "#00ff00", // green
+    "#ff0000", // red
+    "#1e00ff", // blue
+    "#eeff00", // yellow
+];
 
 export type Triple = { primary: string; secondary: string; tertiary: string };
 
