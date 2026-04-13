@@ -37,10 +37,30 @@ const FONTS = [
     "Verdana, sans-serif",
 ];
 
+function randomAccent() {
+    return ACCENTS[Math.floor(Math.random() * ACCENTS.length)];
+}
+
+function strobeAccentFill(
+    el: SVGSVGElement,
+    resetTo: string,
+    duration = 600,
+    interval = 50,
+): ReturnType<typeof setInterval> {
+    const timer = setInterval(() => {
+        el.style.fill = randomAccent();
+    }, interval);
+    setTimeout(() => {
+        clearInterval(timer);
+        el.style.fill = resetTo;
+    }, duration);
+    return timer;
+}
+
 function startCycling(span: HTMLElement): ReturnType<typeof setInterval> {
     return setInterval(() => {
         span.style.fontFamily = FONTS[Math.floor(Math.random() * FONTS.length)];
-        span.style.color = ACCENTS[Math.floor(Math.random() * ACCENTS.length)];
+        span.style.color = randomAccent();
     }, 20);
 }
 
@@ -85,6 +105,28 @@ document.querySelectorAll<HTMLElement>(".nav-link-text").forEach((span) => {
 
 if (wasHidden) {
     navLinks.style.display = "";
+}
+
+// ── Logo fill cycling ──
+
+const logoLink = document.querySelector<HTMLElement>("nav > a");
+const logoSvg = logoLink?.querySelector<SVGSVGElement>("svg");
+
+if (logoLink && logoSvg) {
+    strobeAccentFill(logoSvg, "white");
+
+    let logoTimer: ReturnType<typeof setInterval>;
+
+    logoLink.addEventListener("mouseenter", () => {
+        logoTimer = setInterval(() => {
+            logoSvg.style.fill = randomAccent();
+        }, 20);
+    });
+
+    logoLink.addEventListener("mouseleave", () => {
+        clearInterval(logoTimer);
+        logoSvg.style.fill = "white";
+    });
 }
 
 document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
