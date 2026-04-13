@@ -1,0 +1,54 @@
+---
+---
+
+<aside class="cta-banner" data-region="cta">
+    <a href="#" class="cta-inner">
+        <span class="cta-label">Applications open</span>
+        <span class="cta-action">Apply now →</span>
+    </a>
+</aside>
+
+<style>
+    .cta-banner {
+        position: fixed;
+        inset-inline: 0;
+        bottom: 0;
+        z-index: 200;
+        background: var(--color-accent-1);
+        color: #000000;
+        border-block-start: 2px solid #000000;
+    }
+
+    .cta-inner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: var(--max-width);
+        margin-inline: auto;
+        padding: var(--space-sm) var(--site-padding-inline);
+        color: inherit;
+        text-decoration: none;
+        gap: var(--space-md);
+    }
+
+    .cta-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-normal);
+        text-transform: uppercase;
+        letter-spacing: var(--letter-spacing-label);
+    }
+
+    .cta-action {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        text-transform: uppercase;
+        letter-spacing: var(--letter-spacing-label);
+        line-height: 1;
+    }
+
+    @media (any-hover: hover) and (any-pointer: fine) {
+        .cta-inner:hover .cta-action {
+            opacity: 0.6;
+        }
+    }
+</style>

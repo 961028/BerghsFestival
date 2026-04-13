@@ -1,9 +1,11 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 
 import PageDefault from "../templates/Page.astro";
 import PageAbout from "../templates/PageAbout.astro";
 import PageExperiences from "../templates/PageExperiences.astro";
+import PageHome from "../templates/PageHome.astro";
 
 interface Props {
     page: CollectionEntry<"pages">;
@@ -20,11 +22,16 @@ function isValidTemplate(
     return slug !== null && slug in SLUG_TO_TEMPLATE;
 }
 
+const settings = (await getCollection("settings"))[0].data;
 const page = Astro.props.page.data;
 
-const Template = isValidTemplate(page.template)
-    ? SLUG_TO_TEMPLATE[page.template]
-    : PageDefault;
+const isFrontPage = settings.pageOnFront?.id === page.id;
+
+const Template = isFrontPage
+    ? PageHome
+    : isValidTemplate(page.template)
+      ? SLUG_TO_TEMPLATE[page.template]
+      : PageDefault;
 ---
 
 <Template page={page} />

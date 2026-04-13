@@ -1,5 +1,6 @@
 ---
 import Contact from "../components/site/Contact.astro";
+import CtaBanner from "../components/site/CtaBanner.astro";
 import Header from "../components/site/Header.astro";
 import Iq from "../components/site/Iq.astro";
 import Sponsors from "../components/site/Sponsors.astro";
@@ -38,6 +39,7 @@ const { title } = Astro.props;
                 <Contact />
             </footer>
         </div>
+        <CtaBanner />
     </body>
 </html>
 
@@ -137,8 +139,34 @@ const { title } = Astro.props;
     // To remove the stagger, set all staggerMs values to 0.
     // To remove per-region independence entirely, apply a single triple to
     // document.documentElement instead of targeting each region separately.
-    const regions = ["header", "main", "footer"] as const;
-    const staggerMs = [0, 80, 160];
+    // Track header height so child components can reference it via CSS
+    const headerEl = document.querySelector<HTMLElement>("[data-region='header']");
+    if (headerEl) {
+        const updateHeaderHeight = () => {
+            document.documentElement.style.setProperty(
+                "--header-height",
+                `${headerEl.offsetHeight}px`,
+            );
+        };
+        updateHeaderHeight();
+        new ResizeObserver(updateHeaderHeight).observe(headerEl);
+    }
+
+    // Track CTA banner height so body padding-bottom stays in sync
+    const ctaEl = document.querySelector<HTMLElement>("[data-region='cta']");
+    if (ctaEl) {
+        const updateCtaHeight = () => {
+            document.body.style.setProperty(
+                "padding-bottom",
+                `${ctaEl.offsetHeight}px`,
+            );
+        };
+        updateCtaHeight();
+        new ResizeObserver(updateCtaHeight).observe(ctaEl);
+    }
+
+    const regions = ["header", "main", "footer", "cta"] as const;
+    const staggerMs = [0, 80, 160, 240];
 
     regions.forEach((region, i) => {
         const el = document.querySelector<HTMLElement>(
