@@ -42,34 +42,7 @@ const { title } = Astro.props;
 </html>
 
 <script>
-    // ── Accent color palette ───────────────────────────────────────────────────
-    // The four signal colors from the design system. All effects below draw from
-    // this list. To add or remove colors, edit this array.
-    const ACCENTS = ["#00ff00", "#ff0000", "#1e00ff", "#eeff00"];
-
-    // Returns a random accent that is not any of the excluded values.
-    // Used to guarantee colors never repeat back-to-back.
-    function pickDifferentFrom(...excluded: string[]): string {
-        const choices = ACCENTS.filter((c) => !excluded.includes(c));
-        return choices[Math.floor(Math.random() * choices.length)];
-    }
-
-    // ── Color triple ──────────────────────────────────────────────────────────
-    // A triple is { primary, secondary, tertiary } — three mutually distinct
-    // accent colors picked at random. This is the unit that gets applied to a
-    // region on every flash and on final landing.
-    //
-    // primary   → --color-accent-1 (card backgrounds, active nav fills)
-    // secondary → --color-accent-2 (section nav active fill, hover fills)
-    // tertiary  → --color-accent-3 (toggle button fills, borders)
-    type Triple = { primary: string; secondary: string; tertiary: string };
-
-    function pickTriple(excludePrimary = ""): Triple {
-        const primary = pickDifferentFrom(excludePrimary);
-        const secondary = pickDifferentFrom(primary);
-        const tertiary = pickDifferentFrom(primary, secondary);
-        return { primary, secondary, tertiary };
-    }
+    import { ACCENTS, pickTriple, type Triple } from "../scripts/accents";
 
     // ── Effect A: per-region accent colors ────────────────────────────────────
     // The page is split into three independent regions (header, main, footer).
@@ -204,6 +177,6 @@ const { title } = Astro.props;
         flex-direction: column;
         align-items: center;
         gap: var(--space-md);
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-base);
     }
 </style>

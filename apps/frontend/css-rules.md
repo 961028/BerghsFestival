@@ -46,13 +46,10 @@ All design tokens are CSS custom properties defined in the `theme` layer of `glo
 --space-xl:  clamp(2.5rem, 8vmax, 6.25rem);
 
 /* Font sizes */
---font-size-xs:   0.75rem;
---font-size-sm:   0.875rem;
---font-size-base: 1rem;
---font-size-md:   1.125rem;
---font-size-lg:   1.25rem;
---font-size-xl:   clamp(1.5rem, 4vw, 2rem);
---font-size-xxl:  clamp(2rem, 6vw, 3rem);
+--font-size-xs:      0.875rem;   /* labels, metadata, timestamps */
+--font-size-base:    1.125rem;   /* body text, UI copy */
+--font-size-lg:      clamp(2rem, 5vw, 2.75rem);   /* nav, card titles, section headings */
+--font-size-display: clamp(2.75rem, 8vw, 4.5rem); /* page titles only */
 
 /* Layout */
 --max-width:           64rem;
