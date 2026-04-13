@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
+
 @layer reset, theme, global, layout, components, utilities, states;
 
 /* ==========================================================================
@@ -7,53 +9,56 @@
 @layer theme {
     :root {
         /* Colors */
-        --color-text: oklch(0 0 0);
-        --color-bg: oklch(1 0 0);
-        --color-primary: oklch(0 0 0);
-        --color-border: rgb(from var(--color-primary) r g b / 0.15);
+        --color-bg:           #000000;
+        --color-text:         #ffffff;
+        --color-primary:      #ffffff;
+
+        /* Accent colors */
+        --color-accent-green:  #00ff00;
+        --color-accent-red:    #ff0000;
+        --color-accent-blue:   #1e00ff;
+        --color-accent-yellow: #eeff00;
+
+        /* Derived */
+        --color-border:         rgb(from var(--color-primary) r g b / 0.15);
+        --color-text-secondary: rgb(from var(--color-text) r g b / 0.55);
 
         /* Typography */
-        --font-family-base: system-ui, -apple-system, sans-serif;
-        --font-size-xs: 0.75rem;
-        --font-size-base: 1rem;
-        --font-size-sm: 0.875rem;
-        --font-size-md: 1.125rem;
-        --font-size-lg: 1.25rem;
-        --font-size-xl: clamp(1.5rem, 4vw, 2rem);
-        --font-size-xxl: clamp(2rem, 6vw, 3rem);
-        --font-weight-normal: 400;
-        --font-weight-semibold: 600;
-        --font-weight-bold: 700;
-        --line-height-base: 1.4;
-        --line-height-tight: 1.2;
-        --line-height-loose: 1.5;
-        --letter-spacing-logo: 0.125em;
+        --font-family-base:    'Inria Sans', system-ui, sans-serif;
+        --font-size-xs:        0.75rem;
+        --font-size-base:      1rem;
+        --font-size-sm:        0.875rem;
+        --font-size-md:        1.125rem;
+        --font-size-lg:        1.25rem;
+        --font-size-xl:        clamp(1.5rem, 4vw, 2rem);
+        --font-size-xxl:       clamp(2rem, 6vw, 3rem);
+        --font-weight-normal:  400;
+        --font-weight-bold:    700;
+        --line-height-base:    1.4;
+        --line-height-tight:   1.2;
+        --letter-spacing-label: 0.15em;
+        --letter-spacing-logo:  0.125em;
 
         /* Spacing */
         --space-xxs: 0.25rem;
-        --space-xs: 0.5rem;
-        --space-sm: 1rem;
-        --space-md: 1.25rem;
-        --space-lg: clamp(1.25rem, 4vmax, 2.5rem);
-        --space-xl: clamp(2.5rem, 8vmax, 6.25rem);
+        --space-xs:  0.5rem;
+        --space-sm:  1rem;
+        --space-md:  1.25rem;
+        --space-lg:  clamp(1.25rem, 4vmax, 2.5rem);
+        --space-xl:  clamp(2.5rem, 8vmax, 6.25rem);
 
         /* Layout */
-        --max-width: 64rem;
-        --prose-width: 40rem;
+        --max-width:           64rem;
+        --prose-width:         40rem;
         --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
-        --breakpoint-md: 48rem;
+        --breakpoint-md:       48rem;
 
         /* Borders */
         --border-default: 1px solid var(--color-border);
-        --border-radius-lg: 0.75rem;
-        --border-radius-pill: 999px;
-
-        /* Secondary text */
-        --color-text-secondary: rgb(from var(--color-text) r g b / 0.55);
     }
 
     html {
-        color-scheme: light;
+        color-scheme: dark;
         accent-color: var(--color-primary);
     }
 }

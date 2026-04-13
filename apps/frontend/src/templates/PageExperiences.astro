@@ -281,7 +281,7 @@ const sections = [
     [role="group"] button {
         background: none;
         border: var(--border-default);
-        border-radius: var(--border-radius-pill);
+        border-radius: 0;
         padding: var(--space-xxs) var(--space-sm);
         font-size: var(--font-size-sm);
         font-family: inherit;
@@ -312,7 +312,7 @@ const sections = [
 
     [data-day-panel] li span {
         font-size: var(--font-size-xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         color: var(--color-text-secondary);
         padding-block-start: 0.2em;
         line-height: var(--line-height-tight);
@@ -320,7 +320,7 @@ const sections = [
 
     [data-day-panel] li p {
         font-size: var(--font-size-base);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         margin: 0;
     }
 
@@ -344,7 +344,7 @@ const sections = [
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-normal);
         color: var(--color-text-secondary);
-        line-height: var(--line-height-loose);
+        line-height: 1.6;
         margin: 0;
     }
 
@@ -353,7 +353,7 @@ const sections = [
         width: clamp(5rem, 20%, 8.75rem);
         aspect-ratio: 1;
         object-fit: cover;
-        border-radius: var(--border-radius-lg);
+        border-radius: 0;
         display: block;
     }
 
@@ -378,7 +378,7 @@ const sections = [
 
     section > ul li {
         border: var(--border-default);
-        border-radius: var(--border-radius-lg);
+        border-radius: 0;
         overflow: hidden;
     }
 
@@ -395,7 +395,7 @@ const sections = [
 
     section > ul li p {
         font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-bold);
         margin-block-end: var(--space-xxs);
     }
 

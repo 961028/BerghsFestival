@@ -28,7 +28,7 @@ No italic usage. No underlines. Hierarchy is achieved through size and weight co
 
 ## 4. Component Stylings
 
-- **Dividers:** 1.27px solid white lines. Used to separate grid sections both horizontally and vertically. Lines span the full width or height of the layout.
+- **Dividers:** 1px solid white lines. Used to separate grid sections both horizontally and vertically. Lines span the full width or height of the layout.
 - **Color Swatches:** Equal-width rectangular blocks, arranged in a horizontal row with no gaps. No rounded corners. No borders except on the black swatch, which gets a 1px white stroke to distinguish it from the background.
 - **Logo Lockup:** The brand name is set in a custom ultra-bold condensed sans-serif, stacked in two lines ("FRICTION" / "FESTIVAL"). White on black. Text is left-aligned to the grid. The type is massive, filling the available space.
 - **Symbol/Icon:** A geometric circle and rectangle composition. The circle is solid white. The rectangle is solid white, overlapping or adjacent. These are abstract brand marks, not functional icons.

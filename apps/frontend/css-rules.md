@@ -59,10 +59,19 @@ All design tokens are CSS custom properties defined in the `theme` layer of `glo
 --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
 
 /* Borders */
---border-default:      1px solid var(--color-border);
---border-radius-lg:    0.75rem;
---border-radius-pill:  999px;
+--border-default: 1px solid var(--color-border);
+
+/* Accent colors */
+--color-accent-green:  #00ff00;
+--color-accent-red:    #ff0000;
+--color-accent-blue:   #1e00ff;
+--color-accent-yellow: #eeff00;
+
+/* Label tracking */
+--letter-spacing-label: 0.15em;
 ```
+
+No border-radius tokens exist — the design uses sharp corners everywhere.
 
 If you need a value that no token covers, add the token to `global.css` first, then use it. Do not add one-off values.
 
