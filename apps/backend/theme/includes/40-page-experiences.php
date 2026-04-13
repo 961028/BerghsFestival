@@ -101,6 +101,12 @@ function _app_page_experiences_register_fields() {
 							'type'  => 'text',
 						),
 						array(
+							'key'   => _app_page_experiences_field_key( 'groups', 'slug' ),
+							'label' => 'Slug',
+							'name'  => 'slug',
+							'type'  => 'text',
+						),
+						array(
 							'key'     => _app_page_experiences_field_key( 'groups', 'layout' ),
 							'label'   => 'Layout',
 							'name'    => 'layout',

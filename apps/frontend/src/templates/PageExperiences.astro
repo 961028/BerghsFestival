@@ -48,6 +48,7 @@ const GroupsSchema = z.array(
     z
         .object({
             title: z.string(),
+            slug: z.string().optional(),
             layout: z.enum(["music", "installations", "food"]),
             description: z.string().transform((val) => ({ html: val })),
             items: z.array(
@@ -65,7 +66,7 @@ const GroupsSchema = z.array(
         })
         .transform((val) => ({
             ...val,
-            slug: z.string().slugify().parse(val.title),
+            slug: val.slug || val.title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, ""),
         })),
 );
 
