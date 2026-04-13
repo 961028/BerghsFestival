@@ -35,6 +35,7 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 - **Design tokens** (colors, spacing, typography, borders) live as CSS custom properties in `src/styles/global.css`. Only tokens and true base styles (box-sizing, body font) belong there.
 - **All other CSS** goes in component `<style>` blocks. Astro scopes these to the component automatically, so styles never leak out. Use design tokens from `global.css` via `var(--token-name)`.
 - **CSS rules and conventions** are documented in [`css-rules.md`](css-rules.md). Read it before writing any CSS.
+- **Design system** (visual theme, color palette, typography, component styling, spacing) is documented in [`DESIGN.md`](DESIGN.md). Read it before making any visual or styling decisions.
 
 ## Commands
 
