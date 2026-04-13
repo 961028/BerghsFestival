@@ -198,11 +198,7 @@ const sections = [
     });
 
     // Default day: Saturday (day 6) → index 1, otherwise → index 0.
-    // Dev convenience: toggle by even/odd minute so both states are testable.
-    const now = new Date();
-    const defaultDay = now.getDay() === 6
-          ? 1
-          : 0;
+    const defaultDay = new Date().getDay() === 6 ? 1 : 0;
 
     selectDay(defaultDay);
 
