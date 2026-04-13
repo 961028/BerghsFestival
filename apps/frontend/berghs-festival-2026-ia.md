@@ -32,7 +32,7 @@ Four pages. Same nav on every page.
 
 ### Experiences
 
-Three tabs within one page. Schedule is preselected on load.
+Single scrollable page. Sections are navigated via anchor links in a nav bar at the top of the page content. The nav is sticky on desktop (sits below the site header), and scrolls away naturally on mobile.
 
 1. **Schedule** — two-day timeline (Friday evening, Saturday daytime). Both days are always visible; the relevant day is preselected based on the current date. Before or after the festival, Friday is preselected. On Saturday, Saturday is preselected. Events without artist data render as compact rows; events with an image and description render as richer rows with the artist name, a short description (2–4 sentences), and a square image.
 2. **Installations** — full-width gallery. One installation per row with a large landscape image, name, and description. Installations are art pieces and get visual presence accordingly.
@@ -40,9 +40,11 @@ Three tabs within one page. Schedule is preselected on load.
 
 "Other activities" has been dropped.
 
-Each tab has a distinct layout treatment. This is intentional: the three content types have different data shapes and different browsing behaviors. Uniform treatment would either force awkward compromises or make the tabs feel pointless.
+Each section has a distinct layout treatment. This is intentional: the three content types have different data shapes and different browsing behaviors.
 
-**Why Schedule is preselected:** It's the most time-sensitive content. During the festival, people want to know what's on now or next. Before the festival, the schedule builds anticipation. It's the natural entry point.
+**Why scroll instead of tabs:** Tabs hide content — users who don't notice the tabs miss entire sections. Scrolling is universal, and anchor links let users jump directly to a section while still supporting discovery through scrolling.
+
+**Why the nav is not sticky on mobile:** A sticky nav on small screens consumes too much vertical space relative to the content it navigates. Mobile users scroll naturally; the nav serves as a jump-off point at the top of the page.
 
 **Why both days are always accessible:** An earlier approach hid Saturday during Friday evening. This was overengineered. Simple preselection is less code, less confusing, and more respectful of user autonomy.
 
