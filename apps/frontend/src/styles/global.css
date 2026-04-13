@@ -41,6 +41,7 @@
         --max-width: 64rem;
         --prose-width: 40rem;
         --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+        --breakpoint-md: 48rem;
 
         /* Borders */
         --border-default: 1px solid var(--color-border);
@@ -70,6 +71,7 @@
 
     html {
         scrollbar-gutter: stable both-edges;
+        scroll-behavior: smooth;
     }
 
     html,
