@@ -33,8 +33,9 @@ const menuItems = (
                                     ? "page"
                                     : undefined
                             }
+                            class="nav-link"
                         >
-                            {menuItem.data.title}
+                            <span class="nav-link-text">{menuItem.data.title}</span>
                         </a>
                     </li>
                 ))
@@ -64,8 +65,9 @@ const menuItems = (
                             ? "page"
                             : undefined
                     }
+                    class="nav-link"
                 >
-                    {menuItem.data.title}
+                    <span class="nav-link-text">{menuItem.data.title}</span>
                 </a>
             ))
         }
@@ -98,6 +100,81 @@ const menuItems = (
 
     menu.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", close);
+    });
+
+    // ── Font cycling ──
+
+    const FONTS = [
+        "Georgia, serif",
+        "Impact, sans-serif",
+        "'Courier New', monospace",
+        "'Arial Black', sans-serif",
+        "'Times New Roman', serif",
+        "Verdana, sans-serif",
+    ];
+
+    const COLORS = [
+        "#ff3b30",
+        "#ff9500",
+        "#34c759",
+        "#007aff",
+        "#af52de",
+        "#ff2d55",
+    ];
+
+    function startCycling(span: HTMLElement): ReturnType<typeof setInterval> {
+        return setInterval(() => {
+            span.style.fontFamily = FONTS[Math.floor(Math.random() * FONTS.length)];
+            span.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+        }, 20);
+    }
+
+    function stopCycling(span: HTMLElement, timer: ReturnType<typeof setInterval>) {
+        clearInterval(timer);
+        span.style.fontFamily = "";
+        span.style.color = "";
+    }
+
+    // Lock each nav-link-text span to the width of its widest font rendering
+    document.querySelectorAll<HTMLElement>(".nav-link-text").forEach((span) => {
+        const text = span.textContent ?? "";
+        const cs = getComputedStyle(span);
+        const fontSize = cs.fontSize;
+        const fontWeight = cs.fontWeight;
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d")!;
+
+        let maxWidth = 0;
+        for (const font of FONTS) {
+            ctx.font = `${fontWeight} ${fontSize} ${font}`;
+            maxWidth = Math.max(maxWidth, ctx.measureText(text).width);
+        }
+
+        span.style.display = "inline-block";
+        span.style.width = `${Math.ceil(maxWidth)}px`;
+        span.style.textAlign = "center";
+        span.style.overflow = "hidden";
+        span.style.whiteSpace = "nowrap";
+    });
+
+    document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
+        const span = link.querySelector<HTMLElement>(".nav-link-text")!;
+        const isActive = link.getAttribute("aria-current") === "page";
+        let timer: ReturnType<typeof setInterval>;
+
+        if (isActive) {
+            // Active link cycles immediately and continuously
+            timer = startCycling(span);
+        } else {
+            // Non-active links cycle on hover (desktop)
+            link.addEventListener("mouseenter", () => {
+                timer = startCycling(span);
+            });
+            link.addEventListener("mouseleave", () => {
+                stopCycling(span, timer);
+            });
+        }
     });
 </script>
 
@@ -218,9 +295,5 @@ const menuItems = (
         font-size: var(--font-size-xl);
         font-weight: var(--font-weight-bold);
         text-align: end;
-    }
-
-    .mobile-menu a[aria-current="page"] {
-        opacity: 0.55;
     }
 </style>
