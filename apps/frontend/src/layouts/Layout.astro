@@ -28,13 +28,11 @@ const { title } = Astro.props;
     </head>
     <body>
         <div class="wrapper">
-            <Header />
-
-            <main>
+            <div data-region="header"><Header /></div>
+            <main data-region="main">
                 <slot />
             </main>
-
-            <footer>
+            <footer data-region="footer">
                 <Sponsors />
                 <Iq />
                 <Contact />
@@ -43,6 +41,145 @@ const { title } = Astro.props;
     </body>
 </html>
 
+<script>
+    // ── Accent color palette ───────────────────────────────────────────────────
+    // The four signal colors from the design system. All effects below draw from
+    // this list. To add or remove colors, edit this array.
+    const ACCENTS = ["#00ff00", "#ff0000", "#1e00ff", "#eeff00"];
+
+    // Returns a random accent that is not any of the excluded values.
+    // Used to guarantee colors never repeat back-to-back.
+    function pickDifferentFrom(...excluded: string[]): string {
+        const choices = ACCENTS.filter((c) => !excluded.includes(c));
+        return choices[Math.floor(Math.random() * choices.length)];
+    }
+
+    // ── Color triple ──────────────────────────────────────────────────────────
+    // A triple is { primary, secondary, tertiary } — three mutually distinct
+    // accent colors picked at random. This is the unit that gets applied to a
+    // region on every flash and on final landing.
+    //
+    // primary   → --color-accent-1 (card backgrounds, active nav fills)
+    // secondary → --color-accent-2 (section nav active fill, hover fills)
+    // tertiary  → --color-accent-3 (toggle button fills, borders)
+    type Triple = { primary: string; secondary: string; tertiary: string };
+
+    function pickTriple(excludePrimary = ""): Triple {
+        const primary = pickDifferentFrom(excludePrimary);
+        const secondary = pickDifferentFrom(primary);
+        const tertiary = pickDifferentFrom(primary, secondary);
+        return { primary, secondary, tertiary };
+    }
+
+    // ── Effect A: per-region accent colors ────────────────────────────────────
+    // The page is split into three independent regions (header, main, footer).
+    // Each region gets its own randomly chosen triple on every page load.
+    // To disable this effect entirely, replace the forEach at the bottom with a
+    // single setColors call using one fixed triple, or remove it.
+    //
+    // sessionStorage ensures the primary color never repeats in the same region
+    // on consecutive page loads. To allow repeats, remove the sessionStorage
+    // calls in assignRegion.
+    function prevKey(region: string) {
+        return `text-accent-${region}`;
+    }
+
+    function assignRegion(region: string): Triple {
+        const prev = sessionStorage.getItem(prevKey(region)) ?? "";
+        const triple = pickTriple(prev);
+        sessionStorage.setItem(prevKey(region), triple.primary);
+        return triple;
+    }
+
+    // Applies a color triple to a region element. All CSS custom properties
+    // that reference color tokens are overridden on the element so that
+    // var(--color-accent-1), var(--color-accent-2), var(--color-accent-3), etc.
+    // resolve to the correct accent colors inside the region subtree.
+    //
+    // When applied to the "main" region, also dispatches a "regioncolors" custom
+    // event on the element so page-specific scripts (e.g. PageExperiences) can
+    // react to each flash and update their own elements in sync.
+    // The event detail includes { primary, secondary, tertiary, fourth } where
+    // `fourth` is the one ACCENTS color not present in the triple.
+    function setColors(
+        el: HTMLElement,
+        { primary, secondary, tertiary }: Triple,
+    ) {
+        el.style.setProperty("--color-accent-1", primary);
+        el.style.setProperty("--color-accent-2", secondary);
+        el.style.setProperty("--color-accent-3", tertiary);
+        el.style.setProperty(
+            "--color-border",
+            `rgb(from ${tertiary} r g b / 0.15)`,
+        );
+
+        if (el.dataset["region"] === "main") {
+            const fourth = ACCENTS.find(
+                (c) => c !== primary && c !== secondary && c !== tertiary,
+            )!;
+            el.dispatchEvent(
+                new CustomEvent("regioncolors", {
+                    detail: { primary, secondary, tertiary, fourth },
+                    bubbles: true,
+                }),
+            );
+        }
+    }
+
+    // ── Effect B: strobe on page load ─────────────────────────────────────────
+    // Each region rapidly cycles through random color triples before snapping to
+    // its final assigned triple. On every flash, all three colors (primary,
+    // secondary, tertiary) change simultaneously and independently.
+    //
+    // To disable the strobe and just apply the final colors immediately, remove
+    // the setTimeout(() => strobe(...)) call in the forEach below and keep only
+    // setColors(el, triple).
+    //
+    // To adjust speed: change `interval` (ms between flashes, min 334ms = 3 Hz).
+    // To adjust duration: change `duration` (ms before snapping to final colors).
+    function strobe(
+        el: HTMLElement,
+        finalTriple: Triple,
+        duration = 600,
+        interval = 50,
+    ) {
+        setColors(el, finalTriple);
+
+        let lastPrimary = finalTriple.primary;
+        const timer = setInterval(() => {
+            const next = pickTriple(lastPrimary);
+            setColors(el, next);
+            lastPrimary = next.primary;
+        }, interval);
+
+        setTimeout(() => {
+            clearInterval(timer);
+            setColors(el, finalTriple);
+        }, duration);
+    }
+
+    // ── Effect C: staggered region strobes ────────────────────────────────────
+    // The three regions start their strobes slightly out of phase with each
+    // other, so they are never in sync. This creates additional visual chaos.
+    // To remove the stagger, set all staggerMs values to 0.
+    // To remove per-region independence entirely, apply a single triple to
+    // document.documentElement instead of targeting each region separately.
+    const regions = ["header", "main", "footer"] as const;
+    const staggerMs = [0, 80, 160];
+
+    regions.forEach((region, i) => {
+        const el = document.querySelector<HTMLElement>(
+            `[data-region="${region}"]`,
+        );
+        if (!el) return;
+
+        const triple = assignRegion(region);
+        setColors(el, triple); // applied immediately to avoid flash on load
+
+        setTimeout(() => strobe(el, triple), staggerMs[i]);
+    });
+</script>
+
 <style>
     .wrapper {
         max-width: var(--max-width);
@@ -50,6 +187,10 @@ const { title } = Astro.props;
         display: grid;
         grid-template-rows: auto 1fr auto;
         min-height: 100dvh;
+    }
+
+    [data-region="header"] {
+        border-block-end: var(--border-default);
     }
 
     main {

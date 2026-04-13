@@ -57,21 +57,23 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 
     [data-filter] {
         background: none;
-        border: var(--border-default);
+        border: none;
         padding: var(--space-xs) var(--space-sm);
-        color: var(--color-text);
         font-size: var(--font-size-base);
         font-family: inherit;
+        color: inherit;
+        cursor: pointer;
     }
 
     [data-filter][aria-pressed="true"] {
-        background-color: var(--color-text);
-        color: var(--color-bg);
+        background-color: var(--color-accent-3);
+        color: #000000;
     }
 
     @media (any-hover: hover) and (any-pointer: fine) {
         [data-filter]:not([aria-pressed="true"]):hover {
-            opacity: 0.6;
+            background-color: var(--color-accent-3);
+            color: #000000;
         }
     }
 

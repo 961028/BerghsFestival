@@ -27,7 +27,9 @@ const ScheduleSchema = z.array(
                             .string()
                             .nullable()
                             .transform((v) =>
-                                v ? reference("media").nullable().parse(v) : null,
+                                v
+                                    ? reference("media").nullable().parse(v)
+                                    : null,
                             ),
                     ),
                     description: z.string().nullable().optional(),
@@ -84,7 +86,13 @@ const sections = [
     <h1 class="page-title">{title}</h1>
 
     <nav aria-label="Page sections">
-        {sections.map((s) => <a href={`#${s.id}`}>{s.label}</a>)}
+        {
+            sections.map((s, i) => (
+                <a href={`#${s.id}`} aria-current={i === 0 ? "true" : "false"}>
+                    {s.label}
+                </a>
+            ))
+        }
     </nav>
 
     <!-- Schedule -->
@@ -142,9 +150,7 @@ const sections = [
             <section id={group.slug}>
                 <div set:html={group.description.html} />
 
-                {group.layout === "music" && (
-                    <MusicList items={group.items} />
-                )}
+                {group.layout === "music" && <MusicList items={group.items} />}
                 {group.layout === "installations" && (
                     <InstallationsList items={group.items} />
                 )}
@@ -203,7 +209,9 @@ const sections = [
     selectDay(defaultDay);
 
     // Active anchor nav link — mirrors site nav aria-current="page" pattern
-    const navLinks = document.querySelectorAll<HTMLAnchorElement>("nav[aria-label='Page sections'] a");
+    const navLinks = document.querySelectorAll<HTMLAnchorElement>(
+        "nav[aria-label='Page sections'] a",
+    );
     const sections = document.querySelectorAll<HTMLElement>("section[id]");
 
     const observer = new IntersectionObserver(
@@ -211,8 +219,12 @@ const sections = [
             for (const entry of entries) {
                 if (entry.isIntersecting) {
                     navLinks.forEach((link) => {
-                        const active = link.getAttribute("href") === `#${entry.target.id}`;
-                        link.setAttribute("aria-current", active ? "true" : "false");
+                        const active =
+                            link.getAttribute("href") === `#${entry.target.id}`;
+                        link.setAttribute(
+                            "aria-current",
+                            active ? "true" : "false",
+                        );
                     });
                 }
             }
@@ -231,15 +243,17 @@ const sections = [
         gap: var(--space-xs);
         border-block-end: var(--border-default);
         margin-block-end: var(--space-lg);
-        background: var(--color-bg);
+        margin-inline: calc(-1 * var(--site-padding-inline));
+        padding-inline: var(--site-padding-inline);
+        background: #000000;
         position: sticky;
         top: 0;
         z-index: 10;
+        padding-block-start: var(--space-md);
     }
 
     @media (width < 48rem) {
         nav {
-            position: static;
             flex-direction: column;
             gap: 0;
         }
@@ -248,21 +262,15 @@ const sections = [
     nav a {
         padding: var(--space-xs) var(--space-sm);
         font-size: var(--font-size-base);
-        color: var(--color-text-secondary);
+        color: inherit;
         white-space: nowrap;
-        border-block-end: 2px solid transparent;
-        margin-block-end: -1px;
         text-decoration: none;
     }
 
-    nav a:hover {
-        opacity: 0.7;
-    }
-
     nav a[aria-current="true"] {
-        color: var(--color-text);
+        background: var(--color-accent-2);
+        color: #000000;
         font-weight: var(--font-weight-bold);
-        border-block-end-color: currentColor;
     }
 
     /* Sections */
@@ -279,19 +287,19 @@ const sections = [
     }
 
     [role="group"] button {
+        appearance: none;
         background: none;
-        border: var(--border-default);
-        border-radius: 0;
+        border: none;
         padding: var(--space-xxs) var(--space-sm);
         font-size: var(--font-size-sm);
         font-family: inherit;
-        color: var(--color-text-secondary);
+        color: inherit;
+        cursor: pointer;
     }
 
     [role="group"] button[aria-pressed="true"] {
-        background: var(--color-text);
-        color: var(--color-bg);
-        border-color: var(--color-text);
+        background: var(--color-accent-3);
+        color: #000000;
     }
 
     /* Schedule rows */
@@ -313,7 +321,7 @@ const sections = [
     [data-day-panel] li span {
         font-size: var(--font-size-xs);
         font-weight: var(--font-weight-bold);
-        color: var(--color-text-secondary);
+        color: rgba(255, 255, 255, 0.5);
         padding-block-start: 0.2em;
         line-height: var(--line-height-tight);
     }
@@ -343,7 +351,7 @@ const sections = [
     [data-day-panel] li[data-rich] p:last-child {
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-normal);
-        color: var(--color-text-secondary);
+        color: rgba(255, 255, 255, 0.5);
         line-height: 1.6;
         margin: 0;
     }
@@ -360,7 +368,7 @@ const sections = [
     /* Group intro */
     section > div:first-child {
         font-size: var(--font-size-sm);
-        color: var(--color-text-secondary);
+        color: rgba(255, 255, 255, 0.5);
         max-width: var(--prose-width);
         margin-block-end: var(--space-md);
     }
@@ -372,7 +380,10 @@ const sections = [
         margin: 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--food-col-min)), 1fr));
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(100%, var(--food-col-min)), 1fr)
+        );
         gap: var(--space-xs);
     }
 
@@ -401,7 +412,7 @@ const sections = [
 
     section > ul li div > div {
         font-size: var(--font-size-xs);
-        color: var(--color-text-secondary);
+        color: rgba(255, 255, 255, 0.5);
         margin: 0;
     }
 </style>

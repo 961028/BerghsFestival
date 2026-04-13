@@ -10,18 +10,19 @@
     :root {
         /* Colors */
         --color-bg:           #000000;
-        --color-text:         #ffffff;
-        --color-primary:      #ffffff;
+        --color-text:         #000000; /* text placed ON top of accent fills */
+        --color-accent-1:     #ffffff; /* primary fill — randomised per region on load */
+        --color-accent-2:     #ffffff; /* secondary fill — randomised per region on load */
+        --color-accent-3:     #ffffff; /* tertiary fill — randomised per region on load */
 
-        /* Accent colors */
+        /* Accent color palette (source values for the randomiser) */
         --color-accent-green:  #00ff00;
         --color-accent-red:    #ff0000;
         --color-accent-blue:   #1e00ff;
         --color-accent-yellow: #eeff00;
 
         /* Derived */
-        --color-border:         rgb(from var(--color-primary) r g b / 0.15);
-        --color-text-secondary: rgb(from var(--color-text) r g b / 0.55);
+        --color-border: rgb(from var(--color-accent-3) r g b / 0.15);
 
         /* Typography */
         --font-family-base:    'Inria Sans', system-ui, sans-serif;
@@ -59,7 +60,7 @@
 
     html {
         color-scheme: dark;
-        accent-color: var(--color-primary);
+        accent-color: var(--color-accent-1);
     }
 }
 
@@ -112,7 +113,7 @@
     body {
         font-family: var(--font-family-base);
         font-size: var(--font-size-base);
-        color: var(--color-text);
+        color: #ffffff;
         background: var(--color-bg);
         line-height: var(--line-height-base);
         text-wrap: pretty;

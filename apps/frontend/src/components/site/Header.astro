@@ -13,13 +13,16 @@ const menuItems = (
 
 <header>
     <nav>
-        <a href="https://www.berghs.se/" target="_blank">
-            <Svg
-                name="berghs-soc"
-                alt=""
-                style="width: auto; height: var(--font-size-base);"
-            />
-        </a>
+        <button
+            class="menu-toggle"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Open menu"
+        >
+            <span class="bar bar-top"></span>
+            <span class="bar bar-mid"></span>
+            <span class="bar bar-bot"></span>
+        </button>
 
         <ul class="nav-links" role="list">
             {
@@ -42,16 +45,13 @@ const menuItems = (
             }
         </ul>
 
-        <button
-            class="menu-toggle"
-            aria-expanded="false"
-            aria-controls="mobile-menu"
-            aria-label="Open menu"
-        >
-            <span class="bar bar-top"></span>
-            <span class="bar bar-mid"></span>
-            <span class="bar bar-bot"></span>
-        </button>
+        <a href="https://www.berghs.se/" target="_blank">
+            <Svg
+                name="berghs-soc"
+                alt=""
+                style="width: auto; height: var(--font-size-base);"
+            />
+        </a>
     </nav>
 
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
@@ -135,7 +135,15 @@ const menuItems = (
         span.style.color = "";
     }
 
-    // Lock each nav-link-text span to the width of its widest font rendering
+    // Lock each nav-link-text span to the width of its widest font rendering.
+    // Measure against the nav-links container (which may be display:none on mobile,
+    // so we temporarily show it to get a valid computed font-size).
+    const navLinks = document.querySelector<HTMLElement>(".nav-links")!;
+    const wasHidden = getComputedStyle(navLinks).display === "none";
+    if (wasHidden) {
+        navLinks.style.display = "flex";
+    }
+
     document.querySelectorAll<HTMLElement>(".nav-link-text").forEach((span) => {
         const text = span.textContent ?? "";
         const cs = getComputedStyle(span);
@@ -157,6 +165,10 @@ const menuItems = (
         span.style.overflow = "hidden";
         span.style.whiteSpace = "nowrap";
     });
+
+    if (wasHidden) {
+        navLinks.style.display = "";
+    }
 
     document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
         const span = link.querySelector<HTMLElement>(".nav-link-text")!;
@@ -182,6 +194,7 @@ const menuItems = (
     header {
         border-block-end: var(--border-default);
         position: relative;
+        z-index: 100;
     }
 
     nav {
@@ -248,7 +261,10 @@ const menuItems = (
         list-style: none;
         padding: 0;
         margin: 0;
+        font-size: var(--font-size-xl);
+        text-transform: lowercase;
     }
+
 
     @media (min-width: 48rem) { /* --breakpoint-md */
         .menu-toggle {
@@ -266,8 +282,8 @@ const menuItems = (
         position: absolute;
         inset-inline: 0;
         top: 100%;
-        background: var(--color-primary);
-        color: var(--color-bg);
+        background: var(--color-accent-1);
+        color: #000000;
         display: flex;
         flex-direction: column;
         padding: var(--space-lg) var(--site-padding-inline);
