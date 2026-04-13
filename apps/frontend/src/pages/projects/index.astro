@@ -7,13 +7,13 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 ---
 
 <Layout title="Projects">
-    <div class="filters">
-        <button class="filter-btn active" data-filter="all">All Projects</button>
-        <button class="filter-btn" data-filter="group">Group</button>
-        <button class="filter-btn" data-filter="individual">Individual</button>
+    <div>
+        <button data-filter="all" aria-pressed="true">All Projects</button>
+        <button data-filter="group" aria-pressed="false">Group</button>
+        <button data-filter="individual" aria-pressed="false">Individual</button>
     </div>
 
-    <ul class="list">
+    <ul>
         {
             projects.map((project) => (
                 <li data-team-size={project.teamMembers.length > 1 ? "group" : "individual"}>
@@ -31,13 +31,13 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 </Layout>
 
 <script>
-    const buttons = document.querySelectorAll<HTMLButtonElement>(".filter-btn");
-    const items = document.querySelectorAll<HTMLLIElement>(".list li");
+    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+    const items = document.querySelectorAll<HTMLLIElement>("ul li");
 
     buttons.forEach((btn) => {
         btn.addEventListener("click", () => {
-            buttons.forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
+            buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
+            btn.setAttribute("aria-pressed", "true");
 
             const filter = btn.dataset.filter;
             items.forEach((item) => {
@@ -49,43 +49,43 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 </script>
 
 <style>
-    .filters {
+    div {
         display: flex;
         gap: var(--space-xs);
-        margin-bottom: var(--space-sm);
+        margin-block-end: var(--space-sm);
     }
 
-    .filter-btn {
+    [data-filter] {
         background: none;
         border: var(--border-default);
         padding: var(--space-xs) var(--space-sm);
-        cursor: pointer;
         color: var(--color-text);
         font-size: var(--font-size-base);
         font-family: inherit;
     }
 
-    .filter-btn.active {
+    [data-filter][aria-pressed="true"] {
         background-color: var(--color-text);
         color: var(--color-bg);
     }
 
     @media (any-hover: hover) and (any-pointer: fine) {
-        .filter-btn:not(.active):hover {
+        [data-filter]:not([aria-pressed="true"]):hover {
             opacity: 0.6;
         }
     }
 
-    .list {
+    ul {
+        --col-min: 20rem;
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
         gap: var(--space-sm);
     }
 
-    .list li[hidden] {
+    li[hidden] {
         display: none;
     }
 </style>

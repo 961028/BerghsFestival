@@ -12,15 +12,14 @@ const menuItems = (
 ---
 
 <header>
-    <nav class="menu">
-        <a class="menu-item" href="https://www.berghs.se/" target="_blank">
-            <Svg name="berghs-soc" class="berghs-logo" alt="" />
+    <nav>
+        <a href="https://www.berghs.se/" target="_blank">
+            <Svg name="berghs-soc" alt="" style="width: auto; height: var(--font-size-base);" />
         </a>
 
         {
             menuItems.map((menuItem) => (
                 <a
-                    class="menu-item"
                     href={menuItem.data.url}
                     aria-current={
                         Astro.url.pathname ===
@@ -38,18 +37,15 @@ const menuItems = (
 
 <style>
     header {
-        border-bottom: var(--border-default);
+        border-block-end: var(--border-default);
     }
 
-    .menu {
+    nav {
         display: flex;
         gap: var(--space-sm);
         justify-content: space-between;
         padding: var(--space-sm) var(--site-padding-inline);
     }
 
-    .berghs-logo {
-        width: auto;
-        height: var(--font-size-base);
-    }
+
 </style>

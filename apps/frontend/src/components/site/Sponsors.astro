@@ -24,32 +24,30 @@ const sponsorLogos = await Promise.all(
 );
 ---
 
-<div class="sponsors">
-    <ul class="sponsors-list">
-        {
-            sponsorLogos.map(({ sponsor, widthStyle }) => (
-                <li>
-                    <a
-                        href={sponsor.data.url}
-                        aria-label={sponsor.data.name}
-                        title={sponsor.data.name}
-                    >
-                        <WpImage
-                            class="sponsor-logo"
-                            image={sponsor.data.image}
-                            alt=""
-                            style={`width: ${widthStyle}`}
-                        />
-                    </a>
-                </li>
-            ))
-        }
-    </ul>
-</div>
+<ul>
+    {
+        sponsorLogos.map(({ sponsor, widthStyle }) => (
+            <li>
+                <a
+                    href={sponsor.data.url}
+                    aria-label={sponsor.data.name}
+                    title={sponsor.data.name}
+                >
+                    <WpImage
+                        image={sponsor.data.image}
+                        alt=""
+                        style={`width: ${widthStyle}`}
+                    />
+                </a>
+            </li>
+        ))
+    }
+</ul>
 
 <style>
-    .sponsors-list {
+    ul {
         list-style: none;
+        padding: 0;
         display: flex;
         flex-wrap: wrap;
         align-items: center;
@@ -57,7 +55,7 @@ const sponsorLogos = await Promise.all(
         gap: var(--space-md);
     }
 
-    .sponsor-logo {
+    ul :global(img) {
         display: block;
         height: auto;
     }

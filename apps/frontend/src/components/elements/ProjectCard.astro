@@ -16,21 +16,21 @@ const Tag = href ? "a" : "div";
 ---
 
 <Tag class="project-card" {href}>
-    <div class="thumbnail">
+    <div>
         {image && <WpImage image={image} alt={title} />}
     </div>
 
-    <div class="meta">
-        <p class="company">{company}</p>
-        <p class="title">{title}</p>
+    <div>
+        <p>{company}</p>
+        <p>{title}</p>
     </div>
 
-    <ul class="members">
+    <ul>
         {
             teamMembers.map((member) => (
                 <li>
-                    <span class="member-name">{member.name}</span>
-                    <span class="member-program">{member.class}</span>
+                    <span>{member.name}</span>
+                    <span>{member.class}</span>
                 </li>
             ))
         }
@@ -48,60 +48,63 @@ const Tag = href ? "a" : "div";
         width: 100%;
         color: var(--color-text);
         text-decoration: none;
+        isolation: isolate;
     }
 
-    .thumbnail {
-        width: 100%;
+    /* thumbnail */
+    .project-card > div:first-child {
         aspect-ratio: 3 / 2;
         background-color: color-mix(in oklch, var(--color-border), transparent 80%);
         overflow: hidden;
     }
 
-    .thumbnail :global(img) {
+    .project-card > div:first-child :global(img) {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
     }
 
-    .meta {
-        padding: var(--space-xs) 0;
+    /* meta */
+    .project-card > div:nth-child(2) {
+        padding-block: var(--space-xs);
     }
 
-    .company,
-    .title,
-    .members,
-    .members li {
-        margin: 0;
-        padding: 0;
-    }
-
-    .company {
+    .project-card > div:nth-child(2) p:first-child {
         font-size: var(--font-size-xs);
     }
 
-    .title {
+    .project-card > div:nth-child(2) p:last-child {
         font-size: var(--font-size-xl);
-        line-height: 1.2;
+        line-height: var(--line-height-tight);
         text-wrap: balance;
     }
 
-    .members {
+    /* members */
+    .project-card ul {
         list-style: none;
+        margin: 0;
+        padding: 0;
         display: flex;
         flex-direction: column;
     }
 
-    .members li {
+    .project-card li {
         display: flex;
         flex-direction: column;
     }
 
-    .member-name {
+    .project-card li span:first-child {
         font-size: var(--font-size-base);
     }
 
-    .member-program {
+    .project-card li span:last-child {
         font-size: var(--font-size-xs);
+    }
+
+    @media (any-hover: hover) and (any-pointer: fine) {
+        a.project-card:hover {
+            opacity: 0.85;
+        }
     }
 </style>

@@ -1,0 +1,63 @@
+---
+import WpImage from "../elements/WpImage.astro";
+import type { ReferenceDataEntry } from "astro:content";
+
+interface Props {
+    items: {
+        name: string;
+        image: ReferenceDataEntry<"media"> | null;
+        description: { html: string };
+    }[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul>
+    {
+        items.map((item) => (
+            <li>
+                {item.image && (
+                    <WpImage
+                        image={item.image}
+                        width={1200}
+                        height={600}
+                        alt={item.name}
+                    />
+                )}
+                <p>{item.name}</p>
+                <div set:html={item.description.html} />
+            </li>
+        ))
+    }
+</ul>
+
+<style>
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    li :global(img) {
+        display: block;
+        width: 100%;
+        aspect-ratio: 2 / 1;
+        object-fit: cover;
+        border-radius: var(--border-radius-lg);
+    }
+
+    li p {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-semibold);
+        margin-block: var(--space-xs) var(--space-xxs);
+    }
+
+    li div {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+    }
+</style>

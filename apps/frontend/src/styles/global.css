@@ -1,4 +1,4 @@
-@layer reset, theme, global;
+@layer reset, theme, global, layout, components, utilities, states;
 
 /* ==========================================================================
    Theme — design tokens
@@ -25,9 +25,12 @@
         --font-weight-semibold: 600;
         --font-weight-bold: 700;
         --line-height-base: 1.4;
+        --line-height-tight: 1.2;
+        --line-height-loose: 1.5;
         --letter-spacing-logo: 0.125em;
 
         /* Spacing */
+        --space-xxs: 0.25rem;
         --space-xs: 0.5rem;
         --space-sm: 1rem;
         --space-md: 1.25rem;
@@ -36,6 +39,7 @@
 
         /* Layout */
         --max-width: 64rem;
+        --prose-width: 40rem;
         --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
 
         /* Borders */
@@ -49,6 +53,7 @@
 
     html {
         color-scheme: light;
+        accent-color: var(--color-primary);
     }
 }
 
@@ -61,6 +66,10 @@
     *::before,
     *::after {
         box-sizing: border-box;
+    }
+
+    html {
+        scrollbar-gutter: stable both-edges;
     }
 
     html,
@@ -87,18 +96,26 @@
    ========================================================================== */
 
 @layer global {
+    .page-title {
+        font-size: var(--font-size-xxl);
+        font-weight: var(--font-weight-bold);
+        margin-block-end: var(--space-md);
+    }
+
     body {
         font-family: var(--font-family-base);
         font-size: var(--font-size-base);
         color: var(--color-text);
         background: var(--color-bg);
         line-height: var(--line-height-base);
-        min-height: 100dvh;
+        text-wrap: pretty;
     }
 
     a {
         color: inherit;
         text-decoration: none;
+        text-underline-offset: 0.25em;
+        text-decoration-thickness: max(0.08em, 1px);
     }
 
     a[aria-current="page"] {

@@ -24,52 +24,48 @@ const relatedProjects = allProjects
 ---
 
 <Layout title={project.title}>
-    <article class="article">
+    <article>
         {
             !project.image || (
-                <div class="hero">
-                    <WpImage class="image" image={project.image} loading="eager" />
+                <div>
+                    <WpImage image={project.image} loading="eager" alt={project.title} />
                 </div>
             )
         }
 
-        <div class="body">
-            <div class="meta">
-                <div class="company">{project.company}</div>
+        <div>
+            <div>
+                <div>{project.company}</div>
                 <h1 class="page-title">{project.title}</h1>
 
-                <ul class="team-members">
+                <ul>
                     {
                         project.teamMembers.map((teamMember) => (
-                            <li class="team-member">
-                                <div class="team-member__name">{teamMember.name}</div>
-                                <div class="team-member__class">{teamMember.class}</div>
+                            <li>
+                                <div>{teamMember.name}</div>
+                                <div>{teamMember.class}</div>
                             </li>
                         ))
                     }
                 </ul>
             </div>
 
-            <div class="content">
+            <div>
                 {
                     project.contentSections.map((contentSection) => (
                         <>
-                            <h2 class="content-title">{contentSection.title}</h2>
-
-                            <div
-                                class="content-wrapper"
-                                set:html={contentSection.content.html}
-                            />
+                            <h2>{contentSection.title}</h2>
+                            <div set:html={contentSection.content.html} />
                         </>
                     ))
                 }
             </div>
         </div>
 
-        {!project.video || <WpVideo class="video" video={project.video} />}
+        {!project.video || <WpVideo video={project.video} />}
     </article>
 
-    <ul class="related">
+    <ul>
         {
             relatedProjects.map((related) => (
                 <li>
@@ -87,35 +83,40 @@ const relatedProjects = allProjects
 </Layout>
 
 <style>
-    .hero {
-        width: 100%;
+    /* hero */
+    article > div:first-child {
         aspect-ratio: 3 / 2;
         overflow: hidden;
     }
 
-    .image {
+    article > div:first-child :global(img) {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
     }
 
-    .video {
+    /* video */
+    article :global(.outer) {
         width: 100%;
     }
 
-    .body {
+    /* body */
+    article > div:nth-child(2) {
+        --body-col-min: 18rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--body-col-min)), 1fr));
         gap: var(--space-sm);
     }
 
-    .related {
+    /* related */
+    article ~ ul {
+        --col-min: 16rem;
         list-style: none;
         margin-block-start: var(--space-sm);
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--col-min)), 1fr));
         gap: var(--space-sm);
     }
 </style>

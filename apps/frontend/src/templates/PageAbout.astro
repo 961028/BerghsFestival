@@ -13,12 +13,12 @@ const { title } = page;
 <Layout title={title}>
     <h1 class="page-title">{title}</h1>
 
-    <section class="about-section">
-        <h2 class="section-heading">Power of creativity</h2>
+    <section>
+        <h2>Power of creativity</h2>
         <p>
             At Berghs, our passion for communication in all its forms drives us
             to educate and nurture the brightest communicators of the future, a
-            mission we’ve proudly upheld since 1941. We are dedicated to
+            mission we've proudly upheld since 1941. We are dedicated to
             delivering top-quality education, ensuring that everyone can benefit
             fully from our teachings. Our approach centers on development and
             inclusion, seeking creative ways to address real-world problems. We
@@ -28,8 +28,8 @@ const { title } = page;
         </p>
     </section>
 
-    <section class="about-section">
-        <h2 class="section-heading">Action-based learning</h2>
+    <section>
+        <h2>Action-based learning</h2>
         <p>
             Action-based learning is practical and pragmatic learning through
             action, not just theory. We learn by continuously testing, making
@@ -45,8 +45,8 @@ const { title } = page;
         </ul>
     </section>
 
-    <section class="about-section">
-        <h2 class="section-heading">Perspective</h2>
+    <section>
+        <h2>Perspective</h2>
         <p>
             Bringing together students from different disciplines with a variety
             of backgrounds, experiences, and perspectives opens doors to
@@ -55,12 +55,12 @@ const { title } = page;
             patterns and encouraging deeper discussions. Inclusion ensures that
             every individual feels seen and heard, boosting self-esteem and
             motivation. We believe that cooperation and understanding are
-            crucial in today’s society.
+            crucial in today's society.
         </p>
     </section>
 
-    <section class="about-section">
-        <h2 class="section-heading">
+    <section>
+        <h2>
             Applied learning and amplified intelligence
         </h2>
         <p>
@@ -77,46 +77,35 @@ const { title } = page;
         </p>
     </section>
 
-    <a class="read-more" href="https://www.berghs.se/om-berghs/"
-        >Learn more about Berghs</a
-    >
+    <a href="https://www.berghs.se/om-berghs/">Learn more about Berghs</a>
 </Layout>
 
 <style>
-    .page-title {
-        font-size: var(--font-size-xxl);
-        font-weight: var(--font-weight-bold);
-        margin-bottom: var(--space-lg);
+    section {
+        margin-block-end: var(--space-xl);
     }
 
-    .about-section {
-        margin-bottom: var(--space-xl);
-    }
-
-    .section-heading {
+    section h2 {
         font-size: var(--font-size-xl);
         font-weight: var(--font-weight-bold);
-        margin-bottom: var(--space-sm);
+        margin-block-end: var(--space-sm);
     }
 
-    .about-section p,
-    .about-section ul {
+    section p,
+    section ul {
         font-size: var(--font-size-md);
-        line-height: var(--line-height-base);
     }
 
-    .about-section ul {
-        padding-left: var(--space-md);
-        margin-top: var(--space-xs);
+    section ul {
+        padding-inline-start: var(--space-md);
+        margin-block-start: var(--space-xs);
     }
 
-    .about-section li {
-        margin-bottom: var(--space-xs);
+    section li {
+        margin-block-end: var(--space-xs);
     }
 
-    .read-more {
-        display: inline-block;
-        font-size: var(--font-size-md);
+    a {
         text-decoration: underline;
     }
 </style>

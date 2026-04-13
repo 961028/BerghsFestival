@@ -8,19 +8,19 @@ const contact = (await getCollection("contact"))[0].data;
 const { address, phone, socialServices } = contact;
 ---
 
-<div class="contact">
-    <div class="address">{address}</div>
+<div>
+    <div>{address}</div>
 
-    <div class="phone">
+    <div>
         <a href={`tel:${phone}`}>{phone}</a>
     </div>
 
-    <ul class="social-list">
+    <ul>
         {
             socialServices.map((service) => (
                 <li>
                     <a href={service.url} title={service.label} target="_blank">
-                        <Svg name={service.icon} class="social-logo" alt="" />
+                        <Svg name={service.icon} alt="" />
                     </a>
                 </li>
             ))
@@ -29,19 +29,19 @@ const { address, phone, socialServices } = contact;
 </div>
 
 <style>
-    .contact {
+    div {
         text-align: center;
     }
 
-    .address {
+    div > div:first-child {
         white-space: pre-wrap;
     }
 
-    .phone {
+    div > div:nth-child(2) {
         margin-block-start: var(--space-xs);
     }
 
-    .social-list {
+    ul {
         list-style: none;
         padding: 0;
         display: flex;
@@ -50,9 +50,10 @@ const { address, phone, socialServices } = contact;
         margin-block-start: var(--space-xs);
     }
 
-    .social-logo {
+    ul :global(svg) {
+        --icon-size: 1.5rem;
         display: block;
-        width: 1.5rem;
+        width: var(--icon-size);
         height: auto;
     }
 </style>

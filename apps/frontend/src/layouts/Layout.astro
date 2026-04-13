@@ -34,7 +34,7 @@ const { title } = Astro.props;
                 <slot />
             </main>
 
-            <footer class="site-footer">
+            <footer>
                 <Sponsors />
                 <Iq />
                 <Contact />
@@ -56,8 +56,8 @@ const { title } = Astro.props;
         padding: var(--space-xl) var(--site-padding-inline);
     }
 
-    .site-footer {
-        border-top: var(--border-default);
+    footer {
+        border-block-start: var(--border-default);
         padding: var(--space-lg) var(--site-padding-inline);
         display: flex;
         flex-direction: column;
