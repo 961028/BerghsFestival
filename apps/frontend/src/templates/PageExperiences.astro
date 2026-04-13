@@ -245,7 +245,7 @@ const sections = [
         margin-block-end: var(--space-lg);
         margin-inline: calc(-1 * var(--site-padding-inline));
         padding-inline: var(--site-padding-inline);
-        background: #000000;
+        background: var(--color-bg);
         position: sticky;
         top: 0;
         z-index: 10;
@@ -269,7 +269,7 @@ const sections = [
 
     nav a[aria-current="true"] {
         background: var(--color-accent-2);
-        color: #000000;
+        color: var(--color-text);
         font-weight: var(--font-weight-bold);
     }
 
@@ -299,7 +299,7 @@ const sections = [
 
     [role="group"] button[aria-pressed="true"] {
         background: var(--color-accent-3);
-        color: #000000;
+        color: var(--color-text);
     }
 
     /* Schedule rows */
@@ -361,7 +361,6 @@ const sections = [
         width: clamp(5rem, 20%, 8.75rem);
         aspect-ratio: 1;
         object-fit: cover;
-        border-radius: 0;
         display: block;
     }
 
@@ -389,7 +388,6 @@ const sections = [
 
     section > ul li {
         border: var(--border-default);
-        border-radius: 0;
         overflow: hidden;
     }
 
