@@ -88,7 +88,7 @@ const sections = [
     <nav aria-label="Page sections">
         {
             sections.map((s, i) => (
-                <a href={`#${s.id}`} aria-current={i === 0 ? "true" : "false"}>
+                <a href={`#${s.id}`} aria-current={i === 0 ? "true" : undefined}>
                     {s.label}
                 </a>
             ))
@@ -221,10 +221,11 @@ const sections = [
                     navLinks.forEach((link) => {
                         const active =
                             link.getAttribute("href") === `#${entry.target.id}`;
-                        link.setAttribute(
-                            "aria-current",
-                            active ? "true" : "false",
-                        );
+                        if (active) {
+                            link.setAttribute("aria-current", "true");
+                        } else {
+                            link.removeAttribute("aria-current");
+                        }
                     });
                 }
             }

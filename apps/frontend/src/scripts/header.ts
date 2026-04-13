@@ -115,7 +115,7 @@ const logoSvg = logoLink?.querySelector<SVGSVGElement>("svg");
 if (logoLink && logoSvg) {
     strobeAccentFill(logoSvg, "white");
 
-    let logoTimer: ReturnType<typeof setInterval>;
+    let logoTimer: ReturnType<typeof setInterval> | undefined;
 
     logoLink.addEventListener("mouseenter", () => {
         logoTimer = setInterval(() => {

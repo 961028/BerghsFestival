@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
 
-@layer reset, theme, global, layout, components, utilities, states;
+@layer reset, theme, global;
 
 /* ==========================================================================
    Theme — design tokens
