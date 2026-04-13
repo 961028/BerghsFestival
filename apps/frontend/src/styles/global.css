@@ -22,7 +22,8 @@
         --color-accent-yellow: #eeff00;
 
         /* Derived */
-        --color-border: rgb(from var(--color-accent-3) r g b / 0.15);
+        --color-border:      rgb(from var(--color-accent-3) r g b / 0.15);
+        --color-text-muted:  rgb(from #ffffff r g b / 0.5);
 
         /* Typography */
         --font-family-base:    'Inria Sans', system-ui, sans-serif;

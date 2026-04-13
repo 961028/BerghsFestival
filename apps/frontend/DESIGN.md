@@ -13,7 +13,9 @@ High-contrast, black-dominant aesthetic with raw, bold energy. The design langua
 - **Electric Blue** (`#1E00FF`) — Accent 3.
 - **Acid Yellow** (`#EEFF00`) — Accent 4.
 
-Accent colors can be used freely throughout the design. They are never mixed, blended, or used as gradients. They appear as solid, flat blocks at full saturation. No opacity variations. No tints or shades.
+Accent colors can be used freely throughout the design. They are never mixed, blended, or used as gradients. They appear as solid, flat blocks at full saturation. No opacity variations on accent colors. No tints or shades.
+
+White may be used at reduced opacity (`--color-text-muted`, 50%) for secondary or supporting text — timestamps, descriptions, metadata. This is the only sanctioned opacity usage.
 
 ## 3. Typography Rules
 
