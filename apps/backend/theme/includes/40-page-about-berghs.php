@@ -14,8 +14,8 @@ function _app_page_about_berghs_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'            => _app_page_experiences_group_key( 'sections' ),
-			'title'          => 'Sections',
+			'key'            => _app_page_about_berghs_group_key( 'sections' ),
+			'title'          => 'Content',
 			'fields'         => array(
 				array(
 					'key'          => _app_page_about_berghs_field_key( 'sections' ),
@@ -52,7 +52,7 @@ function _app_page_about_berghs_register_fields() {
 
 	acf_add_local_field_group(
 		array(
-			'key'            => _app_page_experiences_group_key( 'learn_more' ),
+			'key'            => _app_page_about_berghs_group_key( 'learn_more' ),
 			'title'          => 'Learn More',
 			'fields'         => array(
 				array(
