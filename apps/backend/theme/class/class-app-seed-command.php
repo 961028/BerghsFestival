@@ -284,14 +284,43 @@ final class App_Seed_Command {
 	private function insert_about_page(): int {
 		WP_CLI::line( 'Inserting "About Berghs" page' );
 
-		return $this->insert_post(
+		$page_id = $this->insert_post(
 			array(
-				'post_type'    => 'page',
-				'post_status'  => 'publish',
-				'post_title'   => 'About Berghs',
-				'post_content' => "This is <strong>the About Berghs</strong> page.\n\nWe'll fill it with content later.'",
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'About Berghs',
+				'meta_input'  => array(
+					'_wp_page_template' => 'page-about-berghs.php',
+				),
 			)
 		);
+
+		$sections = array(
+			array(
+				'title'   => 'Action-based learning',
+				'content' => 'At Berghs, our passion for communication in all its forms drives us to educate and nurture the brightest communicators of the future, a mission we\'ve proudly upheld since 1941. We are dedicated to delivering top-quality education, ensuring that everyone can benefit fully from our teachings. Our approach centers on development and inclusion, seeking creative ways to address real-world problems. We believe in the positive impact of diverse skills, experiences, and perspectives on problem-solving. We celebrate the power of creativity and teamwork!
+
+<ul>
+	<li>real client cases to practise new knowledge</li>
+	<li>giving insight into practical application</li>
+	<li>collaboration and group dynamics</li>
+</ul>',
+			),
+			array(
+				'title'   => 'Perspective',
+				'content' => 'Bringing together students from different disciplines with a variety of backgrounds, experiences, and perspectives opens doors to increased creativity and understanding. Diversity promotes empathy and respect as it fosters critical thinking by challenging thought patterns and encouraging deeper discussions. Inclusion ensures that every individual feels seen and heard, boosting self-esteem and motivation. We believe that cooperation and understanding are crucial in today\'s society.',
+			),
+			array(
+				'title'   => 'Applied learning and amplified intelligence',
+				'content' => 'At Berghs, we continually strive to be at the forefront of education and pedagogy. New methods, research, and digital tools, including amplified intelligence (AI), enable innovative ways of sharing and applying knowledge. Applied learning, sufficient room for reflection, and feedback are crucial to us. We approach theories and models pragmatically, emphasizing their practical application. We thrive on tasks, workshops, and group cases to share experiences, with no traditional exams and minimal theory. Our focus is within real-life, case-based problems – where conversation and collaboration are central!',
+			),
+		);
+		update_field( _app_page_about_berghs_field_key( 'sections' ), $sections, $page_id );
+
+		update_field( _app_page_about_berghs_field_key( 'learn_more', 'cta' ), 'Learn more about Berghs', $page_id );
+		update_field( _app_page_about_berghs_field_key( 'learn_more', 'url' ), 'https://www.berghs.se/om-berghs/', $page_id );
+
+		return $page_id;
 	}
 
 	private function insert_primary_menu(
