@@ -14,12 +14,12 @@ const homeData = (await getCollection("home"))[0].data;
 
 // TODO: pull from CMS
 const festivalDays = [
-    { abbr: "FRI", num: "23 MAY", hours: "12:00 – 01:00" },
-    { abbr: "SAT", num: "24 MAY", hours: "12:00 – 17:00" },
+    { abbr: "FRI", num: "22 MAY", hours: "12:00 – 01:00" },
+    { abbr: "SAT", num: "23 MAY", hours: "12:00 – 17:00" },
 ];
 
 // Opening: Friday exhibition start
-const openingDate = new Date("2026-05-23T12:00:00");
+const openingDate = new Date("2026-05-22T12:00:00");
 ---
 
 <Layout title={title} metaTitle={homeData.metaTitle || undefined}>
@@ -65,7 +65,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
                 >
                     <span id="js-countdown">--</span>
                 </p>
-                <span class="hero-stats">150 students — 50 projects</span>
+                <span class="hero-stats">142 students — 22 projects</span>
             </div>
         </div>
     </section>
