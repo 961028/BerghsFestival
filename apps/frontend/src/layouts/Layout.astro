@@ -258,14 +258,8 @@ const { title, metaTitle } = Astro.props;
         gap: var(--space-md);
     }
 
-    @media (min-width: 48rem) {
-        .footer-row--sponsors {
-            display: grid;
-            grid-template-columns: var(--section-label-width) 1fr var(
-                    --section-label-width
-                );
-            gap: 0 var(--space-xl);
-        }
+    .footer-row--sponsors .footer-label {
+        align-self: flex-start;
     }
 
     .footer-row--info {
