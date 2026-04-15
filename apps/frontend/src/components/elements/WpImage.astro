@@ -35,7 +35,10 @@ const width = image.data.width;
 const height = image.data.height;
 ---
 
-{width && height
-    ? <Image src={src} alt={alt} width={width} height={height} {...attrs} />
-    : <Image src={src} alt={alt} inferSize {...attrs} />
+{
+    width && height ? (
+        <Image src={src} alt={alt} width={width} height={height} {...attrs} />
+    ) : (
+        <Image src={src} alt={alt} inferSize {...attrs} />
+    )
 }

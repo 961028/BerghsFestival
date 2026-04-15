@@ -37,7 +37,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         </video>
 
         <div class="hero-panel">
-            <ol class="schedule-days" role="list">
+            <ol class="schedule-days">
                 {
                     festivalDays.map((day) => (
                         <li class="schedule-day">
@@ -109,9 +109,11 @@ const openingDate = new Date("2026-05-23T12:00:00");
         const seconds = totalSeconds % 60;
 
         let text;
-        if (days > 0)
+        if (days > 0) {
             text = `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        else text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        } else {
+            text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
 
         el.textContent = text;
     }

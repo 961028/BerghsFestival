@@ -24,7 +24,10 @@ const sponsorLogos = await Promise.all(
             .replace(/<\?xml[^>]*\?>\s*/g, "")
             .replace(/\s(fill|color)="[^"]*"/g, "")
             .replace(/(<svg[^>]*)\s(width|height)="[^"]*"/g, "$1")
-            .replace(/(<svg[^>]*)>/, '$1 aria-hidden="true" focusable="false">');
+            .replace(
+                /(<svg[^>]*)>/,
+                '$1 aria-hidden="true" focusable="false">',
+            );
 
         return { sponsor, widthStyle: `${widthRem.toFixed(3)}rem`, svg };
     }),
@@ -32,19 +35,21 @@ const sponsorLogos = await Promise.all(
 ---
 
 <ul>
-    {sponsorLogos.map(({ sponsor, widthStyle, svg }) => (
-        <li>
-            <a
-                href={sponsor.data.url}
-                aria-label={sponsor.data.name}
-                title={sponsor.data.name}
-                data-sponsor-link
-                style={`width: ${widthStyle}`}
-            >
-                <Fragment set:html={svg} />
-            </a>
-        </li>
-    ))}
+    {
+        sponsorLogos.map(({ sponsor, widthStyle, svg }) => (
+            <li>
+                <a
+                    href={sponsor.data.url}
+                    aria-label={sponsor.data.name}
+                    title={sponsor.data.name}
+                    data-sponsor-link
+                    style={`width: ${widthStyle}`}
+                >
+                    <Fragment set:html={svg} />
+                </a>
+            </li>
+        ))
+    }
 </ul>
 
 <style>
@@ -77,23 +82,27 @@ const sponsorLogos = await Promise.all(
     const CYCLE_INTERVAL_MS = 50;
     const nextAccent = makeColorPicker(2);
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    document.querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]").forEach((link) => {
-        let timer: ReturnType<typeof setInterval> | undefined;
+    document
+        .querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]")
+        .forEach((link) => {
+            let timer: ReturnType<typeof setInterval> | undefined;
 
-        link.addEventListener("mouseenter", () => {
-            link.style.color = nextAccent();
-            if (!reducedMotion) {
-                timer = setInterval(() => {
-                    link.style.color = nextAccent();
-                }, CYCLE_INTERVAL_MS);
-            }
+            link.addEventListener("mouseenter", () => {
+                link.style.color = nextAccent();
+                if (!reducedMotion) {
+                    timer = setInterval(() => {
+                        link.style.color = nextAccent();
+                    }, CYCLE_INTERVAL_MS);
+                }
+            });
+
+            link.addEventListener("mouseleave", () => {
+                clearInterval(timer);
+                link.style.color = "";
+            });
         });
-
-        link.addEventListener("mouseleave", () => {
-            clearInterval(timer);
-            link.style.color = "";
-        });
-    });
 </script>

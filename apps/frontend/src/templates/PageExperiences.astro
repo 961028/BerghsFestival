@@ -66,7 +66,12 @@ const GroupsSchema = z.array(
         })
         .transform((val) => ({
             ...val,
-            slug: val.slug || val.title.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, ""),
+            slug:
+                val.slug ||
+                val.title
+                    .toLowerCase()
+                    .replace(/\s+/g, "-")
+                    .replace(/[^\w-]/g, ""),
         })),
 );
 
@@ -84,11 +89,13 @@ const sections = [
 ---
 
 <Layout title={title}>
-
     <nav aria-label="Page sections">
         {
             sections.map((s, i) => (
-                <a href={`#${s.id}`} aria-current={i === 0 ? "true" : undefined}>
+                <a
+                    href={`#${s.id}`}
+                    aria-current={i === 0 ? "true" : undefined}
+                >
                     {s.label}
                 </a>
             ))

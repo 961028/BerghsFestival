@@ -56,7 +56,12 @@ const { title, metaTitle } = Astro.props;
 
 <script>
     import "../scripts/scramble";
-    import { ACCENTS, pickTriple, makeColorPicker, type Triple } from "../scripts/accents";
+    import {
+        ACCENTS,
+        pickTriple,
+        makeColorPicker,
+        type Triple,
+    } from "../scripts/accents";
 
     // ── Effect A: per-region accent colors ────────────────────────────────────
     // The page is split into three independent regions (header, main, footer).
@@ -150,7 +155,9 @@ const { title, metaTitle } = Astro.props;
     // To remove per-region independence entirely, apply a single triple to
     // document.documentElement instead of targeting each region separately.
     // Track header height so child components can reference it via CSS
-    const headerEl = document.querySelector<HTMLElement>("[data-region='header']");
+    const headerEl = document.querySelector<HTMLElement>(
+        "[data-region='header']",
+    );
     if (headerEl) {
         const updateHeaderHeight = () => {
             document.documentElement.style.setProperty(
@@ -181,7 +188,9 @@ const { title, metaTitle } = Astro.props;
     // so we rewrite a <style> tag with a literal color value each tick instead.
     const selectionStyle = document.createElement("style");
     document.head.appendChild(selectionStyle);
-    const selectionTextColor = getComputedStyle(document.documentElement).getPropertyValue("--color-text").trim();
+    const selectionTextColor = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-text")
+        .trim();
     const nextSelectionColor = makeColorPicker(2);
     if (!reducedMotion) {
         setInterval(() => {
@@ -252,7 +261,9 @@ const { title, metaTitle } = Astro.props;
     @media (min-width: 48rem) {
         .footer-row--sponsors {
             display: grid;
-            grid-template-columns: var(--section-label-width) 1fr var(--section-label-width);
+            grid-template-columns: var(--section-label-width) 1fr var(
+                    --section-label-width
+                );
             gap: 0 var(--space-xl);
         }
     }
