@@ -146,6 +146,7 @@ function _app_page_experiences_register_fields() {
 									'name'         => 'image',
 									'type'         => 'image',
 									'preview_size' => '3_2',
+									'return_format' => 'id',
 								),
 								array(
 									'key'          => _app_page_experiences_field_key( 'groups', 'items', 'description' ),

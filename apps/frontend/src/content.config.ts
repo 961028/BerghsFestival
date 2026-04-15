@@ -21,7 +21,9 @@ const definePaginatedCollection = <S extends BaseSchema>(
             load: async ({ store, parseData }) => {
                 store.clear();
 
-                const items = await wpGetAll<Record<string, unknown>>(path);
+                const items = await wpGetAll<Record<string, unknown>>(path, {
+                    acf_format: "standard",
+                });
 
                 for (const item of items) {
                     const id = String(item.id);
@@ -43,7 +45,9 @@ const defineSingletonCollection = <S extends BaseSchema>(
         loader: {
             name: path,
             load: async ({ store, parseData }) => {
-                const item = await wpGet<Record<string, unknown>>(path);
+                const item = await wpGet<Record<string, unknown>>(path, {
+                    acf_format: "standard",
+                });
 
                 const id = "0";
 

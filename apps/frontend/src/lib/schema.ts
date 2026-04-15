@@ -7,7 +7,7 @@ export function intId() {
 
 export function nullableIntId() {
     return z.preprocess(
-        (v) => (v === 0 ? null : v),
+        (v) => (v === 0 || v === false ? null : v),
         z
             .int()
             .positive()

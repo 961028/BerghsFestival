@@ -69,8 +69,11 @@ export async function wpGetAll<T = unknown>(
 ): Promise<T[]> {
     const firstUrl = new URL(`${BASE_URL}/${path.replace(/^\//, "")}`);
 
-    params.per_page ??= "100";
-    params.page = "1";
+    params = {
+        ...params,
+        per_page: "100",
+        page: "1",
+    };
 
     for (const [key, value] of Object.entries(params)) {
         firstUrl.searchParams.set(key, value);
@@ -93,7 +96,9 @@ export async function wpGetAll<T = unknown>(
     );
     const firstPage = (await firstResponse.json()) as T[];
 
-    if (totalPages <= 1) return firstPage;
+    if (totalPages <= 1) {
+        return firstPage;
+    }
 
     const remaining = await Promise.all(
         Array.from({ length: totalPages - 1 }, async (_, i) => {
