@@ -20,7 +20,9 @@ Declare layer order at the top of every stylesheet. The first-declared layer has
 Import third-party CSS into its own layer so your component styles always win regardless of specificity:
 
 ```css
-@layer vendor { @import url("bootstrap.css"); }
+@layer vendor {
+    @import url("bootstrap.css");
+}
 ```
 
 `@supports` cannot detect at-rules like `@layer`. If you need feature detection for layers, use the SupportsCSS script at supportscss.dev.
@@ -31,16 +33,16 @@ Define all design tokens on `:root` inside `@layer theme`. Set `color-scheme` an
 
 ```css
 @layer theme {
-  :root {
-    --color-primary: oklch(0.45 0.2 265);
-    --color-surface: oklch(0.98 0.01 265);
-    --radius-md: 0.5rem;
-    --space-md: clamp(1rem, 4vmax, 2rem);
-  }
-  html {
-    color-scheme: light;
-    accent-color: var(--color-primary);
-  }
+    :root {
+        --color-primary: oklch(0.45 0.2 265);
+        --color-surface: oklch(0.98 0.01 265);
+        --radius-md: 0.5rem;
+        --space-md: clamp(1rem, 4vmax, 2rem);
+    }
+    html {
+        color-scheme: light;
+        accent-color: var(--color-primary);
+    }
 }
 ```
 
@@ -51,6 +53,7 @@ Define all design tokens on `:root` inside `@layer theme`. Set `color-scheme` an
 Use native CSS nesting. Do not use Sass or other preprocessors solely for nesting — browser support is above 91%.
 
 Syntax rules:
+
 - Pseudo-classes and pseudo-elements require `&`: `&:hover`, `&::before`.
 - Descendant selectors like `.child` or `[data-x]` work without `&`.
 - `[data-type] { }` creates a descendant selector. `&[data-type] { }` creates a compound selector appended to the parent.
@@ -67,10 +70,13 @@ This is the single most useful layout pattern in CSS. Memorize it.
 
 ```css
 .grid {
-  --grid-min: 30ch;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--grid-min)), 1fr));
-  gap: var(--grid-gap, 3vw);
+    --grid-min: 30ch;
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(min(100%, var(--grid-min)), 1fr)
+    );
+    gap: var(--grid-gap, 3vw);
 }
 ```
 
@@ -80,13 +86,13 @@ This is the single most useful layout pattern in CSS. Memorize it.
 
 ```css
 .flex-grid {
-  --flex-min: 20rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--flex-gap, 3vmax);
+    --flex-min: 20rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--flex-gap, 3vmax);
 }
 .flex-grid > * {
-  flex: 1 1 var(--flex-min);
+    flex: 1 1 var(--flex-min);
 }
 ```
 
@@ -96,9 +102,9 @@ Key difference from grid: flex children grow into unused space. A 3-item layout 
 
 ```css
 body {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
 }
 ```
 
@@ -109,8 +115,13 @@ The `1fr` on `main` stretches to fill remaining space. This is cleaner than the 
 Assign the same grid area to multiple children and they stack in a single cell:
 
 ```css
-.hero { display: grid; grid-template-areas: "stack"; }
-.hero > * { grid-area: stack; }
+.hero {
+    display: grid;
+    grid-template-areas: "stack";
+}
+.hero > * {
+    grid-area: stack;
+}
 ```
 
 Use this instead of `position: absolute` for overlapping elements like hero sections, image captions, and form controls with overlaid icons. It eliminates percentage math and media query headaches.
@@ -119,8 +130,8 @@ Use this instead of `position: absolute` for overlapping elements like hero sect
 
 ```css
 .container {
-  width: min(80ch, 100vw - 2rem);
-  margin-inline: auto;
+    width: min(80ch, 100vw - 2rem);
+    margin-inline: auto;
 }
 ```
 
@@ -133,10 +144,14 @@ This caps width at `80ch`, builds in side padding via the subtracted `2rem`, and
 Use container queries for component-level responsiveness. Prefer them over media queries when a component's layout should respond to its parent's size rather than the viewport.
 
 ```css
-.sidebar { container: sidebar / inline-size; }
+.sidebar {
+    container: sidebar / inline-size;
+}
 
 @container sidebar (min-width: 30rem) {
-  .widget { flex-direction: row; }
+    .widget {
+        flex-direction: row;
+    }
 }
 ```
 
@@ -148,8 +163,8 @@ The `container` shorthand is `name / type`.
 
 ```css
 .card :is(h2, h3) {
-  font-size: clamp(1.25rem, 5cqi, 1.5rem);
-  text-wrap: balance;
+    font-size: clamp(1.25rem, 5cqi, 1.5rem);
+    text-wrap: balance;
 }
 ```
 
@@ -161,9 +176,11 @@ Size and style container queries cannot be combined in one rule. Nest them inste
 
 ```css
 @container (min-width: 40ch) {
-  @container style(--show-label: true) {
-    .label { display: block; }
-  }
+    @container style(--show-label: true) {
+        .label {
+            display: block;
+        }
+    }
 }
 ```
 
@@ -176,16 +193,19 @@ Style queries use custom properties as boolean toggles.
 Use these unit conventions for spacing. The unit choices are deliberate.
 
 **Padding** — use `clamp()` with `%` (relative to element inline size):
+
 ```css
 --padding-md: clamp(1.5rem, 6%, 3rem);
 ```
 
 **Margin / block flow** — use `min()` with `vh` (reduces spacing for zoomed or short viewports):
+
 ```css
 --block-flow-md: min(4rem, 8vh);
 ```
 
 **Gap** — use `clamp()` with `vmax` (uses whichever viewport dimension is larger, producing even spacing in both directions):
+
 ```css
 --gap-md: clamp(1.5rem, 6vmax, 3rem);
 ```
@@ -202,10 +222,10 @@ Use `clamp()` for fluid font sizes. Always include `+ 1rem` in the ideal value f
 
 ```css
 :root {
-  --type-ratio: 1.33; /* Perfect Fourth */
-  --font-size-lg: calc(1rem * var(--type-ratio));
-  --font-size-xl: calc(var(--font-size-lg) * var(--type-ratio));
-  --font-size-2xl: calc(var(--font-size-xl) * var(--type-ratio));
+    --type-ratio: 1.33; /* Perfect Fourth */
+    --font-size-lg: calc(1rem * var(--type-ratio));
+    --font-size-xl: calc(var(--font-size-lg) * var(--type-ratio));
+    --font-size-2xl: calc(var(--font-size-xl) * var(--type-ratio));
 }
 ```
 
@@ -227,21 +247,23 @@ Define colors as transformations of a base. Use relative color syntax:
 
 ```css
 :root {
-  --brand: #4b6bff;
-  --hover: oklch(from var(--brand) calc(l - 0.12) c h);
-  --soft: oklch(from var(--brand) calc(l + 0.4) c h);
-  --accent: oklch(from var(--brand) l c calc(h + 20));
-  --border: rgb(from var(--brand) r g b / 0.18);
-  --shadow: rgb(from var(--brand) r g b / 0.3);
+    --brand: #4b6bff;
+    --hover: oklch(from var(--brand) calc(l - 0.12) c h);
+    --soft: oklch(from var(--brand) calc(l + 0.4) c h);
+    --accent: oklch(from var(--brand) l c calc(h + 20));
+    --border: rgb(from var(--brand) r g b / 0.18);
+    --shadow: rgb(from var(--brand) r g b / 0.3);
 }
 ```
 
 Rules of thumb:
+
 - `rgb()` for transparency adjustments.
 - `oklch()` for lightness changes (most perceptually consistent across hues). OKLCH lightness runs 0–1, not 0–100, so `+0.1` is already significant.
 - `hsl()` for quick hue or saturation shifts.
 
 Use `color-mix()` for simpler blending:
+
 ```css
 background: color-mix(in hsl, var(--primary), transparent 95%);
 ```
@@ -266,30 +288,30 @@ Follow this pattern for custom checkboxes, radio buttons, and selects. It preser
 
 ```css
 input[type="radio"] {
-  appearance: none;
-  margin: 0;
-  font: inherit;
-  color: currentColor;
-  width: 1.15em;
-  height: 1.15em;
-  border: 0.15em solid currentColor;
-  border-radius: 50%;
-  display: grid;
-  place-content: center;
-  transform: translateY(-0.075em);
+    appearance: none;
+    margin: 0;
+    font: inherit;
+    color: currentColor;
+    width: 1.15em;
+    height: 1.15em;
+    border: 0.15em solid currentColor;
+    border-radius: 50%;
+    display: grid;
+    place-content: center;
+    transform: translateY(-0.075em);
 }
 input[type="radio"]::before {
-  content: "";
-  width: 0.65em;
-  height: 0.65em;
-  border-radius: 50%;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
-  box-shadow: inset 1em 1em var(--form-control-color);
-  background-color: CanvasText;
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--form-control-color);
+    background-color: CanvasText;
 }
 input[type="radio"]:checked::before {
-  transform: scale(1);
+    transform: scale(1);
 }
 ```
 
@@ -300,6 +322,7 @@ The `transform: translateY(-0.075em)` aligns the input with the first line of mu
 ### Checkboxes
 
 Same as radio buttons but with `border-radius: 0.15em` and a checkmark via clip-path:
+
 ```css
 clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 ```
@@ -322,17 +345,18 @@ Wrap `:has()` with `:where()` to null its specificity contribution:
 
 ```css
 .button:where(:has(.icon)) {
-  display: flex;
-  gap: 0.5em;
-  align-items: center;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
 }
 ```
 
 Use `:has()` for layout switching based on native input states:
+
 ```css
 :root:has(#darkmode:checked) {
-  --color-text: #fff;
-  --color-bg: #111;
+    --color-text: #fff;
+    --color-bg: #111;
 }
 ```
 
@@ -344,13 +368,15 @@ Use `:has()` for layout switching based on native input states:
 
 ```css
 button:focus {
-  outline: max(1px, 0.1em) dashed currentColor;
-  outline-offset: -0.25em;
+    outline: max(1px, 0.1em) dashed currentColor;
+    outline-offset: -0.25em;
 }
-button:focus:not(:focus-visible) { outline: none; }
+button:focus:not(:focus-visible) {
+    outline: none;
+}
 button:focus-visible {
-  outline: max(1px, 0.1em) dashed currentColor;
-  outline-offset: -0.25em;
+    outline: max(1px, 0.1em) dashed currentColor;
+    outline-offset: -0.25em;
 }
 ```
 
@@ -366,10 +392,10 @@ Define focus styles with custom properties so components can override them:
 
 ```css
 :focus-visible {
-  --outline-size: max(2px, 0.15em);
-  outline: var(--outline-width, var(--outline-size)) var(--outline-style, solid)
-    var(--outline-color, currentColor);
-  outline-offset: var(--outline-offset, var(--outline-size));
+    --outline-size: max(2px, 0.15em);
+    outline: var(--outline-width, var(--outline-size))
+        var(--outline-style, solid) var(--outline-color, currentColor);
+    outline-offset: var(--outline-offset, var(--outline-size));
 }
 ```
 
@@ -381,12 +407,14 @@ Use `0.01ms` duration instead of `0`. Animations still complete rather than free
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }
 ```
 
@@ -395,15 +423,19 @@ Use `0.01ms` duration instead of `0`. Animations still complete rather than free
 Use `max(44px, 2em)` for width and height. This guarantees the WCAG 2.5.5 minimum of 44px while scaling with context.
 
 Gate hover-dependent interactions behind capability detection:
+
 ```css
 @media (any-hover: hover) and (any-pointer: fine) {
-  .tooltip:hover .tooltip-content { display: block; }
+    .tooltip:hover .tooltip-content {
+        display: block;
+    }
 }
 ```
 
 ### Zoom resilience (WCAG 1.4.10 Reflow)
 
 400% zoom at 1280px equals a 320px equivalent viewport. Use `min()` to handle this:
+
 ```css
 grid-template-columns: min(64px, 15%, 10vw) 1fr;
 ```
@@ -448,12 +480,16 @@ Solve `height: auto` animation with grid-template-rows:
 
 ```css
 .dropdown {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s ease;
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.5s ease;
 }
-.dropdown.open { grid-template-rows: 1fr; }
-.dropdown > .inner { overflow: hidden; }
+.dropdown.open {
+    grid-template-rows: 1fr;
+}
+.dropdown > .inner {
+    overflow: hidden;
+}
 ```
 
 `calc-size(auto)` will solve this more elegantly, but `grid-template-rows` works now.
@@ -464,12 +500,14 @@ CSS can now detect scroll position and sticky state without JavaScript (~68.5% s
 
 ```css
 .header-wrap {
-  position: sticky;
-  top: 0;
-  container-type: scroll-state;
+    position: sticky;
+    top: 0;
+    container-type: scroll-state;
 }
 @container scroll-state(stuck: top) {
-  .header { box-shadow: 0 8px 30px rgb(0 0 0 / 0.12); }
+    .header {
+        box-shadow: 0 8px 30px rgb(0 0 0 / 0.12);
+    }
 }
 ```
 
