@@ -31,10 +31,10 @@
 
         /* Typography */
         --font-family-base: "Inter", system-ui, sans-serif;
-        --font-size-xs: 0.875rem;
+        --font-size-xs: 1rem;
         --font-size-base: 1.125rem;
-        --font-size-lg: clamp(2rem, 5vw, 2.75rem);
-        --font-size-display: clamp(2.75rem, 8vw, 4.5rem);
+        --font-size-lg: clamp(2rem, 6vw, 2.75rem);
+        --font-size-display: clamp(2.75rem, 9vw, 4.5rem);
         --font-weight-normal: 400;
         --font-weight-bold: 700;
         --line-height-base: 1.4;
@@ -132,6 +132,20 @@
     :focus-visible {
         outline: max(2px, 0.15em) solid currentColor;
         outline-offset: 0.15em;
+    }
+
+    /* ── Rotate utility ─────────────────────────────────────────────────────
+       Usage: class="rotate" with optional --rotate-deg, --rotate-origin, and
+       --rotate-padding overrides set inline or in a scoped style block.
+       --rotate-padding compensates for edge content clipping when rotated.
+    */
+    .rotate {
+        --rotate-deg: -2deg;
+        --rotate-origin: center top;
+        --rotate-padding: 0 15%;
+        transform: rotate(var(--rotate-deg));
+        transform-origin: var(--rotate-origin);
+        padding-inline: var(--rotate-padding);
     }
 
     /* ── Scramble overlay ────────────────────────────────────────────────────

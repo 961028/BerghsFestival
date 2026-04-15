@@ -60,10 +60,10 @@ The accent system is the site's defining interactive feature. Everything below i
 
 | Token | Value | Usage |
 |---|---|---|
-| `--font-size-xs` | `0.875rem` | Labels, metadata |
+| `--font-size-xs` | `1rem` | Labels, metadata |
 | `--font-size-base` | `1.125rem` | Body text, UI copy |
-| `--font-size-lg` | `clamp(2rem, 5vw, 2.75rem)` | Headings, schedule, nav |
-| `--font-size-display` | `clamp(2.75rem, 8vw, 4.5rem)` | Page titles only |
+| `--font-size-lg` | `clamp(2rem, 6vw, 2.75rem)` | Headings, schedule, nav |
+| `--font-size-display` | `clamp(2.75rem, 9vw, 4.5rem)` | Page titles only |
 
 **Letter spacing:**
 

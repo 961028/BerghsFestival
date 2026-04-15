@@ -4,7 +4,7 @@
 
 <aside class="cta-banner" data-region="cta">
     <a href="#" class="cta-inner">
-        <span class="cta-action" data-scramble>Register now -></span>
+        <span class="cta-action" data-scramble>Register now</span>
         <span class="cta-dates" data-scramble
             >14–15 MAY 2026 — Bobergsgatan 48</span
         >
@@ -48,7 +48,12 @@
         text-transform: uppercase;
         letter-spacing: var(--letter-spacing-label);
         flex: 1;
-        text-align: end;
+    }
+
+    @media (min-width: 40rem) {
+        .cta-dates {
+            text-align: end;
+        }
     }
 
     .cta-action {

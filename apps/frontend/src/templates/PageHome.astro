@@ -126,8 +126,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         flex: 1 1 0;
         min-height: 0;
         width: 100%;
-        object-fit: cover;
-        object-position: center center;
+        object-fit: fill;
         display: block;
     }
 
@@ -141,8 +140,9 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
     .hero-footer {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-xxs);
         padding-block: var(--space-xs);
         border-block-start: var(--border-default);
         font-size: var(--font-size-xs);
@@ -150,6 +150,15 @@ const openingDate = new Date("2026-05-23T12:00:00");
         color: var(--color-text-muted);
         font-weight: var(--font-weight-normal);
         text-transform: uppercase;
+    }
+
+    @media (min-width: 48rem) {
+        .hero-footer {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0;
+        }
     }
 
     .countdown {
@@ -170,8 +179,9 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
     .schedule-day {
         display: flex;
-        align-items: center;
-        gap: var(--space-lg);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-xs);
         padding-block: var(--space-sm);
         border-block-end: var(--border-default);
     }
@@ -214,7 +224,9 @@ const openingDate = new Date("2026-05-23T12:00:00");
             grid-column: 1 / -1;
             display: grid;
             grid-template-columns: subgrid;
+            flex-direction: unset;
             align-items: center;
+            gap: var(--space-lg);
         }
     }
 
@@ -227,9 +239,14 @@ const openingDate = new Date("2026-05-23T12:00:00");
         text-transform: uppercase;
         color: var(--color-text-muted);
         margin: 0;
-        writing-mode: vertical-rl;
-        rotate: 180deg;
-        place-self: start;
+    }
+
+    @media (min-width: 48rem) {
+        .section-label {
+            writing-mode: vertical-rl;
+            rotate: 180deg;
+            place-self: start;
+        }
     }
 
     /* ── Content sections (manifest + about) ──────────────────────── */
@@ -237,11 +254,19 @@ const openingDate = new Date("2026-05-23T12:00:00");
     .manifest,
     .about {
         display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 0 var(--space-xl);
+        grid-template-columns: 1fr;
+        gap: var(--space-md) 0;
         align-items: start;
         padding-block: var(--space-xl);
         border-block-start: var(--border-default);
+    }
+
+    @media (min-width: 48rem) {
+        .manifest,
+        .about {
+            grid-template-columns: auto 1fr;
+            gap: 0 var(--space-xl);
+        }
     }
 
     .manifest-body,

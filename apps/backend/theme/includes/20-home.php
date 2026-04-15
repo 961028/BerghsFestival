@@ -29,6 +29,12 @@ function _app_home_register_options() {
 			'title'      => 'Content',
 			'fields'     => array(
 				array(
+					'key'   => _app_home_field_key( 'meta-title' ),
+					'label' => 'Meta Title',
+					'name'  => 'home-meta-title',
+					'type'  => 'text',
+				),
+				array(
 					'key'          => _app_home_field_key( 'manifest' ),
 					'label'        => 'Manifest',
 					'name'         => 'home-manifest',
@@ -78,8 +84,9 @@ function _app_home_get( string $name ): string {
 function _app_home_rest_api_callback(): WP_REST_Response {
 	return rest_ensure_response(
 		array(
-			'manifest' => _app_home_get( 'manifest' ),
-			'about'    => _app_home_get( 'about' ),
+			'meta_title' => _app_home_get( 'meta-title' ),
+			'manifest'   => _app_home_get( 'manifest' ),
+			'about'      => _app_home_get( 'about' ),
 		)
 	);
 }

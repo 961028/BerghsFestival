@@ -236,10 +236,18 @@ const { title } = Astro.props;
     }
 
     .footer-row--sponsors {
-        display: grid;
-        grid-template-columns: var(--section-label-width) 1fr var(--section-label-width);
-        gap: 0 var(--space-xl);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
         align-items: start;
+    }
+
+    @media (min-width: 48rem) {
+        .footer-row--sponsors {
+            display: grid;
+            grid-template-columns: var(--section-label-width) 1fr var(--section-label-width);
+            gap: 0 var(--space-xl);
+        }
     }
 
     .footer-row--info {
