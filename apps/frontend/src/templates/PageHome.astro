@@ -153,6 +153,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
     }
 
     .hero-panel {
+        container-type: inline-size;
         background: var(--color-bg);
         border-block-start: var(--border-default);
     }
@@ -173,7 +174,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         text-transform: uppercase;
     }
 
-    @media (min-width: 48rem) {
+    @container (min-width: 30rem) {
         .hero-footer {
             flex-direction: row;
             justify-content: space-between;
@@ -234,7 +235,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         color: var(--color-text-muted);
     }
 
-    @media (min-width: 48rem) {
+    @container (min-width: 30rem) {
         .schedule-days {
             display: grid;
             grid-template-columns: max-content 1fr;
@@ -259,16 +260,6 @@ const openingDate = new Date("2026-05-23T12:00:00");
         margin: 0;
     }
 
-    @media (min-width: 48rem) {
-        .section-label {
-            writing-mode: vertical-lr;
-            rotate: 180deg;
-            place-self: start;
-            /* Offset half-leading of adjacent prose (line-height 1.4, font-size 1.125rem) */
-            translate: 0 0.75rem;
-        }
-    }
-
     /* ── Content sections (manifest + about) ──────────────────────── */
 
     .manifest,
@@ -281,7 +272,15 @@ const openingDate = new Date("2026-05-23T12:00:00");
         border-block-start: var(--border-default);
     }
 
-    @media (min-width: 48rem) {
+    @container (min-width: 40rem) {
+        .section-label {
+            writing-mode: vertical-lr;
+            rotate: 180deg;
+            place-self: start;
+            /* Offset half-leading of adjacent prose (line-height 1.4, font-size 1.125rem) */
+            translate: 0 0.75rem;
+        }
+
         .manifest,
         .about {
             grid-template-columns: auto 1fr;
