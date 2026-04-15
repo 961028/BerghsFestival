@@ -85,17 +85,20 @@ Note: Inria Sans, Georgia, Impact, Arial Black, and other fonts appear only in t
 - `--prose-width: 40rem` — max content column width
 - `--site-padding-inline: clamp(1.25rem, 5vw, 2.5rem)` — horizontal page padding
 - `--section-label-width: 7rem` — width of the label column in content sections
-- `--breakpoint-md: 48rem` — mobile/desktop breakpoint (header nav, hero grid)
 
-**3-column content grid:**
+**Content section grid:**
 
-Used consistently across all content sections (About, Manifest, Sponsors, Footer):
+Content sections (About, Manifest) use a 2-column grid with an all-caps label on the left and prose on the right:
 
 ```
-[7rem label] [gap] [content up to 40rem] [gap] [7rem spacer]
+[auto label] [gap] [content up to 40rem]
 ```
 
-The left column holds the all-caps section label. The right column is an empty spacer for visual symmetry. Use CSS grid with `grid-template-columns: var(--section-label-width) 1fr` (or equivalent subgrid patterns where nesting applies).
+`grid-template-columns: auto 1fr` — the label column sizes to its content. This layout activates via container query when `main` is at least `40rem` wide; below that it stacks single-column with the label above.
+
+**Sponsors row:**
+
+`grid-template-columns: var(--section-label-width) 1fr` — fixed-width label column, sponsors fill the rest. Always 2 columns, no breakpoint.
 
 **Hero:**
 
@@ -113,6 +116,10 @@ Full viewport minus fixed chrome: `height: calc(100dvh - var(--header-height) - 
 | `--space-xl` | `clamp(2.5rem, 8vmax, 6.25rem)` |
 
 Use CSS grid for page-level and multi-column layout. Use flexbox for one-dimensional alignment.
+
+Layout responsiveness follows a strict priority: intrinsic (auto-fit/wrap) first, container queries second, viewport media queries only for genuinely viewport-driven UI (hamburger, sticky nav). See `css-rules.md` for the full hierarchy.
+
+Dividers between grid cells use the gap-as-border technique: `gap: 1px` on the container with `background: var(--color-border)`, and `background: var(--color-bg)` on the cells. This ensures dividers are always between cells and never on the outside edges, regardless of whether the layout is 1-column or 2-column.
 
 ## 6. Components
 

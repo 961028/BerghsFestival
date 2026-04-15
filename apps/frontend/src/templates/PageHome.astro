@@ -194,6 +194,10 @@ const openingDate = new Date("2026-05-23T12:00:00");
     /* ── Schedule ──────────────────────────────────────────────────── */
 
     .schedule-days {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1px;
+        background: var(--color-border);
         list-style: none;
         margin: 0;
         padding: 0;
@@ -204,7 +208,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         align-items: flex-start;
         gap: var(--space-xs);
         padding-block: var(--space-sm);
-        border-block-end: var(--border-default);
+        background: var(--color-bg);
     }
 
     .schedule-headline {
@@ -235,17 +239,23 @@ const openingDate = new Date("2026-05-23T12:00:00");
         color: var(--color-text-muted);
     }
 
-    @container (min-width: 30rem) {
-        .schedule-days {
-            display: grid;
-            grid-template-columns: max-content 1fr;
-        }
-
+    /* Within each day: abbr+date | hours side by side */
+    @container (min-width: 24rem) {
         .schedule-day {
-            grid-column: 1 / -1;
-            grid-template-columns: subgrid;
+            display: flex;
             align-items: center;
             gap: var(--space-lg);
+        }
+    }
+
+    /* Two days side by side at 50/50 */
+    @container (min-width: 48rem) {
+        .schedule-days {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .schedule-day:last-child {
+            justify-content: flex-end;
         }
     }
 

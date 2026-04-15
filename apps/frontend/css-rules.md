@@ -82,13 +82,13 @@ Astro scopes `<style>` blocks to the component automatically. This means:
 
 Use CSS grid for page-level layout and multi-column lists. Use flexbox for one-dimensional alignment (nav bars, button groups, icon+label pairs).
 
-The responsive grid pattern used throughout this project — no media queries needed:
+The intrinsic responsive grid pattern used throughout this project — no breakpoints needed:
 
 ```css
-grid-template-columns: repeat(auto-fill, minmax(min(100%, VAR), 1fr));
+grid-template-columns: repeat(auto-fit, minmax(min(100%, VAR), 1fr));
 ```
 
-`auto-fill` keeps empty columns. `auto-fit` collapses them. Prefer `auto-fill` when the number of items is fixed, `auto-fit` when it varies.
+`auto-fit` collapses empty columns. `auto-fill` keeps them. Prefer `auto-fit` when the number of items varies, `auto-fill` when it is fixed.
 
 For stacking elements without `position: absolute`, use the grid-as-canvas pattern:
 
@@ -101,13 +101,37 @@ For stacking elements without `position: absolute`, use the grid-as-canvas patte
 }
 ```
 
+### Gap-as-border
+
+To draw dividers between grid cells that are always correct regardless of layout direction (1-column vs 2-column), use the gap-as-border technique instead of conditional `border` properties:
+
+```css
+.grid-container {
+    display: grid;
+    gap: 1px;
+    background: var(--color-border); /* exposed in the gap */
+}
+
+.grid-item {
+    background: var(--color-bg); /* punches out the container color */
+}
+```
+
+The `1px` gap exposes the container's background as a visible divider. No border is ever outside the grid — only between cells. No breakpoints or direction-switching needed. Used in `.footer-row--info` and `.schedule-days`.
+
 ---
 
 ## Responsive design
 
-Use `clamp()` for fluid values rather than breakpoints wherever possible. The token system already uses this for spacing and font sizes.
+Follow this priority order — reach for the next level only when the previous cannot express the intent:
 
-For hover/pointer interactions, gate them behind a capability media query so touch devices don't get stuck states:
+1. **Intrinsic layout** — `auto-fit`/`auto-fill` grids, `flex-wrap`, `min-content`/`max-content`. No threshold needed; the content itself determines when layout changes.
+2. **Container queries** — `@container (min-width: X)` when a component's layout should respond to its own available width, not the viewport. Declare `container-type: inline-size` on the parent. Used for `.schedule-days`, `.hero-footer`, `.section-label`, `.manifest`, `.about`.
+3. **Viewport media queries** — `@media` only for UI that is genuinely viewport-driven: show/hide hamburger, sticky nav stacking. Not for content layout.
+
+Use `clamp()` for fluid values (spacing, type sizes) — the token system already does this.
+
+For hover/pointer interactions, always gate behind a capability query so touch devices don't get stuck states:
 
 ```css
 @media (any-hover: hover) and (any-pointer: fine) {
@@ -144,14 +168,9 @@ Focus styles are defined globally in `global.css`. Do not override them without 
 
 ## Colours
 
-Colours are defined as tokens using `oklch()` for base values and `rgb(from ...)` relative syntax for derived values:
+Colours are static tokens defined in the `theme` layer of `global.css`. The design uses a fixed black/white palette — no derived or semi-transparent variants.
 
-```css
---color-border: rgb(from var(--color-primary) r g b / 0.15);
---color-text-secondary: rgb(from var(--color-text) r g b / 0.55);
-```
-
-Use relative colour syntax to derive variants from a base token rather than hardcoding separate values. This keeps the colour system coherent when the base changes.
+`--color-border` is always `#ffffff`. It is never overridden per-region or computed from accent colours. All borders and dividers across the site are pure white.
 
 ---
 
