@@ -15,7 +15,7 @@ const SCRAMBLE_FRAMES = 8; // frames before snapping to final character
 const FRAME_INTERVAL = 40; // ms between scramble frames
 
 // ── Idle glitch config ────────────────────────────────────────────────────────
-const IDLE_BASE = 6000; // base ms between idle glitch bursts
+const IDLE_BASE = 8000; // base ms between idle glitch bursts
 const IDLE_JITTER = 1500; // ± random jitter on top of base
 const IDLE_FRAMES = 5; // frames before snapping back
 const IDLE_FRAME_INTERVAL = 50; // ms between idle scramble frames
