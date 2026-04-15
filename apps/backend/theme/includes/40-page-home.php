@@ -49,5 +49,56 @@ function _app_page_home_register_options() {
 			'show_in_rest' => true,
 		)
 	);
+
+	acf_add_local_field_group(
+		array(
+			'key'    => _app_page_home_group_key( 'festival' ),
+			'title'  => 'Festival',
+			'fields' => array(
+				array(
+					'key'            => _app_page_home_field_key( 'opening_date' ),
+					'label'          => 'Opening Date & Time',
+					'name'           => 'opening_date',
+					'type'           => 'date_time_picker',
+					'display_format' => 'd/m/Y H:i',
+					'return_format'  => 'Y-m-d H:i:s',
+				),
+				array(
+					'key'          => _app_page_home_field_key( 'festival_days' ),
+					'label'        => '',
+					'name'         => 'festival_days',
+					'type'         => 'repeater',
+					'layout'       => 'block',
+					'button_label' => 'Add Day',
+					'sub_fields'   => array(
+						array(
+							'key'   => _app_page_home_field_key( 'festival_days', 'abbr' ),
+							'label' => 'Abbreviation',
+							'name'  => 'abbr',
+							'type'  => 'text',
+						),
+						array(
+							'key'   => _app_page_home_field_key( 'festival_days', 'date' ),
+							'label' => 'Date',
+							'name'  => 'date',
+							'type'  => 'text',
+						),
+						array(
+							'key'   => _app_page_home_field_key( 'festival_days', 'hours' ),
+							'label' => 'Hours',
+							'name'  => 'hours',
+							'type'  => 'text',
+						),
+					),
+				),
+			),
+			'location'       => array( $location ),
+			'hide_on_screen' => array(
+				'the_content',
+			),
+			'menu_order'     => $menu_order++,
+			'show_in_rest'   => true,
+		)
+	);
 }
 add_action( 'acf/init', '_app_page_home_register_options' );

@@ -1,13 +1,54 @@
 ---
+import { getCollection } from "astro:content";
+import { z } from "astro/zod";
 
+const FestivalDaysSchema = z
+    .array(
+        z.object({
+            abbr: z.string(),
+            date: z.string(),
+            hours: z.string(),
+        }),
+    )
+    .catch([]);
+
+const settings = (await getCollection("settings"))[0].data;
+const pages = await getCollection("pages");
+const homePage = pages.find((p) => settings.pageOnFront?.id === p.data.id);
+const acf = homePage?.data.acf;
+
+const festivalDays = FestivalDaysSchema.parse(acf?.festival_days);
+
+// Derive month + year from opening_date (format: "YYYY-MM-DD HH:mm:ss")
+const openingDateRaw: string | undefined = acf?.opening_date as
+    | string
+    | undefined;
+const openingDate = openingDateRaw
+    ? new Date(openingDateRaw.replace(" ", "T"))
+    : null;
+const monthYear = openingDate
+    ? openingDate
+          .toLocaleDateString("en-GB", { month: "short", year: "numeric" })
+          .toUpperCase()
+    : null;
+
+// Build a compact date range string, e.g. "22–23 MAY 2026"
+const ctaDates =
+    festivalDays.length && monthYear
+        ? `${festivalDays.map((d) => d.date).join("–")} ${monthYear}`
+        : null;
 ---
 
 <aside class="cta-banner" data-region="cta">
     <a href="#" class="cta-inner">
         <span class="cta-action" data-scramble>Register now</span>
-        <span class="cta-dates" data-scramble
-            >22–23 MAY 2026 — Bobergsgatan 48</span
-        >
+        {
+            ctaDates && (
+                <span class="cta-dates" data-scramble>
+                    {ctaDates} — Bobergsgatan 48
+                </span>
+            )
+        }
     </a>
 </aside>
 

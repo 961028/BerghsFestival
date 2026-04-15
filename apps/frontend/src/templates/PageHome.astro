@@ -17,6 +17,16 @@ const SectionsSchema = z
     )
     .catch([]);
 
+const FestivalDaysSchema = z
+    .array(
+        z.object({
+            abbr: z.string(),
+            date: z.string(),
+            hours: z.string(),
+        }),
+    )
+    .catch([]);
+
 type Props = {
     page: CollectionEntry<"pages">["data"];
 };
@@ -25,15 +35,11 @@ const { page } = Astro.props;
 const { title, acf } = page;
 
 const sections = SectionsSchema.parse(acf.sections);
-
-// TODO: pull from CMS
-const festivalDays = [
-    { abbr: "FRI", num: "22 MAY", hours: "12:00 – 01:00" },
-    { abbr: "SAT", num: "23 MAY", hours: "12:00 – 17:00" },
-];
-
-// Opening: Friday exhibition start
-const openingDate = new Date("2026-05-22T12:00:00");
+const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
+const openingDateRaw: string | undefined = acf.opening_date;
+const openingDate = openingDateRaw
+    ? new Date(openingDateRaw.replace(" ", "T"))
+    : null;
 ---
 
 <Layout title={title}>
@@ -60,7 +66,7 @@ const openingDate = new Date("2026-05-22T12:00:00");
                                     {day.abbr}
                                 </span>
                                 <span class="schedule-num" data-scramble>
-                                    {day.num}
+                                    {day.date}
                                 </span>
                             </div>
                             <span class="schedule-hours" data-scramble>
@@ -97,7 +103,8 @@ const openingDate = new Date("2026-05-22T12:00:00");
     }
 </Layout>
 
-<script define:vars={{ openingDateISO: openingDate.toISOString() }}>
+<script define:vars={{ openingDateISO: openingDate?.toISOString() ?? null }}>
+    if (!openingDateISO) return;
     const target = new Date(openingDateISO);
     const el = document.getElementById("js-countdown");
 
