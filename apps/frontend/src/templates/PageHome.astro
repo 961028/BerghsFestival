@@ -38,24 +38,35 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
         <div class="hero-panel">
             <ol class="schedule-days" role="list">
-                {festivalDays.map((day) => (
-                    <li class="schedule-day">
-                        <div class="schedule-headline">
-                            <span class="schedule-abbr" data-scramble>{day.abbr}</span>
-                            <span class="schedule-num" data-scramble>{day.num}</span>
-                        </div>
-                        <span class="schedule-hours" data-scramble>{day.hours}</span>
-                    </li>
-                ))}
+                {
+                    festivalDays.map((day) => (
+                        <li class="schedule-day">
+                            <div class="schedule-headline">
+                                <span class="schedule-abbr" data-scramble>
+                                    {day.abbr}
+                                </span>
+                                <span class="schedule-num" data-scramble>
+                                    {day.num}
+                                </span>
+                            </div>
+                            <span class="schedule-hours" data-scramble>
+                                {day.hours}
+                            </span>
+                        </li>
+                    ))
+                }
             </ol>
 
             <div class="hero-footer">
-                <p class="countdown" aria-live="polite" aria-label="Countdown to festival opening">
+                <p
+                    class="countdown"
+                    aria-live="polite"
+                    aria-label="Countdown to festival opening"
+                >
                     <span id="js-countdown">--</span>
                 </p>
                 <span class="hero-stats">150 students — 50 projects</span>
             </div>
-
         </div>
     </section>
 
@@ -67,7 +78,9 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
     <!-- ── Manifest ────────────────────────────────────────────────── -->
     <section class="manifest" aria-labelledby="manifest-heading">
-        <h2 class="section-label" id="manifest-heading" data-scramble>MANIFEST</h2>
+        <h2 class="section-label" id="manifest-heading" data-scramble>
+            MANIFEST
+        </h2>
         <div class="manifest-body" set:html={homeData.manifest.html} />
     </section>
 </Layout>
@@ -90,14 +103,15 @@ const openingDate = new Date("2026-05-23T12:00:00");
         }
 
         const totalSeconds = Math.floor(diff / 1000);
-        const days    = Math.floor(totalSeconds / 86400);
-        const hours   = Math.floor((totalSeconds % 86400) / 3600);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
 
         let text;
-        if (days > 0) text = `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        else          text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        if (days > 0)
+            text = `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        else text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 
         el.textContent = text;
     }
@@ -118,7 +132,9 @@ const openingDate = new Date("2026-05-23T12:00:00");
         display: flex;
         flex-direction: column;
         width: 100%;
-        height: calc(100dvh - var(--header-height, 0px) - var(--cta-height, 0px));
+        height: calc(
+            100dvh - var(--header-height, 0px) - var(--cta-height, 0px)
+        );
         overflow: hidden;
     }
 
@@ -243,9 +259,11 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
     @media (min-width: 48rem) {
         .section-label {
-            writing-mode: vertical-rl;
+            writing-mode: vertical-lr;
             rotate: 180deg;
             place-self: start;
+            /* Offset half-leading of adjacent prose (line-height 1.4, font-size 1.125rem) */
+            translate: 0 0.75rem;
         }
     }
 

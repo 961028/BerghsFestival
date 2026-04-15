@@ -154,7 +154,10 @@ const media = definePaginatedCollection(
             source_url: z.string(),
             alt_text: z.string(),
             media_details: z
-                .object({ width: z.number(), height: z.number() })
+                .object({
+                    width: z.number().optional(),
+                    height: z.number().optional(),
+                })
                 .optional(),
         })
         .transform((item) => ({
@@ -280,7 +283,7 @@ const iq = defineSingletonCollection(
         })
         .transform((item) => ({
             title: item.title,
-            content: { html: item.content },
+            content: { html: item.content.trim() },
         })),
 );
 

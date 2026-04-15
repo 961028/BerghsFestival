@@ -1,47 +1,52 @@
 ---
-import { getCollection, getEntry } from "astro:content";
-
-import WpImage from "../elements/WpImage.astro";
+import fs from "node:fs";
+import path from "node:path";
 
 const BASELINE = 4; // rem — width of a square logo
 const EXPONENT = 0.6;
 
-const sponsors = (await getCollection("sponsors")).sort((a, b) => {
-    if (a.data.id < b.data.id) return -1;
-    if (a.data.id > b.data.id) return 1;
-    return 0;
-});
+const sponsors = [
+    { name: "Coca-Cola",      url: "https://www.coca-cola.com", file: "Coca-Cola_logo.svg",        width: 615.08,  height: 192.94  },
+    { name: "General Motors", url: "https://www.gm.com",        file: "general-motors-2021--1.svg", width: 131.233, height: 131.233 },
+    { name: "Berghs",         url: "https://www.berghs.se",     file: "berghs-soc.svg",             width: 458,     height: 48      },
+    { name: "Sponsor A",      url: "#",                          file: "sponsor-a.svg",              width: 615.08,  height: 192.94  },
+    { name: "Sponsor B",      url: "#",                          file: "sponsor-b.svg",              width: 131.233, height: 131.233 },
+    { name: "Sponsor C",      url: "#",                          file: "sponsor-c.svg",              width: 615.08,  height: 192.94  },
+    { name: "Sponsor D",      url: "#",                          file: "sponsor-d.svg",              width: 131.233, height: 131.233 },
+    { name: "Sponsor E",      url: "#",                          file: "sponsor-e.svg",              width: 615.08,  height: 192.94  },
+    { name: "Sponsor F",      url: "#",                          file: "sponsor-f.svg",              width: 131.233, height: 131.233 },
+];
 
-const sponsorLogos = await Promise.all(
-    sponsors.map(async (sponsor) => {
-        const media = await getEntry(sponsor.data.image);
-        const w = media?.data.width;
-        const h = media?.data.height;
-        const ratio = w && h ? w / h : 1;
-        const width = BASELINE * Math.pow(ratio, EXPONENT);
-        return { sponsor, widthStyle: `${width.toFixed(3)}rem` };
-    }),
-);
+const sponsorsDir = path.resolve("public/sponsors");
+
+const sponsorLogos = sponsors.map((sponsor) => {
+    const ratio = sponsor.width / sponsor.height;
+    const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
+    const svgRaw = fs.readFileSync(path.join(sponsorsDir, sponsor.file), "utf-8");
+    // Strip XML declaration, hardcoded fill/color attrs, width/height attrs on root <svg>
+    const svg = svgRaw
+        .replace(/<\?xml[^>]*\?>\s*/g, "")
+        .replace(/\s(fill|color)="[^"]*"/g, "")
+        .replace(/(<svg[^>]*)\s(width|height)="[^"]*"/g, "$1")
+        .replace(/(<svg[^>]*)>/, '$1 aria-hidden="true" focusable="false">');
+    return { sponsor, widthStyle: `${widthRem.toFixed(3)}rem`, svg };
+});
 ---
 
 <ul>
-    {
-        sponsorLogos.map(({ sponsor, widthStyle }) => (
-            <li>
-                <a
-                    href={sponsor.data.url}
-                    aria-label={sponsor.data.name}
-                    title={sponsor.data.name}
-                >
-                    <WpImage
-                        image={sponsor.data.image}
-                        alt=""
-                        style={`width: ${widthStyle}`}
-                    />
-                </a>
-            </li>
-        ))
-    }
+    {sponsorLogos.map(({ sponsor, widthStyle, svg }) => (
+        <li>
+            <a
+                href={sponsor.url}
+                aria-label={sponsor.name}
+                title={sponsor.name}
+                data-sponsor-link
+                style={`width: ${widthStyle}`}
+            >
+                <Fragment set:html={svg} />
+            </a>
+        </li>
+    ))}
 </ul>
 
 <style>
@@ -51,12 +56,41 @@ const sponsorLogos = await Promise.all(
         display: flex;
         flex-wrap: wrap;
         align-items: center;
-        justify-content: flex-start;
-        gap: var(--space-md);
+        justify-content: center;
+        gap: var(--space-lg);
     }
 
-    ul :global(img) {
+    a {
         display: block;
+        color: var(--color-text-on-bg);
+    }
+
+    a :global(svg) {
+        display: block;
+        width: 100%;
         height: auto;
+        fill: currentColor;
     }
 </style>
+
+<script>
+    import { makeColorPicker } from "../../scripts/accents";
+
+    const CYCLE_INTERVAL_MS = 50;
+    const nextAccent = makeColorPicker(2);
+
+    document.querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]").forEach((link) => {
+        let timer: ReturnType<typeof setInterval> | undefined;
+
+        link.addEventListener("mouseenter", () => {
+            timer = setInterval(() => {
+                link.style.color = nextAccent();
+            }, CYCLE_INTERVAL_MS);
+        });
+
+        link.addEventListener("mouseleave", () => {
+            clearInterval(timer);
+            link.style.color = "";
+        });
+    });
+</script>

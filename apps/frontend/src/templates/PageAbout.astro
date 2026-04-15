@@ -61,9 +61,7 @@ const { title } = page;
     </section>
 
     <section>
-        <h2 data-scramble>
-            Applied learning and amplified intelligence
-        </h2>
+        <h2 data-scramble>Applied learning and amplified intelligence</h2>
         <p>
             At Berghs, we continually strive to be at the forefront of education
             and pedagogy. New methods, research, and digital tools, including
@@ -78,7 +76,7 @@ const { title } = page;
         </p>
     </section>
 
-    <a class="btn" href="https://www.berghs.se/om-berghs/">Learn more about Berghs</a>
+    <a class="btn" data-color-hover href="https://www.berghs.se/om-berghs/">Learn more about Berghs</a>
     </div>
 </Layout>
 
@@ -118,5 +116,27 @@ const { title } = page;
         min-block-size: max(44px, 2em);
         line-height: 1;
         align-content: center;
+        transition: background-color 0.08s;
     }
 </style>
+
+<script>
+    import { makeColorPicker } from "../scripts/accents";
+
+    const btn = document.querySelector<HTMLElement>("[data-color-hover]");
+    if (btn) {
+        const pick = makeColorPicker(2);
+
+        btn.addEventListener("mouseenter", () => {
+            const interval = setInterval(() => {
+                btn.style.backgroundColor = pick();
+            }, 80);
+            btn.dataset.colorInterval = String(interval);
+        });
+
+        btn.addEventListener("mouseleave", () => {
+            clearInterval(Number(btn.dataset.colorInterval));
+            btn.style.backgroundColor = "";
+        });
+    }
+</script>

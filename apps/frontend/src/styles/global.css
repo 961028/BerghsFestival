@@ -146,6 +146,7 @@
         transform: rotate(var(--rotate-deg));
         transform-origin: var(--rotate-origin);
         padding-inline: var(--rotate-padding);
+        padding-block-end: var(--space-xl);
     }
 
     /* ── Scramble overlay ────────────────────────────────────────────────────
