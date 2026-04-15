@@ -38,7 +38,7 @@ const menuItems = (
                             }
                             class="nav-link"
                         >
-                            <span class="nav-link-text">{menuItem.data.title}</span>
+                            <span class="nav-link-text" data-scramble>{menuItem.data.title}</span>
                         </a>
                     </li>
                 ))
@@ -87,7 +87,7 @@ const menuItems = (
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: var(--space-sm) var(--site-padding-inline);
+        padding-block: var(--space-sm);
     }
 
     /* ── Hamburger button ── */
@@ -152,6 +152,11 @@ const menuItems = (
     }
 
 
+    .nav-link[aria-current="page"] {
+        font-weight: var(--font-weight-bold);
+        text-transform: uppercase;
+    }
+
     @media (min-width: 48rem) { /* --breakpoint-md */
         .menu-toggle {
             display: none;
@@ -172,7 +177,7 @@ const menuItems = (
         color: var(--color-text);
         display: flex;
         flex-direction: column;
-        padding: var(--space-lg) var(--site-padding-inline);
+        padding-block: var(--space-lg);
         gap: var(--space-md);
         visibility: hidden;
         opacity: 0;

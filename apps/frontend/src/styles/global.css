@@ -1,7 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Inria+Sans:wght@400;700&display=swap");
+/* ── Font imports — uncomment the active font ──────────────────────────────── */
+@import url("https://rsms.me/inter/inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Inter+Mono:wght@400;700&display=swap");
 
 @layer reset, theme, global;
-
 
 /* ==========================================================================
    Theme — design tokens
@@ -10,49 +11,51 @@
 @layer theme {
     :root {
         /* Colors */
-        --color-bg:           #000000;
-        --color-text:         #000000; /* text placed ON top of accent fills */
-        --color-accent-1:     #ffffff; /* primary fill — randomised per region on load */
-        --color-accent-2:     #ffffff; /* secondary fill — randomised per region on load */
-        --color-accent-3:     #ffffff; /* tertiary fill — randomised per region on load */
+        --color-bg: #000000;
+        --color-text: #000000; /* text placed ON top of accent fills */
+        --color-accent-1: #ffffff; /* primary fill — randomised per region on load */
+        --color-accent-2: #ffffff; /* secondary fill — randomised per region on load */
+        --color-accent-3: #ffffff; /* tertiary fill — randomised per region on load */
 
-        /* Accent color palette (source values for the randomiser) */
-        --color-accent-green:  #00ff00;
-        --color-accent-red:    #ff0000;
-        --color-accent-blue:   #1e00ff;
+        /* Accent color palette (source values for the randomiser - needs manual update) */
+        --color-accent-green: #00ff00;
+        --color-accent-red: #ff0000;
+        --color-accent-blue: #0037ff;
         --color-accent-yellow: #eeff00;
+        --color-accent-pink: #ff00d9;
 
         /* Derived */
-        --color-border:      rgb(from var(--color-accent-3) r g b / 0.15);
-        --color-text-on-bg:  #ffffff;
-        --color-text-muted:  rgb(from var(--color-text-on-bg) r g b / 0.5);
+        --color-border: #ffffff;
+        --color-text-on-bg: #ffffff;
+        --color-text-muted: #ffffff;
 
         /* Typography */
-        --font-family-base:    'Inria Sans', system-ui, sans-serif;
-        --font-size-xs:        0.875rem;
-        --font-size-base:      1.125rem;
-        --font-size-lg:        clamp(2rem, 5vw, 2.75rem);
-        --font-size-display:   clamp(2.75rem, 8vw, 4.5rem);
-        --font-weight-normal:  400;
-        --font-weight-bold:    700;
-        --line-height-base:    1.4;
-        --line-height-tight:   1.2;
+        --font-family-base: "Inter", system-ui, sans-serif;
+        --font-size-xs: 0.875rem;
+        --font-size-base: 1.125rem;
+        --font-size-lg: clamp(2rem, 5vw, 2.75rem);
+        --font-size-display: clamp(2.75rem, 8vw, 4.5rem);
+        --font-weight-normal: 400;
+        --font-weight-bold: 700;
+        --line-height-base: 1.4;
+        --line-height-tight: 1.2;
         --letter-spacing-label: 0.15em;
-        --letter-spacing-logo:  0.125em;
+        --letter-spacing-logo: 0.125em;
 
         /* Spacing */
         --space-xxs: 0.25rem;
-        --space-xs:  0.5rem;
-        --space-sm:  1rem;
-        --space-md:  1.25rem;
-        --space-lg:  clamp(1.25rem, 4vmax, 2.5rem);
-        --space-xl:  clamp(2.5rem, 8vmax, 6.25rem);
+        --space-xs: 0.5rem;
+        --space-sm: 1rem;
+        --space-md: 1.25rem;
+        --space-lg: clamp(1.25rem, 4vmax, 2.5rem);
+        --space-xl: clamp(2.5rem, 8vmax, 6.25rem);
 
         /* Layout */
-        --max-width:           64rem;
-        --prose-width:         40rem;
+        --max-width: 64rem;
+        --prose-width: 40rem;
         --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
-        --breakpoint-md:       48rem;
+        --breakpoint-md: 48rem;
+        --section-label-width: 7rem;
 
         /* Borders */
         --border-default: 1px solid var(--color-border);
@@ -112,6 +115,7 @@
     body {
         font-family: var(--font-family-base);
         font-size: var(--font-size-base);
+        font-feature-settings: "ss01", "ss02", "zero";
         color: var(--color-text-on-bg);
         background: var(--color-bg);
         line-height: var(--line-height-base);
@@ -128,5 +132,23 @@
     :focus-visible {
         outline: max(2px, 0.15em) solid currentColor;
         outline-offset: 0.15em;
+    }
+
+    /* ── Scramble overlay ────────────────────────────────────────────────────
+       The real text stays in place (transparent) to hold layout.
+       ::before renders the scrambled/glitched characters on top.
+       JS sets --scramble to a quoted string and color: transparent on the el.
+    */
+    [data-scramble] {
+        position: relative;
+
+        &::before {
+            content: var(--scramble, none);
+            position: absolute;
+            inset: 0;
+            color: var(--color-text-on-bg);
+            white-space: pre;
+            pointer-events: none;
+        }
     }
 }

@@ -36,38 +36,6 @@ Component `<style>` blocks are un-layered, so they always win over the layered g
 
 All design tokens are CSS custom properties defined in the `theme` layer of `global.css`. Use them everywhere. Never hardcode a value that has a corresponding token.
 
-```css
-/* Spacing */
---space-xxs: 0.25rem;
---space-xs:  0.5rem;
---space-sm:  1rem;
---space-md:  1.25rem;
---space-lg:  clamp(1.25rem, 4vmax, 2.5rem);
---space-xl:  clamp(2.5rem, 8vmax, 6.25rem);
-
-/* Font sizes */
---font-size-xs:      0.875rem;   /* labels, metadata, timestamps */
---font-size-base:    1.125rem;   /* body text, UI copy */
---font-size-lg:      clamp(2rem, 5vw, 2.75rem);   /* nav, card titles, section headings */
---font-size-display: clamp(2.75rem, 8vw, 4.5rem); /* page titles only */
-
-/* Layout */
---max-width:           64rem;
---site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
-
-/* Borders */
---border-default: 1px solid var(--color-border);
-
-/* Accent colors */
---color-accent-green:  #00ff00;
---color-accent-red:    #ff0000;
---color-accent-blue:   #1e00ff;
---color-accent-yellow: #eeff00;
-
-/* Label tracking */
---letter-spacing-label: 0.15em;
-```
-
 No border-radius tokens exist — the design uses sharp corners everywhere.
 
 If you need a value that no token covers, add the token to `global.css` first, then use it. Do not add one-off values.
@@ -125,8 +93,12 @@ grid-template-columns: repeat(auto-fill, minmax(min(100%, VAR), 1fr));
 For stacking elements without `position: absolute`, use the grid-as-canvas pattern:
 
 ```css
-.wrapper { display: grid; }
-.wrapper > * { grid-area: 1 / 1; }
+.wrapper {
+    display: grid;
+}
+.wrapper > * {
+    grid-area: 1 / 1;
+}
 ```
 
 ---
@@ -139,7 +111,9 @@ For hover/pointer interactions, gate them behind a capability media query so tou
 
 ```css
 @media (any-hover: hover) and (any-pointer: fine) {
-    .thing:hover { opacity: 0.7; }
+    .thing:hover {
+        opacity: 0.7;
+    }
 }
 ```
 
@@ -153,7 +127,9 @@ The global reset already handles reduced-motion:
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
+    *,
+    *::before,
+    *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
     }

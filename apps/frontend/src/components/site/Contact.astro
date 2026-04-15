@@ -29,10 +29,6 @@ const { address, phone, socialServices } = contact;
 </div>
 
 <style>
-    div {
-        text-align: center;
-    }
-
     div > div:first-child {
         white-space: pre-wrap;
     }
@@ -45,9 +41,8 @@ const { address, phone, socialServices } = contact;
         list-style: none;
         padding: 0;
         display: flex;
-        justify-content: center;
         gap: var(--space-sm);
-        margin-block-start: var(--space-xs);
+        margin-block-start: var(--space-sm);
     }
 
     ul :global(svg) {
@@ -55,5 +50,6 @@ const { address, phone, socialServices } = contact;
         display: block;
         width: var(--icon-size);
         height: auto;
+        fill: currentColor;
     }
 </style>

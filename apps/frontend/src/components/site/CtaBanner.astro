@@ -1,10 +1,13 @@
 ---
+
 ---
 
 <aside class="cta-banner" data-region="cta">
     <a href="#" class="cta-inner">
-        <span class="cta-dates">14–15 MAY 2026</span>
-        <span class="cta-action">Register now →</span>
+        <span class="cta-action" data-scramble>Register now -></span>
+        <span class="cta-dates" data-scramble
+            >14–15 MAY 2026 — Bobergsgatan 48</span
+        >
     </a>
 </aside>
 
@@ -45,6 +48,7 @@
         text-transform: uppercase;
         letter-spacing: var(--letter-spacing-label);
         flex: 1;
+        text-align: end;
     }
 
     .cta-action {
@@ -53,6 +57,11 @@
         text-transform: uppercase;
         letter-spacing: var(--letter-spacing-label);
         line-height: 1;
+    }
+
+    /* Overlay must use the same color as CTA text, not the global default */
+    [data-scramble]::before {
+        color: var(--color-text);
     }
 
     @media (any-hover: hover) and (any-pointer: fine) {

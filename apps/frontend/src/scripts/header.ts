@@ -1,4 +1,4 @@
-import { ACCENTS } from "./accents";
+import { makeColorPicker } from "./accents";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -52,9 +52,7 @@ menu.querySelectorAll("a").forEach((link) => {
 
 // ── Font cycling ──
 
-function randomAccent() {
-    return ACCENTS[Math.floor(Math.random() * ACCENTS.length)];
-}
+const nextAccent = makeColorPicker(2);
 
 function strobeAccentFill(
     el: SVGSVGElement,
@@ -63,7 +61,7 @@ function strobeAccentFill(
     interval = LOGO_STROBE_INTERVAL_MS,
 ): ReturnType<typeof setInterval> {
     const timer = setInterval(() => {
-        el.style.fill = randomAccent();
+        el.style.fill = nextAccent();
     }, interval);
     setTimeout(() => {
         clearInterval(timer);
@@ -75,7 +73,7 @@ function strobeAccentFill(
 function startCycling(span: HTMLElement): ReturnType<typeof setInterval> {
     return setInterval(() => {
         span.style.fontFamily = FONTS[Math.floor(Math.random() * FONTS.length)];
-        span.style.color = randomAccent();
+        span.style.color = nextAccent();
     }, CYCLE_INTERVAL_MS);
 }
 
@@ -134,7 +132,7 @@ if (logoLink && logoSvg) {
 
     logoLink.addEventListener("mouseenter", () => {
         logoTimer = setInterval(() => {
-            logoSvg.style.fill = randomAccent();
+            logoSvg.style.fill = nextAccent();
         }, CYCLE_INTERVAL_MS);
     });
 
@@ -146,17 +144,12 @@ if (logoLink && logoSvg) {
 
 document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
     const span = link.querySelector<HTMLElement>(".nav-link-text")!;
-    const isActive = link.getAttribute("aria-current") === "page";
     let timer: ReturnType<typeof setInterval>;
 
-    if (isActive) {
+    link.addEventListener("mouseenter", () => {
         timer = startCycling(span);
-    } else {
-        link.addEventListener("mouseenter", () => {
-            timer = startCycling(span);
-        });
-        link.addEventListener("mouseleave", () => {
-            stopCycling(span, timer);
-        });
-    }
+    });
+    link.addEventListener("mouseleave", () => {
+        stopCycling(span, timer);
+    });
 });

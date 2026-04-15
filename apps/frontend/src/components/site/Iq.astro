@@ -4,22 +4,32 @@ import { getCollection } from "astro:content";
 const { title, content } = (await getCollection("iq"))[0].data;
 ---
 
-<div>
-    <h2>{title}</h2>
+<div class="iq">
+    <span class="footer-label">{title}</span>
     <div set:html={content.html} />
 </div>
 
 <style>
-    div {
-        text-align: center;
+    .iq {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
     }
 
-    h2 {
-        font-size: var(--font-size-base);
+    .footer-label {
+        font-size: var(--font-size-xs);
         font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-label);
+        text-transform: uppercase;
+        color: var(--color-text-muted);
     }
 
-    div > div {
-        margin-block-start: var(--space-xs);
+    .iq > div {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+    }
+
+    .iq > div :global(p) {
+        margin: 0;
     }
 </style>

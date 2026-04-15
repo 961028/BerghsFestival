@@ -284,6 +284,19 @@ const iq = defineSingletonCollection(
         })),
 );
 
+const home = defineSingletonCollection(
+    "app/v1/home",
+    z
+        .object({
+            manifest: z.string(),
+            about: z.string(),
+        })
+        .transform((item) => ({
+            manifest: { html: item.manifest },
+            about: { html: item.about },
+        })),
+);
+
 export const collections = {
     settings,
     menuLocations,
@@ -294,4 +307,5 @@ export const collections = {
     sponsors,
     contact,
     iq,
+    home,
 };

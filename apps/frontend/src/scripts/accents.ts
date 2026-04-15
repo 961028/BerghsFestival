@@ -1,12 +1,7 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 // Signal colors used in all flicker/strobe effects. Add, remove, or change
 // colors here — no other file needs to be touched.
-export const ACCENTS = [
-    "#00ff00", // green
-    "#ff0000", // red
-    "#1e00ff", // blue
-    "#eeff00", // yellow
-];
+export const ACCENTS = ["#00ff00", "#ff0000", "#0037ff", "#eeff00", "#ff00d9"];
 
 export type Triple = { primary: string; secondary: string; tertiary: string };
 
@@ -20,4 +15,16 @@ export function pickTriple(excludePrimary = ""): Triple {
     const secondary = pickDifferentFrom(primary);
     const tertiary = pickDifferentFrom(primary, secondary);
     return { primary, secondary, tertiary };
+}
+
+// Returns a stateful picker that enforces a minimum gap between repeats.
+// `gap = 2` means at least 2 different colors must appear before a color
+// can be chosen again, making sequences feel random rather than repetitive.
+export function makeColorPicker(gap = 2): () => string {
+    const history: string[] = [];
+    return function pick(): string {
+        const color = pickDifferentFrom(...history.slice(-gap));
+        history.push(color);
+        return color;
+    };
 }

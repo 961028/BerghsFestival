@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 
 type Props = {
@@ -9,16 +10,13 @@ type Props = {
 const { page } = Astro.props;
 const { title } = page;
 
+const homeData = (await getCollection("home"))[0].data;
+
 // TODO: pull from CMS
 const festivalDays = [
-    { abbr: "FRI", num: "23", hours: "12:00 – 01:00" },
-    { abbr: "SAT", num: "24", hours: "12:00 – 17:00" },
+    { abbr: "FRI", num: "23 MAY", hours: "12:00 – 01:00" },
+    { abbr: "SAT", num: "24 MAY", hours: "12:00 – 17:00" },
 ];
-
-const festivalMeta = {
-    dates:    "MAY 23, 24 – 2026",
-    location: "BOBERGSGATAN 48",
-};
 
 // Opening: Friday exhibition start
 const openingDate = new Date("2026-05-23T12:00:00");
@@ -35,47 +33,42 @@ const openingDate = new Date("2026-05-23T12:00:00");
             playsinline
             aria-hidden="true"
         >
-            <source src="/videos/fuckitblinkande.mp4" type="video/mp4" />
+            <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
 
         <div class="hero-panel">
-            <p class="countdown" aria-live="polite" aria-label="Countdown to festival opening">
-                <span id="js-countdown">--</span>
-            </p>
-
             <ol class="schedule-days" role="list">
                 {festivalDays.map((day) => (
                     <li class="schedule-day">
                         <div class="schedule-headline">
-                            <span class="schedule-abbr">{day.abbr}</span>
-                            <span class="schedule-num">{day.num}</span>
+                            <span class="schedule-abbr" data-scramble>{day.abbr}</span>
+                            <span class="schedule-num" data-scramble>{day.num}</span>
                         </div>
-                        <span class="schedule-hours">{day.hours}</span>
+                        <span class="schedule-hours" data-scramble>{day.hours}</span>
                     </li>
                 ))}
             </ol>
 
-            <div class="schedule-meta">
-                <span>{festivalMeta.dates}</span>
-                <span>{festivalMeta.location}</span>
+            <div class="hero-footer">
+                <p class="countdown" aria-live="polite" aria-label="Countdown to festival opening">
+                    <span id="js-countdown">--</span>
+                </p>
+                <span class="hero-stats">150 students — 50 projects</span>
             </div>
-        </div>
-    </section>
 
-    <!-- ── Manifest ────────────────────────────────────────────────── -->
-    <section class="manifest" aria-labelledby="manifest-heading">
-        <span class="section-label" id="manifest-heading">MANIFEST</span>
-        <div class="manifest-body">
-            <!-- TODO: wire in manifest copy from CMS -->
         </div>
     </section>
 
     <!-- ── About ──────────────────────────────────────────────────── -->
     <section class="about" aria-labelledby="about-heading">
-        <span class="section-label" id="about-heading">ABOUT</span>
-        <div class="about-body">
-            <!-- TODO: wire in real about copy from CMS -->
-        </div>
+        <h2 class="section-label" id="about-heading" data-scramble>ABOUT</h2>
+        <div class="about-body" set:html={homeData.about.html} />
+    </section>
+
+    <!-- ── Manifest ────────────────────────────────────────────────── -->
+    <section class="manifest" aria-labelledby="manifest-heading">
+        <h2 class="section-label" id="manifest-heading" data-scramble>MANIFEST</h2>
+        <div class="manifest-body" set:html={homeData.manifest.html} />
     </section>
 </Layout>
 
@@ -144,17 +137,27 @@ const openingDate = new Date("2026-05-23T12:00:00");
         border-block-start: var(--border-default);
     }
 
-    /* ── Countdown ─────────────────────────────────────────────────── */
+    /* ── Hero footer (countdown + stats) ──────────────────────────── */
 
-    .countdown {
-        margin: 0;
-        padding: var(--space-xs) var(--site-padding-inline);
+    .hero-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-block: var(--space-xs);
+        border-block-start: var(--border-default);
         font-size: var(--font-size-xs);
         letter-spacing: 0.1em;
         color: var(--color-text-muted);
         font-weight: var(--font-weight-normal);
         text-transform: uppercase;
-        border-block-end: var(--border-default);
+    }
+
+    .countdown {
+        margin: 0;
+    }
+
+    .hero-stats {
+        white-space: nowrap;
     }
 
     /* ── Schedule ──────────────────────────────────────────────────── */
@@ -169,7 +172,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         display: flex;
         align-items: center;
         gap: var(--space-lg);
-        padding: var(--space-sm) var(--site-padding-inline);
+        padding-block: var(--space-sm);
         border-block-end: var(--border-default);
     }
 
@@ -215,42 +218,36 @@ const openingDate = new Date("2026-05-23T12:00:00");
         }
     }
 
-    /* ── Meta (dates + location) ───────────────────────────────────── */
+    /* ── Section labels ───────────────────────────────────────────── */
 
-    .schedule-meta {
-        display: flex;
-        gap: var(--space-lg);
-        padding: var(--space-xs) var(--site-padding-inline);
-        font-size: var(--font-size-xs);
-        letter-spacing: 0.1em;
-        color: var(--color-text-muted);
-        text-transform: uppercase;
-    }
-
-    /* ── Manifest ──────────────────────────────────────────────────── */
-
-    .manifest {
-        display: grid;
-        grid-template-columns: max-content 1fr;
-        gap: 0 var(--space-xl);
-        align-items: start;
-        padding: var(--space-xl) var(--site-padding-inline);
-        border-block-end: var(--border-default);
-    }
-
-    .manifest-body {
+    .section-label {
         font-size: var(--font-size-lg);
-        line-height: var(--line-height-base);
-        max-width: var(--prose-width);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-label);
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+        margin: 0;
+        writing-mode: vertical-rl;
+        rotate: 180deg;
+        place-self: start;
     }
 
-    /* ── About ─────────────────────────────────────────────────────── */
+    /* ── Content sections (manifest + about) ──────────────────────── */
 
+    .manifest,
     .about {
         display: grid;
-        grid-template-columns: max-content 1fr;
+        grid-template-columns: auto 1fr;
         gap: 0 var(--space-xl);
         align-items: start;
-        padding: var(--space-xl) var(--site-padding-inline);
+        padding-block: var(--space-xl);
+        border-block-start: var(--border-default);
+    }
+
+    .manifest-body,
+    .about-body {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+        max-width: var(--prose-width);
     }
 </style>
