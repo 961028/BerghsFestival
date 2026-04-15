@@ -12,31 +12,26 @@ const sponsors = (await getCollection("sponsors")).sort((a, b) => {
 
 const sponsorLogos = await Promise.all(
     sponsors.map(async (sponsor) => {
-        const media = await getEntry(sponsor.data.image);
-        const w = media?.data.width;
-        const h = media?.data.height;
+        const image = await getEntry(sponsor.data.image);
+        const w = image?.data.width;
+        const h = image?.data.height;
         const ratio = w && h ? w / h : 1;
         const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
 
-        const svgRaw = await fetch(media!.data.sourceUrl).then((r) => r.text());
-        // Strip XML declaration, hardcoded fill/color attrs, width/height attrs on root <svg>
-        const svg = svgRaw
-            .replace(/<\?xml[^>]*\?>\s*/g, "")
-            .replace(/\s(fill|color)="[^"]*"/g, "")
-            .replace(/(<svg[^>]*)\s(width|height)="[^"]*"/g, "$1")
-            .replace(
-                /(<svg[^>]*)>/,
-                '$1 aria-hidden="true" focusable="false">',
-            );
-
-        return { sponsor, widthStyle: `${widthRem.toFixed(3)}rem`, svg };
+        return {
+            sponsor,
+            w,
+            h,
+            widthStyle: `${widthRem.toFixed(3)}rem`,
+            src: image.data.sourceUrl,
+        };
     }),
 );
 ---
 
 <ul>
     {
-        sponsorLogos.map(({ sponsor, widthStyle, svg }) => (
+        sponsorLogos.map(({ sponsor, w, h, widthStyle, src }) => (
             <li>
                 <a
                     href={sponsor.data.url}
@@ -45,7 +40,13 @@ const sponsorLogos = await Promise.all(
                     data-sponsor-link
                     style={`width: ${widthStyle}`}
                 >
-                    <Fragment set:html={svg} />
+                    <div
+                        class="logo"
+                        style={{
+                            maskImage: `url(${src})`,
+                            aspectRatio: `${w} / ${h}`,
+                        }}
+                    />
                 </a>
             </li>
         ))
@@ -67,12 +68,11 @@ const sponsorLogos = await Promise.all(
         display: block;
         color: var(--color-text-on-bg);
     }
-
-    a :global(svg) {
-        display: block;
-        width: 100%;
-        height: auto;
-        fill: currentColor;
+    .logo {
+        background-color: currentColor;
+        mask-size: cover;
+        mask-repeat: no-repeat;
+        mask-position: center;
     }
 </style>
 
