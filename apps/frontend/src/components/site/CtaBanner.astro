@@ -19,7 +19,7 @@
         z-index: 200;
         background: var(--color-accent-1);
         color: var(--color-text);
-        border-block-start: 2px solid var(--color-text);
+        border-block-start: var(--border-thick);
         container-type: inline-size;
     }
 
@@ -57,8 +57,8 @@
     }
 
     @media (any-hover: hover) and (any-pointer: fine) {
-        .cta-inner:hover .cta-action {
-            opacity: 0.6;
+        .cta-inner:hover {
+            color: var(--color-text-on-bg);
         }
     }
 </style>

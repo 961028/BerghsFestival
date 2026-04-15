@@ -239,7 +239,6 @@ const sections = [
 <style>
     /* Anchor nav */
     nav {
-        --nav-height: 3rem;
         display: flex;
         gap: var(--space-xs);
         border-block-end: var(--border-default);
@@ -274,7 +273,7 @@ const sections = [
 
     /* Sections */
     section {
-        scroll-margin-top: var(--nav-height, 3rem);
+        scroll-margin-top: var(--experiences-nav-height);
         margin-block-end: var(--space-xl);
     }
 
@@ -309,9 +308,8 @@ const sections = [
     }
 
     [data-day-panel] li {
-        --time-col: 4rem;
         display: grid;
-        grid-template-columns: var(--time-col) 1fr;
+        grid-template-columns: var(--schedule-time-col) 1fr;
         gap: var(--space-xs);
         padding-block: var(--space-sm);
         border-block-start: var(--border-default);
@@ -373,14 +371,13 @@ const sections = [
 
     /* Food & drink */
     section > ul {
-        --food-col-min: 12rem;
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
         grid-template-columns: repeat(
             auto-fill,
-            minmax(min(100%, var(--food-col-min)), 1fr)
+            minmax(min(100%, var(--schedule-food-col-min)), 1fr)
         );
         gap: var(--space-xs);
     }

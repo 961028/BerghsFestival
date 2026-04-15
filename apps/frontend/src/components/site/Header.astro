@@ -60,11 +60,11 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
             }
         </ul>
 
-        <a href={aboutHref}>
+        <a href={aboutHref} class="logo-link">
             <Svg
                 name="berghs-soc"
                 alt=""
-                style="width: auto; height: var(--font-size-base); fill: white;"
+                style="width: auto; height: var(--font-size-base);"
             />
         </a>
     </nav>
@@ -129,7 +129,7 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
         width: var(--bar-w);
         height: var(--bar-h);
         background: currentColor;
-        border-radius: var(--bar-h);
+
         transform-origin: center;
         transition:
             transform 0.25s ease,
@@ -149,6 +149,10 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
     .menu-toggle[aria-expanded="true"] .bar-bot {
         transform: translateY(calc(-1 * (var(--bar-gap) + var(--bar-h))))
             rotate(-45deg);
+    }
+
+    .logo-link :global(svg) {
+        fill: var(--color-text-on-bg);
     }
 
     /* ── Desktop nav links ── */
