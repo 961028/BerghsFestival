@@ -237,9 +237,18 @@ final class App_Seed_Command {
 		update_field( _app_page_experiences_field_key( 'schedule' ), $schedule, $page_id );
 
 		$group_configs = array(
-			'Food & Drink' => array( 'label' => 'vendor', 'url' => true ),
-			'Music'        => array( 'label' => 'artist', 'url' => true ),
-			'Installations' => array( 'label' => 'installation', 'url' => false ),
+			'Food & Drink'  => array(
+				'label' => 'vendor',
+				'url'   => true,
+			),
+			'Music'         => array(
+				'label' => 'artist',
+				'url'   => true,
+			),
+			'Installations' => array(
+				'label' => 'installation',
+				'url'   => false,
+			),
 		);
 
 		$groups = array();

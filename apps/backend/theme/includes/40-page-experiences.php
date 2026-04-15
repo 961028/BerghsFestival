@@ -64,7 +64,7 @@ function _app_page_experiences_register_fields() {
 									'return_format' => 'id',
 								),
 								array(
-									'key'  => _app_page_experiences_field_key( 'schedule', 'events', 'description' ),
+									'key'   => _app_page_experiences_field_key( 'schedule', 'events', 'description' ),
 									'label' => 'Description',
 									'name'  => 'description',
 									'type'  => 'textarea',
@@ -107,11 +107,11 @@ function _app_page_experiences_register_fields() {
 							'type'  => 'text',
 						),
 						array(
-							'key'     => _app_page_experiences_field_key( 'groups', 'layout' ),
-							'label'   => 'Layout',
-							'name'    => 'layout',
-							'type'    => 'select',
-							'choices' => array(
+							'key'           => _app_page_experiences_field_key( 'groups', 'layout' ),
+							'label'         => 'Layout',
+							'name'          => 'layout',
+							'type'          => 'select',
+							'choices'       => array(
 								'music'         => 'Music (vertical list)',
 								'installations' => 'Installations (full-width gallery)',
 								'food'          => 'Food & drink (card grid)',
