@@ -1,37 +1,14 @@
-import {
-    defineCollection,
-    reference,
-    type BaseSchema,
-    type DataEntryMap,
-} from "astro:content";
+import { defineCollection, type BaseSchema } from "astro:content";
 import { z } from "astro/zod";
 
 import { wpGet, wpGetAll } from "./lib/wp-api";
 import { stripHtml } from "./lib/html";
-
-function intId() {
-    return z.int().positive().pipe(z.coerce.string());
-}
-
-function nullableIntId() {
-    return z.preprocess(
-        (v) => (v === 0 ? null : v),
-        z
-            .int()
-            .positive()
-            .nullable()
-            .pipe(z.coerce.string())
-            .transform((v) => (v === "null" ? null : v)),
-    );
-}
-
-function intReference<C extends keyof DataEntryMap>(collection: C) {
-    return intId().pipe(reference(collection));
-}
-
-function nullableIntReference<C extends keyof DataEntryMap>(collection: C) {
-    return nullableIntId().pipe(reference(collection).nullable());
-}
+import {
+    intId,
+    intReference,
+    nullableIntId,
+    nullableIntReference,
+} from "./lib/schema";
 
 const definePaginatedCollection = <S extends BaseSchema>(
     path: string,

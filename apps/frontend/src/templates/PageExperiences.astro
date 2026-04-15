@@ -3,11 +3,11 @@ import Layout from "../layouts/Layout.astro";
 
 import type { CollectionEntry } from "astro:content";
 import { z } from "astro/zod";
-import { reference } from "astro:content";
 
 import WpImage from "../components/elements/WpImage.astro";
 import MusicList from "../components/experiences/MusicList.astro";
 import InstallationsList from "../components/experiences/InstallationsList.astro";
+import { nullableIntReference } from "../lib/schema";
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
@@ -21,17 +21,7 @@ const ScheduleSchema = z.array(
                 .object({
                     start_time: z.string(),
                     title: z.string(),
-                    image: z.preprocess(
-                        (v) => (v === false || v === 0 ? null : v),
-                        z.coerce
-                            .string()
-                            .nullable()
-                            .transform((v) =>
-                                v
-                                    ? reference("media").nullable().parse(v)
-                                    : null,
-                            ),
-                    ),
+                    image: nullableIntReference("media"),
                     description: z.string().nullable().optional(),
                 })
                 .transform((data) => ({
@@ -54,11 +44,7 @@ const GroupsSchema = z.array(
             items: z.array(
                 z.object({
                     name: z.string(),
-                    image: z.coerce
-                        .string()
-                        .transform((val) =>
-                            reference("media").nullable().parse(val),
-                        ),
+                    image: nullableIntReference("media"),
                     description: z.string().transform((val) => ({ html: val })),
                     url: z.string().optional(),
                 }),
@@ -66,12 +52,7 @@ const GroupsSchema = z.array(
         })
         .transform((val) => ({
             ...val,
-            slug:
-                val.slug ||
-                val.title
-                    .toLowerCase()
-                    .replace(/\s+/g, "-")
-                    .replace(/[^\w-]/g, ""),
+            slug: val.slug || z.string().slugify().parse(val.title),
         })),
 );
 
