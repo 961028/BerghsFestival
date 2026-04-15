@@ -140,7 +140,7 @@
        --rotate-padding compensates for edge content clipping when rotated.
     */
     .rotate {
-        --rotate-deg: -2deg;
+        --rotate-deg: -1.5deg;
         --rotate-origin: center top;
         --rotate-padding: 0 15%;
         transform: rotate(var(--rotate-deg));

@@ -11,6 +11,7 @@ const { title } = page;
 ---
 
 <Layout title={title}>
+    <div class="rotate">
     <h1 class="page-title" data-scramble>{title}</h1>
 
     <section>
@@ -77,7 +78,8 @@ const { title } = page;
         </p>
     </section>
 
-    <a href="https://www.berghs.se/om-berghs/">Learn more about Berghs</a>
+    <a class="btn" href="https://www.berghs.se/om-berghs/">Learn more about Berghs</a>
+    </div>
 </Layout>
 
 <style>
@@ -105,7 +107,16 @@ const { title } = page;
         margin-block-end: var(--space-xs);
     }
 
-    a {
-        text-decoration: underline;
+    .btn {
+        display: inline-block;
+        background-color: var(--color-text-on-bg);
+        color: var(--color-text);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        padding: var(--space-sm) var(--space-md);
+        text-decoration: none;
+        min-block-size: max(44px, 2em);
+        line-height: 1;
+        align-content: center;
     }
 </style>
