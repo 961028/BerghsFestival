@@ -20,12 +20,14 @@
         background: var(--color-accent-1);
         color: var(--color-text);
         border-block-start: 2px solid var(--color-text);
+        container-type: inline-size;
     }
 
     .cta-inner {
         display: flex;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: space-between;
         max-width: var(--max-width);
         margin-inline: auto;
         padding: var(--space-sm) var(--site-padding-inline);
@@ -39,8 +41,6 @@
         font-weight: var(--font-weight-normal);
         text-transform: uppercase;
         letter-spacing: var(--letter-spacing-label);
-        flex: 1;
-        min-width: 12rem;
     }
 
     .cta-action {

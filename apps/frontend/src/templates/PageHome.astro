@@ -121,8 +121,13 @@ const openingDate = new Date("2026-05-23T12:00:00");
 </script>
 
 <script>
-    const video = document.getElementById("js-hero-video") as HTMLVideoElement | null;
-    if (video && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const video = document.getElementById(
+        "js-hero-video",
+    ) as HTMLVideoElement | null;
+    if (
+        video &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
         video.play();
     }
 </script>
@@ -174,7 +179,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         text-transform: uppercase;
     }
 
-    @container (min-width: 30rem) {
+    @container (min-width: 35rem) {
         .hero-footer {
             flex-direction: row;
             justify-content: space-between;
@@ -240,22 +245,31 @@ const openingDate = new Date("2026-05-23T12:00:00");
     }
 
     /* Within each day: abbr+date | hours side by side */
-    @container (min-width: 24rem) {
+    @container (min-width: 28rem) {
         .schedule-day {
             display: flex;
             align-items: center;
-            gap: var(--space-lg);
+            justify-content: space-between;
         }
     }
 
     /* Two days side by side at 50/50 */
-    @container (min-width: 48rem) {
+    @container (min-width: 55rem) {
         .schedule-days {
             grid-template-columns: 1fr 1fr;
         }
 
+        .schedule-day {
+            padding-inline: var(--space-md);
+        }
+
+        .schedule-day:first-child {
+            padding-inline-start: 0;
+        }
+
         .schedule-day:last-child {
-            justify-content: flex-end;
+            justify-content: space-between;
+            padding-inline-end: 0;
         }
     }
 
@@ -282,7 +296,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
         border-block-start: var(--border-default);
     }
 
-    @container (min-width: 40rem) {
+    @container (min-width: 36rem) {
         .section-label {
             writing-mode: vertical-lr;
             rotate: 180deg;
