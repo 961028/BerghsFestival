@@ -9,9 +9,9 @@ const { address, phone, socialServices } = contact;
 ---
 
 <div>
-    <div>{address}</div>
+    <div class="address">{address}</div>
 
-    <div>
+    <div class="phone">
         <a href={`tel:${phone}`}>{phone}</a>
     </div>
 
@@ -29,11 +29,11 @@ const { address, phone, socialServices } = contact;
 </div>
 
 <style>
-    div > div:first-child {
+    .address {
         white-space: pre-wrap;
     }
 
-    div > div:nth-child(2) {
+    .phone {
         margin-block-start: var(--space-xs);
     }
 

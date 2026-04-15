@@ -136,8 +136,8 @@ const openingDate = new Date("2026-05-23T12:00:00");
     /* ── Hero ──────────────────────────────────────────────────────── */
 
     .hero {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-rows: 1fr auto;
         width: 100%;
         height: calc(
             100dvh - var(--header-height, 0px) - var(--cta-height, 0px)
@@ -146,7 +146,6 @@ const openingDate = new Date("2026-05-23T12:00:00");
     }
 
     .hero-video {
-        flex: 1 1 0;
         min-height: 0;
         width: 100%;
         object-fit: fill;
@@ -154,7 +153,6 @@ const openingDate = new Date("2026-05-23T12:00:00");
     }
 
     .hero-panel {
-        flex: 0 0 auto;
         background: var(--color-bg);
         border-block-start: var(--border-default);
     }
@@ -201,8 +199,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
     }
 
     .schedule-day {
-        display: flex;
-        flex-direction: column;
+        display: grid;
         align-items: flex-start;
         gap: var(--space-xs);
         padding-block: var(--space-sm);
@@ -245,9 +242,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
         .schedule-day {
             grid-column: 1 / -1;
-            display: grid;
             grid-template-columns: subgrid;
-            flex-direction: unset;
             align-items: center;
             gap: var(--space-lg);
         }

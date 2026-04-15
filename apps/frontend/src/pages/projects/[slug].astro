@@ -27,13 +27,13 @@ const relatedProjects = allProjects
     <article>
         {
             !project.image || (
-                <div>
+                <div class="project-hero">
                     <WpImage image={project.image} loading="eager" alt={project.title} />
                 </div>
             )
         }
 
-        <div>
+        <div class="project-body">
             <div>
                 <div>{project.company}</div>
                 <h1 class="page-title">{project.title}</h1>
@@ -65,7 +65,7 @@ const relatedProjects = allProjects
         {!project.video || <WpVideo video={project.video} />}
     </article>
 
-    <ul>
+    <ul class="related-projects">
         {
             relatedProjects.map((related) => (
                 <li>
@@ -84,12 +84,12 @@ const relatedProjects = allProjects
 
 <style>
     /* hero */
-    article > div:first-child {
+    .project-hero {
         aspect-ratio: 3 / 2;
         overflow: hidden;
     }
 
-    article > div:first-child :global(img) {
+    .project-hero :global(img) {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -102,7 +102,7 @@ const relatedProjects = allProjects
     }
 
     /* body */
-    article > div:nth-child(2) {
+    .project-body {
         --body-col-min: 18rem;
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--body-col-min)), 1fr));
@@ -110,7 +110,7 @@ const relatedProjects = allProjects
     }
 
     /* related */
-    article ~ ul {
+    .related-projects {
         --col-min: 16rem;
         list-style: none;
         margin-block-start: var(--space-sm);

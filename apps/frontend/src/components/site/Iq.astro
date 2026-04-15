@@ -11,17 +11,8 @@ const { title, content } = (await getCollection("iq"))[0].data;
 
 <style>
     .iq {
-        display: flex;
-        flex-direction: column;
+        display: grid;
         gap: var(--space-sm);
-    }
-
-    .footer-label {
-        font-size: var(--font-size-xs);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: var(--letter-spacing-label);
-        text-transform: uppercase;
-        color: var(--color-text-muted);
     }
 
     .iq > div {

@@ -40,7 +40,6 @@
         --line-height-base: 1.4;
         --line-height-tight: 1.2;
         --letter-spacing-label: 0.15em;
-        --letter-spacing-logo: 0.125em;
 
         /* Spacing */
         --space-xxs: 0.25rem;
@@ -54,6 +53,7 @@
         --max-width: 64rem;
         --prose-width: 40rem;
         --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
+        --breakpoint-sm: 40rem;
         --breakpoint-md: 48rem;
         --section-label-width: 7rem;
 
@@ -112,6 +112,14 @@
         margin-block-end: var(--space-md);
     }
 
+    .footer-label {
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-label);
+        text-transform: uppercase;
+        color: var(--color-text-muted);
+    }
+
     body {
         font-family: var(--font-family-base);
         font-size: var(--font-size-base);
@@ -160,6 +168,7 @@
     */
     [data-scramble] {
         position: relative;
+        overflow: hidden;
 
         &::before {
             content: var(--scramble, none);
