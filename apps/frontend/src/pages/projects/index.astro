@@ -10,13 +10,18 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
     <div>
         <button data-filter="all" aria-pressed="true">All Projects</button>
         <button data-filter="group" aria-pressed="false">Group</button>
-        <button data-filter="individual" aria-pressed="false">Individual</button>
+        <button data-filter="individual" aria-pressed="false">Individual</button
+        >
     </div>
 
     <ul>
         {
             projects.map((project) => (
-                <li data-team-size={project.teamMembers.length > 1 ? "group" : "individual"}>
+                <li
+                    data-team-size={
+                        project.teamMembers.length > 1 ? "group" : "individual"
+                    }
+                >
                     <ProjectCard
                         company={project.company}
                         title={project.title}
@@ -31,7 +36,8 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 </Layout>
 
 <script>
-    const buttons = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+    const buttons =
+        document.querySelectorAll<HTMLButtonElement>("[data-filter]");
     const items = document.querySelectorAll<HTMLLIElement>("ul li");
 
     buttons.forEach((btn) => {
@@ -41,7 +47,8 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 
             const filter = btn.dataset.filter;
             items.forEach((item) => {
-                const show = filter === "all" || item.dataset.teamSize === filter;
+                const show =
+                    filter === "all" || item.dataset.teamSize === filter;
                 item.hidden = !show;
             });
         });
@@ -83,7 +90,10 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
         margin: 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--col-min)), 1fr));
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(100%, var(--col-min)), 1fr)
+        );
         gap: var(--space-sm);
     }
 

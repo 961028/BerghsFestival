@@ -86,7 +86,7 @@ function _app_project_register_fields() {
 					'key'   => _app_projects_field_key( 'video' ),
 					'name'  => 'video',
 					'label' => '',
-					'type'  => 'oembed',
+					'type'  => 'text',
 				),
 			),
 			'location'     => array( $location ),

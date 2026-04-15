@@ -11,7 +11,10 @@ export async function getStaticPaths() {
 
     return projects.map((project) => ({
         params: { slug: project.data.slug },
-        props: { project: project.data, allProjects: projects.map((p) => p.data) },
+        props: {
+            project: project.data,
+            allProjects: projects.map((p) => p.data),
+        },
     }));
 }
 
@@ -28,7 +31,11 @@ const relatedProjects = allProjects
         {
             !project.image || (
                 <div class="project-hero">
-                    <WpImage image={project.image} loading="eager" alt={project.title} />
+                    <WpImage
+                        image={project.image}
+                        loading="eager"
+                        alt={project.title}
+                    />
                 </div>
             )
         }
@@ -105,7 +112,10 @@ const relatedProjects = allProjects
     .project-body {
         --body-col-min: 18rem;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--body-col-min)), 1fr));
+        grid-template-columns: repeat(
+            auto-fit,
+            minmax(min(100%, var(--body-col-min)), 1fr)
+        );
         gap: var(--space-sm);
     }
 
@@ -116,7 +126,10 @@ const relatedProjects = allProjects
         margin-block-start: var(--space-sm);
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(min(100%, var(--col-min)), 1fr));
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(100%, var(--col-min)), 1fr)
+        );
         gap: var(--space-sm);
     }
 </style>

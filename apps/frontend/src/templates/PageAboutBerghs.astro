@@ -1,0 +1,85 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { z } from "astro/zod";
+
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const SectionsSchema = z
+    .array(
+        z.object({
+            title: z.string(),
+            content: z.string().transform((val) => ({ html: val })),
+        }),
+    )
+    .catch([]);
+
+const LearnMoreSchema = z
+    .object({
+        learn_more_cta: z.string().catch(""),
+        learn_more_url: z.string().catch(""),
+    })
+    .transform((value) => ({
+        learnMoreCta: value.learn_more_cta,
+        learnMoreUrl: value.learn_more_url,
+    }));
+
+const { page } = Astro.props;
+const { title, acf } = page;
+const sections = SectionsSchema.parse(acf.sections);
+const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
+---
+
+<Layout title={title}>
+    <h1 class="page-title" data-scramble>{title}</h1>
+
+    {
+        sections.map((section) => (
+            <section>
+                <h2 data-scramble>{section.title}</h2>
+
+                <div class="page-content" set:html={section.content.html} />
+            </section>
+        ))
+    }
+
+    {
+        learnMoreCta && learnMoreUrl && (
+            <a href={learnMoreUrl} target="_blank">
+                {learnMoreCta}
+            </a>
+        )
+    }
+</Layout>
+
+<style>
+    section {
+        margin-block-end: var(--space-xl);
+    }
+
+    section h2 {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        margin-block-end: var(--space-sm);
+    }
+
+    section p,
+    section ul {
+        font-size: var(--font-size-base);
+    }
+
+    section ul {
+        padding-inline-start: var(--space-md);
+        margin-block-start: var(--space-xs);
+    }
+
+    section li {
+        margin-block-end: var(--space-xs);
+    }
+
+    a {
+        text-decoration: underline;
+    }
+</style>

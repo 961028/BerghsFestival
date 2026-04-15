@@ -13,7 +13,9 @@ const menuItems = (
 
 const pages = await getCollection("pages");
 const aboutPage = pages.find((p) => p.data.template === "page-about.php");
-const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berghs";
+const aboutHref = aboutPage
+    ? `/${await resolvePageLink(aboutPage)}`
+    : "/om-berghs";
 ---
 
 <!--
@@ -25,10 +27,10 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
   3. Header.astro  — uncomment the CSS block near the bottom (marked "MOBILE MENU")
   4. header.ts     — uncomment the toggle logic block (marked "MOBILE MENU")
 -->
-
 <header>
     <nav>
-        {/* <button
+        {
+            /* <button
             class="menu-toggle"
             aria-expanded="false"
             aria-controls="mobile-menu"
@@ -37,9 +39,10 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
             <span class="bar bar-top"></span>
             <span class="bar bar-mid"></span>
             <span class="bar bar-bot"></span>
-        </button> */}
+        </button> */
+        }
 
-        <ul class="nav-links" role="list">
+        <ul class="nav-links">
             {
                 menuItems.map((menuItem) => (
                     <li>
@@ -53,7 +56,9 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
                             }
                             class="nav-link"
                         >
-                            <span class="nav-link-text" data-scramble>{menuItem.data.title}</span>
+                            <span class="nav-link-text" data-scramble>
+                                {menuItem.data.title}
+                            </span>
                         </a>
                     </li>
                 ))
@@ -69,7 +74,8 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
         </a>
     </nav>
 
-    {/* <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    {
+        /* <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         {menuItems.map((menuItem) => (
             <a
                 href={menuItem.data.url}
@@ -83,8 +89,8 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
                 <span class="nav-link-text">{menuItem.data.title}</span>
             </a>
         ))}
-    </div> */}
-
+    </div> */
+    }
 </header>
 
 <script src="../../scripts/header.ts"></script>
@@ -137,8 +143,7 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
     }
 
     .menu-toggle[aria-expanded="true"] .bar-top {
-        transform: translateY(calc(var(--bar-gap) + var(--bar-h)))
-            rotate(45deg);
+        transform: translateY(calc(var(--bar-gap) + var(--bar-h))) rotate(45deg);
     }
 
     .menu-toggle[aria-expanded="true"] .bar-mid {
@@ -173,7 +178,8 @@ const aboutHref = aboutPage ? `/${await resolvePageLink(aboutPage)}` : "/om-berg
         text-transform: uppercase;
     }
 
-    @media (min-width: 48rem) { /* --breakpoint-md */
+    @media (min-width: 48rem) {
+        /* --breakpoint-md */
         .menu-toggle {
             display: none;
         }

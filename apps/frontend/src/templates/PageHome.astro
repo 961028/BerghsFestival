@@ -1,16 +1,30 @@
 ---
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
+import { z } from "astro/zod";
 import Layout from "../layouts/Layout.astro";
+
+const SectionsSchema = z
+    .array(
+        z
+            .object({
+                title: z.string(),
+                content: z.string().transform((val) => ({ html: val })),
+            })
+            .transform((value) => ({
+                ...value,
+                slug: z.string().slugify().parse(value.title),
+            })),
+    )
+    .catch([]);
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
 };
 
 const { page } = Astro.props;
-const { title } = page;
+const { title, acf } = page;
 
-const homeData = (await getCollection("home"))[0].data;
+const sections = SectionsSchema.parse(acf.sections);
 
 // TODO: pull from CMS
 const festivalDays = [
@@ -22,7 +36,7 @@ const festivalDays = [
 const openingDate = new Date("2026-05-22T12:00:00");
 ---
 
-<Layout title={title} metaTitle={homeData.metaTitle || undefined}>
+<Layout title={title}>
     <!-- ── Hero ───────────────────────────────────────────────────── -->
     <section class="hero" aria-label="Hero">
         <video
@@ -37,7 +51,7 @@ const openingDate = new Date("2026-05-22T12:00:00");
         </video>
 
         <div class="hero-panel">
-            <ol class="schedule-days" role="list">
+            <ol class="schedule-days">
                 {
                     festivalDays.map((day) => (
                         <li class="schedule-day">
@@ -70,19 +84,17 @@ const openingDate = new Date("2026-05-22T12:00:00");
         </div>
     </section>
 
-    <!-- ── About ──────────────────────────────────────────────────── -->
-    <section class="about" aria-labelledby="about-heading">
-        <h2 class="section-label" id="about-heading" data-scramble>ABOUT</h2>
-        <div class="about-body" set:html={homeData.about.html} />
-    </section>
+    {
+        sections.map((section) => (
+            <section class="section" aria-labelledby={section.slug}>
+                <h2 class="section-label" id={section.slug} data-scramble>
+                    {section.title}
+                </h2>
 
-    <!-- ── Manifest ────────────────────────────────────────────────── -->
-    <section class="manifest" aria-labelledby="manifest-heading">
-        <h2 class="section-label" id="manifest-heading" data-scramble>
-            MANIFEST
-        </h2>
-        <div class="manifest-body" set:html={homeData.manifest.html} />
-    </section>
+                <div class="section-body" set:html={section.content.html} />
+            </section>
+        ))
+    }
 </Layout>
 
 <script define:vars={{ openingDateISO: openingDate.toISOString() }}>
@@ -109,9 +121,11 @@ const openingDate = new Date("2026-05-22T12:00:00");
         const seconds = totalSeconds % 60;
 
         let text;
-        if (days > 0)
+        if (days > 0) {
             text = `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        else text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        } else {
+            text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
 
         el.textContent = text;
     }
@@ -285,10 +299,9 @@ const openingDate = new Date("2026-05-22T12:00:00");
         margin: 0;
     }
 
-    /* ── Content sections (manifest + about) ──────────────────────── */
+    /* ── Content sections ─────────────────────────────────────────── */
 
-    .manifest,
-    .about {
+    .section {
         display: grid;
         grid-template-columns: 1fr;
         gap: var(--space-md) 0;
@@ -306,15 +319,13 @@ const openingDate = new Date("2026-05-22T12:00:00");
             translate: 0 0.75rem;
         }
 
-        .manifest,
-        .about {
+        .section {
             grid-template-columns: auto 1fr;
             gap: 0 var(--space-xl);
         }
     }
 
-    .manifest-body,
-    .about-body {
+    .section-body {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         max-width: var(--prose-width);

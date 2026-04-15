@@ -3,7 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 
 import PageDefault from "../templates/Page.astro";
-import PageAbout from "../templates/PageAbout.astro";
+import PageAboutBerghs from "../templates/PageAboutBerghs.astro";
 import PageExperiences from "../templates/PageExperiences.astro";
 import PageHome from "../templates/PageHome.astro";
 
@@ -12,7 +12,7 @@ interface Props {
 }
 
 const SLUG_TO_TEMPLATE = {
-    "page-about.php": PageAbout,
+    "page-about-berghs.php": PageAboutBerghs,
     "page-experiences.php": PageExperiences,
 };
 

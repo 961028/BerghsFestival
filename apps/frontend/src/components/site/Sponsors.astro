@@ -10,41 +10,60 @@ const sponsors = (await getCollection("sponsors")).sort((a, b) => {
     return 0;
 });
 
-const sponsorLogos = await Promise.all(
-    sponsors.map(async (sponsor) => {
-        const media = await getEntry(sponsor.data.image);
-        const w = media?.data.width;
-        const h = media?.data.height;
-        const ratio = w && h ? w / h : 1;
-        const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
+const sponsorLogos = (
+    await Promise.all(
+        sponsors.map(async (sponsor) => {
+            const image = await getEntry(sponsor.data.image);
 
-        const svgRaw = await fetch(media!.data.sourceUrl).then((r) => r.text());
-        // Strip XML declaration, hardcoded fill/color attrs, width/height attrs on root <svg>
-        const svg = svgRaw
-            .replace(/<\?xml[^>]*\?>\s*/g, "")
-            .replace(/\s(fill|color)="[^"]*"/g, "")
-            .replace(/(<svg[^>]*)\s(width|height)="[^"]*"/g, "$1")
-            .replace(/(<svg[^>]*)>/, '$1 aria-hidden="true" focusable="false">');
+            if (!image) {
+                return null;
+            }
 
-        return { sponsor, widthStyle: `${widthRem.toFixed(3)}rem`, svg };
-    }),
-);
+            const { url, name } = sponsor.data;
+
+            if (!url) {
+                return null;
+            }
+
+            const { width, height } = image.data;
+            const ratio = width && height ? width / height : 1;
+            const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
+
+            return {
+                url,
+                name,
+                width,
+                height,
+                widthStyle: `${widthRem.toFixed(3)}rem`,
+                src: image.data.sourceUrl,
+            };
+        }),
+    )
+).filter((s) => s !== null);
 ---
 
 <ul>
-    {sponsorLogos.map(({ sponsor, widthStyle, svg }) => (
-        <li>
-            <a
-                href={sponsor.data.url}
-                aria-label={sponsor.data.name}
-                title={sponsor.data.name}
-                data-sponsor-link
-                style={`width: ${widthStyle}`}
-            >
-                <Fragment set:html={svg} />
-            </a>
-        </li>
-    ))}
+    {
+        sponsorLogos.map(({ url, name, width, height, widthStyle, src }) => (
+            <li>
+                <a
+                    href={url}
+                    aria-label={name}
+                    title={name}
+                    data-sponsor-link
+                    style={`width: ${widthStyle}`}
+                >
+                    <div
+                        class="logo"
+                        style={{
+                            maskImage: `url(${src})`,
+                            aspectRatio: `${width} / ${height}`,
+                        }}
+                    />
+                </a>
+            </li>
+        ))
+    }
 </ul>
 
 <style>
@@ -62,12 +81,11 @@ const sponsorLogos = await Promise.all(
         display: block;
         color: var(--color-text-on-bg);
     }
-
-    a :global(svg) {
-        display: block;
-        width: 100%;
-        height: auto;
-        fill: currentColor;
+    .logo {
+        background-color: currentColor;
+        mask-size: cover;
+        mask-repeat: no-repeat;
+        mask-position: center;
     }
 </style>
 
@@ -76,23 +94,27 @@ const sponsorLogos = await Promise.all(
 
     const nextAccent = makeColorPicker(2);
 
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
 
-    document.querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]").forEach((link) => {
-        let timer: ReturnType<typeof setInterval> | undefined;
+    document
+        .querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]")
+        .forEach((link) => {
+            let timer: ReturnType<typeof setInterval> | undefined;
 
-        link.addEventListener("mouseenter", () => {
-            link.style.color = nextAccent();
-            if (!reducedMotion) {
-                timer = setInterval(() => {
-                    link.style.color = nextAccent();
-                }, CYCLE_INTERVAL_MS);
-            }
+            link.addEventListener("mouseenter", () => {
+                link.style.color = nextAccent();
+                if (!reducedMotion) {
+                    timer = setInterval(() => {
+                        link.style.color = nextAccent();
+                    }, CYCLE_INTERVAL_MS);
+                }
+            });
+
+            link.addEventListener("mouseleave", () => {
+                clearInterval(timer);
+                link.style.color = "";
+            });
         });
-
-        link.addEventListener("mouseleave", () => {
-            clearInterval(timer);
-            link.style.color = "";
-        });
-    });
 </script>
