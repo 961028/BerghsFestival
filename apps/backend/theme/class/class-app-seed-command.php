@@ -193,8 +193,25 @@ final class App_Seed_Command {
 				'post_status'  => 'publish',
 				'post_title'   => 'Home',
 				'post_content' => "This is the <strong>home</strong> page.\n\nWe'll fill it with content later.'",
+				'meta_input'   => array(
+					'_wp_page_template' => 'page-home.php',
+				),
 			)
 		);
+
+
+		$sections = array(
+			array(
+				'title'   => 'About',
+				'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam posuere a nibh at porttitor. Ut nec nibh nec massa porta consequat eu a augue. Sed euismod ullamcorper nisi, at tempus ante dignissim sed. Sed nisl turpis, tincidunt sed fermentum id, ornare eget metus. Ut efficitur euismod tellus. Quisque et libero ipsum. Pellentesque consectetur massa vitae ipsum bibendum, eu mattis urna tempus. Morbi tempus iaculis odio, sed suscipit lorem aliquam in. Vestibulum nec feugiat magna, tempus congue ex. Quisque quam nibh, scelerisque nec purus eget, mollis aliquam ante.'
+			),
+			array(
+				'title'   => 'Manifest',
+				'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam posuere a nibh at porttitor. Ut nec nibh nec massa porta consequat eu a augue. Sed euismod ullamcorper nisi, at tempus ante dignissim sed. Sed nisl turpis, tincidunt sed fermentum id, ornare eget metus. Ut efficitur euismod tellus. Quisque et libero ipsum. Pellentesque consectetur massa vitae ipsum bibendum, eu mattis urna tempus. Morbi tempus iaculis odio, sed suscipit lorem aliquam in. Vestibulum nec feugiat magna, tempus congue ex. Quisque quam nibh, scelerisque nec purus eget, mollis aliquam ante.'
+			),
+		);
+		update_field( _app_page_home_field_key( 'sections' ), $sections, $page_id );
+
 		update_option( 'show_on_front', 'page', true );
 		update_option( 'page_on_front', $page_id );
 
