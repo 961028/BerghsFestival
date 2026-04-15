@@ -33,7 +33,7 @@
         --font-family-base: "Inter", system-ui, sans-serif;
         --font-size-xs: 1rem;
         --font-size-base: 1.125rem;
-        --font-size-lg: clamp(2rem, 6vw, 2.75rem);
+        --font-size-lg: 2rem;
         --font-size-display: clamp(2.75rem, 9vw, 4.5rem);
         --font-weight-normal: 400;
         --font-weight-bold: 700;
@@ -127,6 +127,10 @@
         text-decoration: none;
         text-underline-offset: 0.25em;
         text-decoration-thickness: max(0.08em, 1px);
+    }
+
+    :is(p, li, dd, blockquote) a:not(nav a) {
+        text-decoration: underline;
     }
 
     :focus-visible {
