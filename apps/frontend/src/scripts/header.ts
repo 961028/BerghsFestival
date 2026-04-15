@@ -39,6 +39,9 @@ const LOGO_STROBE_INTERVAL_MS = 50;
 
 // ── Font cycling ──
 
+const reducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+).matches;
 const nextAccent = makeColorPicker(2);
 
 function strobeAccentFill(
@@ -74,14 +77,19 @@ const logoLink = document.querySelector<HTMLElement>("nav > a");
 const logoSvg = logoLink?.querySelector<SVGSVGElement>("svg");
 
 if (logoLink && logoSvg) {
-    strobeAccentFill(logoSvg, "white");
+    if (!reducedMotion) {
+        strobeAccentFill(logoSvg, "white");
+    }
 
     let logoTimer: ReturnType<typeof setInterval> | undefined;
 
     logoLink.addEventListener("mouseenter", () => {
-        logoTimer = setInterval(() => {
-            logoSvg.style.fill = nextAccent();
-        }, CYCLE_INTERVAL_MS);
+        logoSvg.style.fill = nextAccent();
+        if (!reducedMotion) {
+            logoTimer = setInterval(() => {
+                logoSvg.style.fill = nextAccent();
+            }, CYCLE_INTERVAL_MS);
+        }
     });
 
     logoLink.addEventListener("mouseleave", () => {
@@ -95,7 +103,10 @@ document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
     let timer: ReturnType<typeof setInterval>;
 
     link.addEventListener("mouseenter", () => {
-        timer = startCycling(span);
+        span.style.color = nextAccent();
+        if (!reducedMotion) {
+            timer = startCycling(span);
+        }
     });
     link.addEventListener("mouseleave", () => {
         stopCycling(span, timer);

@@ -126,12 +126,16 @@ const { title } = page;
     const btn = document.querySelector<HTMLElement>("[data-color-hover]");
     if (btn) {
         const pick = makeColorPicker(2);
+        const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         btn.addEventListener("mouseenter", () => {
-            const interval = setInterval(() => {
-                btn.style.backgroundColor = pick();
-            }, 80);
-            btn.dataset.colorInterval = String(interval);
+            btn.style.backgroundColor = pick();
+            if (!reducedMotion) {
+                const interval = setInterval(() => {
+                    btn.style.backgroundColor = pick();
+                }, 80);
+                btn.dataset.colorInterval = String(interval);
+            }
         });
 
         btn.addEventListener("mouseleave", () => {

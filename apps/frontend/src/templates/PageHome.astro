@@ -27,7 +27,7 @@ const openingDate = new Date("2026-05-23T12:00:00");
     <section class="hero" aria-label="Hero">
         <video
             class="hero-video"
-            autoplay
+            id="js-hero-video"
             loop
             muted
             playsinline
@@ -118,6 +118,13 @@ const openingDate = new Date("2026-05-23T12:00:00");
 
     tick();
     setInterval(tick, 1000);
+</script>
+
+<script>
+    const video = document.getElementById("js-hero-video") as HTMLVideoElement | null;
+    if (video && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        video.play();
+    }
 </script>
 
 <style>

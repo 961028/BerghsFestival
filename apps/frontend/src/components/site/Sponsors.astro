@@ -77,13 +77,18 @@ const sponsorLogos = await Promise.all(
     const CYCLE_INTERVAL_MS = 50;
     const nextAccent = makeColorPicker(2);
 
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     document.querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]").forEach((link) => {
         let timer: ReturnType<typeof setInterval> | undefined;
 
         link.addEventListener("mouseenter", () => {
-            timer = setInterval(() => {
-                link.style.color = nextAccent();
-            }, CYCLE_INTERVAL_MS);
+            link.style.color = nextAccent();
+            if (!reducedMotion) {
+                timer = setInterval(() => {
+                    link.style.color = nextAccent();
+                }, CYCLE_INTERVAL_MS);
+            }
         });
 
         link.addEventListener("mouseleave", () => {
