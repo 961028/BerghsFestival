@@ -121,19 +121,19 @@ const { title } = page;
 </style>
 
 <script>
-    import { makeColorPicker } from "../scripts/accents";
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../scripts/accents";
 
     const btn = document.querySelector<HTMLElement>("[data-color-hover]");
     if (btn) {
-        const pick = makeColorPicker(2);
+        const nextAccent = makeColorPicker(2);
         const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
         btn.addEventListener("mouseenter", () => {
-            btn.style.backgroundColor = pick();
+            btn.style.backgroundColor = nextAccent();
             if (!reducedMotion) {
                 const interval = setInterval(() => {
-                    btn.style.backgroundColor = pick();
-                }, 80);
+                    btn.style.backgroundColor = nextAccent();
+                }, CYCLE_INTERVAL_MS);
                 btn.dataset.colorInterval = String(interval);
             }
         });

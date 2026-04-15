@@ -3,6 +3,10 @@
 // colors here — no other file needs to be touched.
 export const ACCENTS = ["#00ff00", "#ff0000", "#0037ff", "#eeff00", "#ff00d9"];
 
+// Milliseconds between color swaps during hover cycling and strobe effects.
+// All interactive accent effects share this interval for visual consistency.
+export const CYCLE_INTERVAL_MS = 50;
+
 export type Triple = { primary: string; secondary: string; tertiary: string };
 
 export function pickDifferentFrom(...excluded: string[]): string {

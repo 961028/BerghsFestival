@@ -1,9 +1,6 @@
-import { makeColorPicker } from "./accents";
+import { makeColorPicker, CYCLE_INTERVAL_MS } from "./accents";
 
 // ── Config ────────────────────────────────────────────────────────────────────
-
-// How fast each color swap happens during cycling (milliseconds).
-const CYCLE_INTERVAL_MS = 50;
 
 // Logo strobe on page load: how long it runs and how fast it flickers.
 const LOGO_STROBE_DURATION_MS = 600;

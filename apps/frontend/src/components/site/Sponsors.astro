@@ -72,9 +72,8 @@ const sponsorLogos = await Promise.all(
 </style>
 
 <script>
-    import { makeColorPicker } from "../../scripts/accents";
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
 
-    const CYCLE_INTERVAL_MS = 50;
     const nextAccent = makeColorPicker(2);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
