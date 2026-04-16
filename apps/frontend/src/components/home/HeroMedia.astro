@@ -29,11 +29,25 @@ const scopeId = crypto.randomUUID();
     {
         video && image && (
             <template class="image-tpl">
-                <WpImage class="image" image={image} />
+                <WpImage
+                    class="image"
+                    image={image}
+                    loading="eager"
+                    fetchpriority="high"
+                />
             </template>
         )
     }
-    {!video && image && <WpImage class="image" image={image} />}
+    {
+        !video && image && (
+            <WpImage
+                class="image"
+                image={image}
+                loading="eager"
+                fetchpriority="high"
+            />
+        )
+    }
 </div>
 
 <script define:vars={{ scopeId, hasVideo: !!video, hasImage: !!image }}>
