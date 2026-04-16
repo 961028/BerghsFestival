@@ -12,10 +12,12 @@ const menuItems = (
 ).sort((a, b) => a.data.order - b.data.order);
 
 const pages = await getCollection("pages");
-const aboutPage = pages.find((p) => p.data.template === "page-about.php");
+const aboutPage = pages.find(
+    (p) => p.data.template === "page-about-berghs.php",
+);
 const aboutHref = aboutPage
     ? `/${await resolvePageLink(aboutPage)}`
-    : "/om-berghs";
+    : "https://www.berghs.se/om-berghs/";
 ---
 
 <!--
