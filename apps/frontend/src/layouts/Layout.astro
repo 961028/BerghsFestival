@@ -7,7 +7,7 @@ import Sponsors from "../components/site/Sponsors.astro";
 import { getCollection, type ReferenceDataEntry } from "astro:content";
 
 import "../styles/global.css";
-import { getImage } from "astro:assets";
+import { Font, getImage } from "astro:assets";
 import { getEntry } from "astro:content";
 
 type Props = {
@@ -83,6 +83,7 @@ if (ogImageRef) {
                 />
             )
         }
+        <Font cssVariable="--font-inter" />
     </head>
     <body>
         <a href="#main-content" class="skip-link">Skip to main content</a>

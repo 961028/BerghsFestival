@@ -2,7 +2,7 @@
 
 import { strict as assert } from "node:assert";
 
-import { defineConfig } from "astro/config";
+import { defineConfig, fontProviders } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 import { loadEnv } from "vite";
 
@@ -26,6 +26,13 @@ export default defineConfig({
             strictPort: true,
         },
     },
+    fonts: [
+        {
+            provider: fontProviders.fontsource(),
+            name: "Inter",
+            cssVariable: "--font-inter",
+        },
+    ],
     image: {
         domains: [APP_HOST],
         layout: "constrained",

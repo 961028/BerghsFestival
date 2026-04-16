@@ -1,7 +1,4 @@
 /* ── Font imports — uncomment the active font ──────────────────────────────── */
-@import url("https://rsms.me/inter/inter.css");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap");
-
 @layer reset, theme, global;
 
 /* ==========================================================================
@@ -30,7 +27,7 @@
         --color-text-muted: #ffffff;
 
         /* Typography */
-        --font-family-base: "Inter", system-ui, sans-serif;
+        --font-family-base: var(--font-inter);
         --font-size-xs: 1rem;
         --font-size-base: 1.125rem;
         --font-size-lg: 2rem;
