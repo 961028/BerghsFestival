@@ -39,11 +39,19 @@ const ctaDates =
         : null;
 ---
 
-<aside class="cta-banner" id="cta" data-region="cta" aria-label="Apply to Berghs Festival" tabindex="-1">
+<aside
+    class="cta-banner"
+    id="cta"
+    data-region="cta"
+    aria-label="Apply to Berghs Festival"
+    tabindex="-1"
+>
     <a
         href="#"
         class="cta-inner"
-        aria-label={ctaDates ? `Register now — ${ctaDates} — Bobergsgatan 48` : "Register now"}
+        aria-label={ctaDates
+            ? `Register now — ${ctaDates} — Bobergsgatan 48`
+            : "Register now"}
     >
         <span class="cta-action" data-scramble>Register now</span>
         {

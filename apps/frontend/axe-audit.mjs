@@ -22,7 +22,9 @@ for (const { name, url } of PAGES) {
     if (results.violations.length === 0) {
         console.log(`\n✓ ${name} (${url}) — no violations`);
     } else {
-        console.log(`\n✗ ${name} (${url}) — ${results.violations.length} violation(s)`);
+        console.log(
+            `\n✗ ${name} (${url}) — ${results.violations.length} violation(s)`,
+        );
         for (const v of results.violations) {
             console.log(`\n  [${v.impact?.toUpperCase()}] ${v.id}`);
             console.log(`  ${v.description}`);
@@ -30,7 +32,9 @@ for (const { name, url } of PAGES) {
             for (const node of v.nodes) {
                 console.log(`  → ${node.target.join(", ")}`);
                 if (node.failureSummary) {
-                    console.log(`    ${node.failureSummary.replace(/\n/g, "\n    ")}`);
+                    console.log(
+                        `    ${node.failureSummary.replace(/\n/g, "\n    ")}`,
+                    );
                 }
             }
         }
