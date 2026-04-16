@@ -48,6 +48,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Copy files
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/app-xdebug.ini
+COPY uploads.ini /usr/local/etc/php/conf.d/app-uploads.ini
 
 # Configure Apache
 
