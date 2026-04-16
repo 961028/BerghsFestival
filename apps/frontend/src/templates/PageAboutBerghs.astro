@@ -48,8 +48,6 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
     {
         learnMoreCta && learnMoreUrl && (
             <a
-                class="btn"
-                data-color-hover
                 href={learnMoreUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -86,45 +84,7 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
         margin-block-end: var(--space-xs);
     }
 
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        margin-block-end: var(--space-xl);
-        background-color: var(--color-text-on-bg);
-        color: var(--color-text);
-        font-size: var(--font-size-base);
-        font-weight: var(--font-weight-bold);
-        padding: var(--space-sm) var(--space-md);
-        text-decoration: none;
-        min-block-size: max(44px, 2em);
-        line-height: 1;
-        transition: background-color 0.08s;
+    a {
+        text-decoration: underline;
     }
 </style>
-
-<script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../scripts/accents";
-
-    const btn = document.querySelector<HTMLElement>("[data-color-hover]");
-    if (btn) {
-        const nextAccent = makeColorPicker(2);
-        const reducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-        ).matches;
-
-        btn.addEventListener("mouseenter", () => {
-            btn.style.backgroundColor = nextAccent();
-            if (!reducedMotion) {
-                const interval = setInterval(() => {
-                    btn.style.backgroundColor = nextAccent();
-                }, CYCLE_INTERVAL_MS);
-                btn.dataset.colorInterval = String(interval);
-            }
-        });
-
-        btn.addEventListener("mouseleave", () => {
-            clearInterval(Number(btn.dataset.colorInterval));
-            btn.style.backgroundColor = "";
-        });
-    }
-</script>
