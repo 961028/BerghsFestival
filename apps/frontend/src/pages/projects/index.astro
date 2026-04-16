@@ -3,7 +3,9 @@ import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import ProjectCard from "../../components/elements/ProjectCard.astro";
 
-const projects = (await getCollection("projects")).map((entry) => entry.data);
+const allProjects = (await getCollection("projects")).map(
+    (entry) => entry.data,
+);
 ---
 
 <Layout title="Projects">
@@ -17,12 +19,8 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 
     <ul>
         {
-            projects.map((project) => (
-                <li
-                    data-team-size={
-                        project.teamMembers.length > 1 ? "group" : "individual"
-                    }
-                >
+            allProjects.map((project) => (
+                <li data-type={project.type}>
                     <ProjectCard
                         company={project.company}
                         title={project.title}
@@ -46,10 +44,10 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
             buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
             btn.setAttribute("aria-pressed", "true");
 
-            const filter = btn.dataset.filter;
+            const filterType = btn.dataset.filter;
             items.forEach((item) => {
                 const show =
-                    filter === "all" || item.dataset.teamSize === filter;
+                    filterType === "all" || item.dataset.type === filterType;
                 item.hidden = !show;
             });
         });

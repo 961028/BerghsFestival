@@ -185,6 +185,7 @@ const projects = definePaginatedCollection(
             slug: z.string().nonempty(),
             title: z.object({ rendered: z.string() }),
             acf: z.object({
+                project_type: z.enum(["group", "individual"]).catch("group"),
                 company: z.string(),
                 image: nullableIntReference("media"),
                 video: z.string().nullable(),
@@ -202,6 +203,7 @@ const projects = definePaginatedCollection(
         .transform((item) => ({
             id: item.id,
             slug: item.slug,
+            type: item.acf.project_type,
             title: stripHtml(item.title.rendered),
             company: item.acf.company,
             image: item.acf.image,

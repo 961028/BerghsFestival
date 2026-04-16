@@ -41,6 +41,30 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
+			'key'          => _app_projects_group_key( 'project_type' ),
+			'title'        => 'Type',
+			'fields'       => array(
+				array(
+					'key'           => _app_projects_field_key( 'project_type' ),
+					'name'          => 'project_type',
+					'label'         => '',
+					'type'          => 'select',
+					'choices'       => array(
+						'group'      => 'Group',
+						'individual' => 'Individual',
+					),
+					'default_value' => 'group',
+				),
+			),
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'position'     => 'side',
+			'show_in_rest' => true,
+		)
+	);
+
+	acf_add_local_field_group(
+		array(
 			'key'          => _app_projects_group_key( 'company' ),
 			'title'        => 'Company',
 			'fields'       => array(
