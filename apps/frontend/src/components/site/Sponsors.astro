@@ -1,5 +1,6 @@
 ---
 import { getCollection, getEntry } from "astro:content";
+import WpImage from "../elements/WpImage.astro";
 
 const BASELINE = 4; // rem — width of a square logo
 const EXPONENT = 0.6;
@@ -27,10 +28,8 @@ const sponsorLogos = (
             return {
                 url,
                 name,
-                width,
-                height,
+                image,
                 widthStyle: `${widthRem.toFixed(3)}rem`,
-                src: image.data.sourceUrl,
             };
         }),
     )
@@ -39,7 +38,7 @@ const sponsorLogos = (
 
 <ul>
     {
-        sponsorLogos.map(({ url, name, src, width, height, widthStyle }) => (
+        sponsorLogos.map(({ url, name, image, widthStyle }) => (
             <li>
                 <a
                     href={url}
@@ -47,13 +46,7 @@ const sponsorLogos = (
                     title={name}
                     style={`width: ${widthStyle}`}
                 >
-                    <img
-                        data-logo
-                        src={src}
-                        alt={name}
-                        width={width}
-                        height={height}
-                    />
+                    <WpImage data-logo image={image} alt={name} />
                 </a>
             </li>
         ))
