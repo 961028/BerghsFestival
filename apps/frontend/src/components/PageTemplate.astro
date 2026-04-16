@@ -11,27 +11,18 @@ interface Props {
     page: CollectionEntry<"pages">;
 }
 
-const SLUG_TO_TEMPLATE = {
-    "page-about-berghs.php": PageAboutBerghs,
-    "page-experiences.php": PageExperiences,
-};
-
-function isValidTemplate(
-    slug: string | null,
-): slug is keyof typeof SLUG_TO_TEMPLATE {
-    return slug !== null && slug in SLUG_TO_TEMPLATE;
-}
-
 const settings = (await getCollection("settings"))[0].data;
 const page = Astro.props.page.data;
 
 const isFrontPage = settings.pageOnFront?.id === page.id;
-
-const Template = isFrontPage
-    ? PageHome
-    : isValidTemplate(page.template)
-      ? SLUG_TO_TEMPLATE[page.template]
-      : PageDefault;
 ---
 
-<Template page={page} />
+{isFrontPage ? (
+    <PageHome page={page} />
+) : page.template === "page-about-berghs.php" ? (
+    <PageAboutBerghs page={page} />
+) : page.template === "page-experiences.php" ? (
+    <PageExperiences page={page} />
+) : (
+    <PageDefault page={page} />
+)}
