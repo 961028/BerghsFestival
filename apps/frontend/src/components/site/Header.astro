@@ -28,7 +28,7 @@ const aboutHref = aboutPage
   4. header.ts     — uncomment the toggle logic block (marked "MOBILE MENU")
 -->
 <header>
-    <nav>
+    <nav aria-label="Site navigation">
         {
             /* <button
             class="menu-toggle"
@@ -65,7 +65,7 @@ const aboutHref = aboutPage
             }
         </ul>
 
-        <a href={aboutHref} class="logo-link">
+        <a href={aboutHref} class="logo-link" aria-label="About Berghs School of Communication">
             <Svg
                 name="berghs-soc"
                 alt=""
@@ -176,6 +176,11 @@ const aboutHref = aboutPage
     .nav-link[aria-current="page"] {
         font-weight: var(--font-weight-bold);
         text-transform: uppercase;
+    }
+
+    .nav-link:focus-visible,
+    .logo-link:focus-visible {
+        border-radius: 1px;
     }
 
     @media (min-width: 48rem) {

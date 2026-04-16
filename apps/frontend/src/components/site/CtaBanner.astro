@@ -39,8 +39,12 @@ const ctaDates =
         : null;
 ---
 
-<aside class="cta-banner" data-region="cta">
-    <a href="#" class="cta-inner">
+<aside class="cta-banner" id="cta" data-region="cta" aria-label="Apply to Berghs Festival" tabindex="-1">
+    <a
+        href="#"
+        class="cta-inner"
+        aria-label={ctaDates ? `Register now — ${ctaDates} — Bobergsgatan 48` : "Register now"}
+    >
         <span class="cta-action" data-scramble>Register now</span>
         {
             ctaDates && (
@@ -95,6 +99,18 @@ const ctaDates =
     /* Overlay must use the same color as CTA text, not the global default */
     [data-scramble]::before {
         color: var(--color-text);
+    }
+
+    /* Full inversion on focus — always high-contrast regardless of accent color */
+    .cta-banner:has(.cta-inner:focus-visible) {
+        background: var(--color-text-on-bg);
+    }
+
+    .cta-inner:focus-visible {
+        outline: none;
+        color: var(--color-bg);
+        /* Fallback for forced-colors / high-contrast mode where background is ignored */
+        box-shadow: inset 0 0 0 max(2px, 0.15em) var(--color-bg);
     }
 
     @media (any-hover: hover) and (any-pointer: fine) {

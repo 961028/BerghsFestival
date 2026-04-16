@@ -29,14 +29,16 @@ const { title, metaTitle } = Astro.props;
         <title>{metaTitle ?? `${title} | ${settings.title}`}</title>
     </head>
     <body>
+        <a href="#main-content" class="skip-link">Skip to main content</a>
+        <a href="#cta" class="skip-link">Skip to apply</a>
         <div class="wrapper">
             <div data-region="header"><Header /></div>
-            <main data-region="main">
+            <main id="main-content" data-region="main" tabindex="-1">
                 <slot />
             </main>
             <footer data-region="footer">
                 <div class="footer-row footer-row--sponsors">
-                    <span class="footer-label">Sponsors</span>
+                    <h2 class="footer-label">Sponsors</h2>
                     <Sponsors />
                 </div>
                 <div class="footer-row footer-row--info">
@@ -44,7 +46,7 @@ const { title, metaTitle } = Astro.props;
                         <Iq />
                     </div>
                     <div class="footer-col">
-                        <span class="footer-label">Contact</span>
+                        <h2 class="footer-label">Contact</h2>
                         <Contact />
                     </div>
                 </div>
@@ -223,6 +225,32 @@ const { title, metaTitle } = Astro.props;
 </script>
 
 <style>
+    .skip-link {
+        position: fixed;
+        top: var(--space-sm);
+        left: var(--space-sm);
+        z-index: 9999;
+        padding: var(--space-xs) var(--space-sm);
+        background: var(--color-text-on-bg);
+        color: var(--color-bg);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-label);
+        text-transform: uppercase;
+        text-decoration: none;
+        /* Visually hidden but readable by screen readers.
+           Do NOT use overflow:hidden or width/height:1px — those suppress AT. */
+        clip-path: inset(50%);
+        white-space: nowrap;
+    }
+
+    .skip-link:focus-visible {
+        clip-path: none;
+        white-space: normal;
+        outline: max(2px, 0.15em) solid currentColor;
+        outline-offset: 0.15em;
+    }
+
     .wrapper {
         max-width: var(--max-width);
         margin-inline: auto;

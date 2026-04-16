@@ -1,11 +1,12 @@
 ---
 interface Props {
     video: string;
+    title?: string;
     class?: string;
     [key: string]: unknown;
 }
 
-const { video, class: className, ...attrs } = Astro.props;
+const { video, title = "Project video", class: className, ...attrs } = Astro.props;
 
 function getVimeoId(url: string): string | null {
     // Handle formats:
@@ -36,7 +37,7 @@ const embedUrl = videoId
                 src={embedUrl}
                 allow="fullscreen; picture-in-picture"
                 allowfullscreen
-                title="Lorem"
+                title={title}
             />
         ) : (
             <div class="error">

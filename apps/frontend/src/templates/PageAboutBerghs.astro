@@ -47,7 +47,12 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
 
     {
         learnMoreCta && learnMoreUrl && (
-            <a href={learnMoreUrl} target="_blank">
+            <a
+                href={learnMoreUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Learn more about Berghs School of Communication (opens in new tab)"
+            >
                 {learnMoreCta}
             </a>
         )
