@@ -46,7 +46,7 @@ function _app_page_about_berghs_register_fields() {
 				'the_content',
 			),
 			'menu_order'     => $menu_order++,
-			'show_in_rest' => true,
+			'show_in_rest'   => true,
 		)
 	);
 
@@ -73,7 +73,7 @@ function _app_page_about_berghs_register_fields() {
 				'the_content',
 			),
 			'menu_order'     => $menu_order++,
-			'show_in_rest' => true,
+			'show_in_rest'   => true,
 		)
 	);
 }

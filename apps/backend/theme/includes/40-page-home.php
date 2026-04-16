@@ -46,15 +46,15 @@ function _app_page_home_register_options() {
 				'the_content',
 			),
 			'menu_order'     => $menu_order++,
-			'show_in_rest' => true,
+			'show_in_rest'   => true,
 		)
 	);
 
 	acf_add_local_field_group(
 		array(
-			'key'    => _app_page_home_group_key( 'festival' ),
-			'title'  => 'Festival',
-			'fields' => array(
+			'key'            => _app_page_home_group_key( 'festival' ),
+			'title'          => 'Festival',
+			'fields'         => array(
 				array(
 					'key'            => _app_page_home_field_key( 'opening_date' ),
 					'label'          => 'Opening Date & Time',

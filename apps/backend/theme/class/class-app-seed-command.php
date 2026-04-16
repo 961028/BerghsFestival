@@ -199,15 +199,14 @@ final class App_Seed_Command {
 			)
 		);
 
-
 		$sections = array(
 			array(
 				'title'   => 'About',
-				'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam posuere a nibh at porttitor. Ut nec nibh nec massa porta consequat eu a augue. Sed euismod ullamcorper nisi, at tempus ante dignissim sed. Sed nisl turpis, tincidunt sed fermentum id, ornare eget metus. Ut efficitur euismod tellus. Quisque et libero ipsum. Pellentesque consectetur massa vitae ipsum bibendum, eu mattis urna tempus. Morbi tempus iaculis odio, sed suscipit lorem aliquam in. Vestibulum nec feugiat magna, tempus congue ex. Quisque quam nibh, scelerisque nec purus eget, mollis aliquam ante.'
+				'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam posuere a nibh at porttitor. Ut nec nibh nec massa porta consequat eu a augue. Sed euismod ullamcorper nisi, at tempus ante dignissim sed. Sed nisl turpis, tincidunt sed fermentum id, ornare eget metus. Ut efficitur euismod tellus. Quisque et libero ipsum. Pellentesque consectetur massa vitae ipsum bibendum, eu mattis urna tempus. Morbi tempus iaculis odio, sed suscipit lorem aliquam in. Vestibulum nec feugiat magna, tempus congue ex. Quisque quam nibh, scelerisque nec purus eget, mollis aliquam ante.',
 			),
 			array(
 				'title'   => 'Manifest',
-				'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam posuere a nibh at porttitor. Ut nec nibh nec massa porta consequat eu a augue. Sed euismod ullamcorper nisi, at tempus ante dignissim sed. Sed nisl turpis, tincidunt sed fermentum id, ornare eget metus. Ut efficitur euismod tellus. Quisque et libero ipsum. Pellentesque consectetur massa vitae ipsum bibendum, eu mattis urna tempus. Morbi tempus iaculis odio, sed suscipit lorem aliquam in. Vestibulum nec feugiat magna, tempus congue ex. Quisque quam nibh, scelerisque nec purus eget, mollis aliquam ante.'
+				'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam posuere a nibh at porttitor. Ut nec nibh nec massa porta consequat eu a augue. Sed euismod ullamcorper nisi, at tempus ante dignissim sed. Sed nisl turpis, tincidunt sed fermentum id, ornare eget metus. Ut efficitur euismod tellus. Quisque et libero ipsum. Pellentesque consectetur massa vitae ipsum bibendum, eu mattis urna tempus. Morbi tempus iaculis odio, sed suscipit lorem aliquam in. Vestibulum nec feugiat magna, tempus congue ex. Quisque quam nibh, scelerisque nec purus eget, mollis aliquam ante.',
 			),
 		);
 		update_field( _app_page_home_field_key( 'sections' ), $sections, $page_id );
