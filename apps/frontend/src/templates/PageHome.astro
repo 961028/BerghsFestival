@@ -112,11 +112,15 @@ const projectCount = acf.project_count as number | undefined;
                 >
                     <span id="js-countdown">--</span>
                 </p>
-                {(studentCount || projectCount) && (
-                    <span class="hero-stats">
-                        {studentCount && `${studentCount} students`}{studentCount && projectCount && " — "}{projectCount && `${projectCount} projects`}
-                    </span>
-                )}
+                {
+                    (studentCount || projectCount) && (
+                        <span class="hero-stats">
+                            {studentCount && `${studentCount} students`}
+                            {studentCount && projectCount && " — "}
+                            {projectCount && `${projectCount} projects`}
+                        </span>
+                    )
+                }
             </div>
         </div>
     </section>
