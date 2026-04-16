@@ -63,10 +63,12 @@ const settings = defineSingletonCollection(
     z
         .object({
             title: z.string(),
+            description: z.string(),
             page_on_front: intReference("pages").nullable(),
         })
         .transform((item) => ({
             title: item.title,
+            description: item.description,
             pageOnFront: item.page_on_front,
         })),
 );
@@ -160,6 +162,7 @@ const pages = definePaginatedCollection(
             parent: nullableIntReference("pages"),
             template: z.string().nullable(),
             title: z.object({ rendered: z.string() }),
+            featured_media: nullableIntReference("media"),
             content: z.object({ rendered: z.string() }),
             acf: z.preprocess(
                 (val) => (Array.isArray(val) ? {} : val),
@@ -172,6 +175,8 @@ const pages = definePaginatedCollection(
             parent: item.parent,
             template: item.template,
             title: stripHtml(item.title.rendered),
+            metaDescription: z.string().parse(item.acf.meta_description),
+            image: item.featured_media,
             content: { html: item.content.rendered },
             acf: item.acf,
         })),
@@ -185,6 +190,7 @@ const projects = definePaginatedCollection(
             slug: z.string().nonempty(),
             title: z.object({ rendered: z.string() }),
             acf: z.object({
+                meta_description: z.string(),
                 project_type: z.enum(["group", "individual"]).catch("group"),
                 company: z.string(),
                 image: nullableIntReference("media"),
@@ -205,6 +211,7 @@ const projects = definePaginatedCollection(
             slug: item.slug,
             type: item.acf.project_type,
             title: stripHtml(item.title.rendered),
+            metaDescription: item.acf.meta_description,
             company: item.acf.company,
             image: item.acf.image,
             video: item.acf.video ?? null,
@@ -223,6 +230,19 @@ const projects = definePaginatedCollection(
                     content: { html: item.acf["content-solution"] },
                 },
             ],
+        })),
+);
+
+const seo = defineSingletonCollection(
+    "app/v1/seo",
+    z
+        .object({
+            meta_description: z.string(),
+            og_image: nullableIntReference("media"),
+        })
+        .transform((item) => ({
+            metaDescription: item.meta_description,
+            ogImage: item.og_image,
         })),
 );
 
@@ -277,6 +297,7 @@ export const collections = {
     media,
     pages,
     projects,
+    seo,
     sponsors,
     contact,
     iq,

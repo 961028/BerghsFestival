@@ -15,16 +15,11 @@ const sponsorLogos = (
         sponsors.map(async (sponsor) => {
             const image = await getEntry(sponsor.data.image);
 
-            if (!image) {
+            if (!image || !sponsor.data.url) {
                 return null;
             }
 
             const { url, name } = sponsor.data;
-
-            if (!url) {
-                return null;
-            }
-
             const { width, height } = image.data;
             const ratio = width && height ? width / height : 1;
             const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
@@ -44,22 +39,15 @@ const sponsorLogos = (
 
 <ul>
     {
-        sponsorLogos.map(({ url, name, width, height, widthStyle, src }) => (
+        sponsorLogos.map(({ url, name, src, width, height, widthStyle }) => (
             <li>
                 <a
                     href={url}
                     aria-label={name}
                     title={name}
-                    data-sponsor-link
                     style={`width: ${widthStyle}`}
                 >
-                    <div
-                        class="logo"
-                        style={{
-                            maskImage: `url(${src})`,
-                            aspectRatio: `${width} / ${height}`,
-                        }}
-                    />
+                    <img data-logo src={src} alt={name} width={width} height={height} />
                 </a>
             </li>
         ))
@@ -79,42 +67,16 @@ const sponsorLogos = (
 
     a {
         display: block;
-        color: var(--color-text-on-bg);
     }
-    .logo {
-        background-color: currentColor;
-        mask-size: contain;
-        mask-repeat: no-repeat;
-        mask-position: center;
+
+    [data-logo] {
+        display: block;
+        width: 100%;
+        height: auto;
+        filter: grayscale(1);
+    }
+
+    a:hover [data-logo] {
+        filter: grayscale(0);
     }
 </style>
-
-<script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
-
-    const nextAccent = makeColorPicker(2);
-
-    const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    document
-        .querySelectorAll<HTMLAnchorElement>("[data-sponsor-link]")
-        .forEach((link) => {
-            let timer: ReturnType<typeof setInterval> | undefined;
-
-            link.addEventListener("mouseenter", () => {
-                link.style.color = nextAccent();
-                if (!reducedMotion) {
-                    timer = setInterval(() => {
-                        link.style.color = nextAccent();
-                    }, CYCLE_INTERVAL_MS);
-                }
-            });
-
-            link.addEventListener("mouseleave", () => {
-                clearInterval(timer);
-                link.style.color = "";
-            });
-        });
-</script>

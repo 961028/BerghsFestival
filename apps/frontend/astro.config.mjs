@@ -21,6 +21,7 @@ export default defineConfig({
         host: "127.0.0.1", // Apache needs this
     },
     vite: {
+        envPrefix: ["VITE_", "APP_", "WP_"],
         server: {
             strictPort: true,
         },

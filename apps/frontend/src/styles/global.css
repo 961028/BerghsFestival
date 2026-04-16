@@ -96,6 +96,10 @@
         width: 100%;
     }
 
+    p {
+        margin: 0;
+    }
+
     @media (prefers-reduced-motion: reduce) {
         *,
         *::before,
@@ -196,6 +200,7 @@
             color: var(--color-text-on-bg);
             white-space: pre;
             pointer-events: none;
+            font-weight: inherit;
         }
     }
 }
