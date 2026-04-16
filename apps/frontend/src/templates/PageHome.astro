@@ -2,6 +2,20 @@
 import type { CollectionEntry } from "astro:content";
 import { z } from "astro/zod";
 import Layout from "../layouts/Layout.astro";
+import { intReference } from "../lib/schema";
+
+const HeroVideoSchema = z
+    .object({
+        id: intReference("media"),
+        filename: z.string(),
+        filesize: z.int().positive(),
+        url: z.string().nonempty(),
+        mime_type: z.string(),
+        width: z.int().positive().optional(),
+        height: z.int().positive().optional(),
+    })
+    .nullable()
+    .catch(null);
 
 const SectionsSchema = z
     .array(
@@ -36,6 +50,7 @@ type Props = {
 const { page } = Astro.props;
 const { title, metaDescription, image, acf } = page;
 
+const heroVideo = HeroVideoSchema.parse(acf.hero_video);
 const sections = SectionsSchema.parse(acf.sections);
 const openingDate = OpeningDateSchema.parse(acf.opening_date);
 const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
@@ -49,16 +64,20 @@ const projectCount = acf.project_count as number | undefined;
         <h1 id="hero-heading" class="visually-hidden">
             {title}
         </h1>
-        <video
-            class="hero-video"
-            id="js-hero-video"
-            loop
-            muted
-            playsinline
-            aria-hidden="true"
-        >
-            <source src="/videos/hero.mp4" type="video/mp4" />
-        </video>
+        {
+            heroVideo && (
+                <video
+                    class="hero-video"
+                    id="js-hero-video"
+                    loop
+                    muted
+                    playsinline
+                    aria-hidden="true"
+                >
+                    <source src={heroVideo.url} type={heroVideo.mime_type} />
+                </video>
+            )
+        }
 
         <div class="hero-panel">
             <ol class="schedule-days">

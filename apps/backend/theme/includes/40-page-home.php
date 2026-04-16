@@ -14,6 +14,28 @@ function _app_page_home_register_options() {
 
 	acf_add_local_field_group(
 		array(
+			'key'            => _app_page_home_group_key( 'hero' ),
+			'title'          => 'Hero',
+			'fields'         => array(
+				array(
+					'key'        => _app_page_home_field_key( 'hero', 'video' ),
+					'label'      => 'Video',
+					'name'       => 'hero_video',
+					'type'       => 'file',
+					'mime_types' => 'mp4',
+				),
+			),
+			'location'       => array( $location ),
+			'hide_on_screen' => array(
+				'the_content',
+			),
+			'menu_order'     => $menu_order++,
+			'show_in_rest'   => true,
+		)
+	);
+
+	acf_add_local_field_group(
+		array(
 			'key'            => _app_page_home_group_key( 'sections' ),
 			'title'          => 'Content',
 			'fields'         => array(
