@@ -17,7 +17,7 @@ const SectionsSchema = z
     )
     .catch([]);
 
-const OpeningDateSchema = z.iso.datetime().nullable().catch(null);
+const OpeningDateSchema = z.coerce.date().nullable().catch(null);
 
 const FestivalDaysSchema = z
     .array(
@@ -38,7 +38,7 @@ const { title, acf } = page;
 
 const sections = SectionsSchema.parse(acf.sections);
 const openingDate = OpeningDateSchema.parse(acf.opening_date);
-const festivalDays = FestivalDaysSchema.parse(acf.festival_days2);
+const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
 ---
 
 <Layout title={title}>
@@ -105,9 +105,12 @@ const festivalDays = FestivalDaysSchema.parse(acf.festival_days2);
     }
 </Layout>
 
-<script define:vars={{ openingDateISO: openingDate?.toISOString() ?? null }}>
-    if (!openingDateISO) return;
-    const target = new Date(openingDateISO);
+<script define:vars={{ openingDateStr: openingDate?.toISOString() }}>
+    if (!openingDateStr) {
+        return;
+    }
+
+    const target = new Date(openingDateStr);
     const el = document.getElementById("js-countdown");
 
     function pad(n) {
