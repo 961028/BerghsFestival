@@ -7,6 +7,7 @@ const projects = (await getCollection("projects")).map((entry) => entry.data);
 ---
 
 <Layout title="Projects">
+    <h1 class="visually-hidden">Projects</h1>
     <div>
         <button data-filter="all" aria-pressed="true">All Projects</button>
         <button data-filter="group" aria-pressed="false">Group</button>

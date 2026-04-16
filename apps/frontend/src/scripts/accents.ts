@@ -1,7 +1,7 @@
 // ── Config ────────────────────────────────────────────────────────────────────
 // Signal colors used in all flicker/strobe effects. Add, remove, or change
 // colors here — no other file needs to be touched.
-export const ACCENTS = ["#00ff00", "#ff0000", "#0037ff", "#eeff00", "#ff00d9"];
+export const ACCENTS = ["#00ff00", "#ff0000", "#0040ff", "#eeff00", "#ff00d9"];
 
 // Milliseconds between color swaps during hover cycling and strobe effects.
 // All interactive accent effects share this interval for visual consistency.

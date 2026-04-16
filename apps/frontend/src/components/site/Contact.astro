@@ -11,15 +11,17 @@ const { address, phone, socialServices } = contact;
 <div>
     <div class="address">{address}</div>
 
-    <div class="phone">
-        <a href={`tel:${phone}`}>{phone}</a>
-    </div>
+    {phone && (
+        <div class="phone">
+            <a href={`tel:${phone}`}>{phone}</a>
+        </div>
+    )}
 
     <ul>
         {
             socialServices.map((service) => (
                 <li>
-                    <a href={service.url} title={service.label} target="_blank">
+                    <a href={service.url} aria-label={service.label} title={service.label} target="_blank" rel="noopener noreferrer">
                         <Svg name={service.icon} alt="" />
                     </a>
                 </li>
