@@ -60,8 +60,8 @@ function _app_page_home_register_options() {
 					'label'          => 'Opening Date & Time',
 					'name'           => 'opening_date',
 					'type'           => 'date_time_picker',
-					'display_format' => 'd/m/Y H:i',
-					'return_format'  => 'Y-m-d H:i:s',
+					'display_format' => 'Y-m-d H:i',
+					'return_format'  => 'Y-m-d\TH:i:s',
 				),
 				array(
 					'key'          => _app_page_home_field_key( 'festival_days' ),

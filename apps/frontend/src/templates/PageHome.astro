@@ -17,6 +17,8 @@ const SectionsSchema = z
     )
     .catch([]);
 
+const OpeningDateSchema = z.iso.datetime().nullable().catch(null);
+
 const FestivalDaysSchema = z
     .array(
         z.object({
@@ -35,11 +37,8 @@ const { page } = Astro.props;
 const { title, acf } = page;
 
 const sections = SectionsSchema.parse(acf.sections);
-const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
-const openingDateRaw: string | undefined = acf.opening_date;
-const openingDate = openingDateRaw
-    ? new Date(openingDateRaw.replace(" ", "T"))
-    : null;
+const openingDate = OpeningDateSchema.parse(acf.opening_date);
+const festivalDays = FestivalDaysSchema.parse(acf.festival_days2);
 ---
 
 <Layout title={title}>
