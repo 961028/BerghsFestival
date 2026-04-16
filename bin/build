@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -eu
+
+cd "$(dirname "$0")/.."
+
+(cd apps/frontend && npm run build)
+
+rsync --archive --delete --progress apps/frontend/dist/ public/dist/

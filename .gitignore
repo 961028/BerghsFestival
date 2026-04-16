@@ -3,6 +3,10 @@
 /.config.php
 /.env
 
+# Public
+
+/public
+
 # Data
 
 /storage/
