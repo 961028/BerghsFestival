@@ -58,10 +58,18 @@ const scopeId = crypto.randomUUID();
     const root = document.querySelector(`[data-scope="${scopeId}"]`);
     const video = root.querySelector(".video");
 
+    let showingImage = false;
+
     const showImage = () => {
+        if (showingImage) {
+            return;
+        }
+
         const tpl = root.querySelector(`.image-tpl`);
         video.remove();
         tpl.replaceWith(tpl.content.cloneNode(true));
+
+        showingImage = true;
     };
 
     const prefersReducedMotion = matchMedia(
