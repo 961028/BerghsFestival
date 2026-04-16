@@ -32,6 +32,8 @@ const monthYear = openingDate
           .toUpperCase()
     : null;
 
+const venue = acf?.venue as string | undefined;
+
 // Build a compact date range string, e.g. "22–23 MAY 2026"
 const ctaDates =
     festivalDays.length && monthYear
@@ -50,14 +52,14 @@ const ctaDates =
         href="#"
         class="cta-inner"
         aria-label={ctaDates
-            ? `Register now — ${ctaDates} — Bobergsgatan 48`
+            ? `Register now — ${ctaDates}${venue ? ` — ${venue}` : ""}`
             : "Register now"}
     >
         <span class="cta-action" data-scramble>Register now</span>
         {
             ctaDates && (
                 <span class="cta-dates" data-scramble>
-                    {ctaDates} — Bobergsgatan 48
+                    {ctaDates}{venue ? ` — ${venue}` : ""}
                 </span>
             )
         }

@@ -64,6 +64,24 @@ function _app_page_home_register_options() {
 					'return_format'  => 'Y-m-d\TH:i:s',
 				),
 				array(
+					'key'   => _app_page_home_field_key( 'venue' ),
+					'label' => 'Venue',
+					'name'  => 'venue',
+					'type'  => 'text',
+				),
+				array(
+					'key'   => _app_page_home_field_key( 'student_count' ),
+					'label' => 'Number of Students',
+					'name'  => 'student_count',
+					'type'  => 'number',
+				),
+				array(
+					'key'   => _app_page_home_field_key( 'project_count' ),
+					'label' => 'Number of Projects',
+					'name'  => 'project_count',
+					'type'  => 'number',
+				),
+				array(
 					'key'          => _app_page_home_field_key( 'festival_days' ),
 					'label'        => '',
 					'name'         => 'festival_days',

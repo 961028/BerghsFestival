@@ -39,6 +39,8 @@ const { title, acf } = page;
 const sections = SectionsSchema.parse(acf.sections);
 const openingDate = OpeningDateSchema.parse(acf.opening_date);
 const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
+const studentCount = acf.student_count as number | undefined;
+const projectCount = acf.project_count as number | undefined;
 ---
 
 <Layout title={title}>
@@ -87,7 +89,11 @@ const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
                 >
                     <span id="js-countdown">--</span>
                 </p>
-                <span class="hero-stats">142 students — 22 projects</span>
+                {(studentCount || projectCount) && (
+                    <span class="hero-stats">
+                        {studentCount && `${studentCount} students`}{studentCount && projectCount && " — "}{projectCount && `${projectCount} projects`}
+                    </span>
+                )}
             </div>
         </div>
     </section>
