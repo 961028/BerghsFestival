@@ -1,0 +1,87 @@
+---
+import type { ReferenceDataEntry } from "astro:content";
+
+import WpImage from "../elements/WpImage.astro";
+
+type Props = {
+    video: {
+        src: string;
+        mimeType: string;
+        width: number | undefined;
+        height: number | undefined;
+    } | null;
+    image: ReferenceDataEntry<"media"> | null;
+};
+
+const { video, image } = Astro.props;
+
+const scopeId = crypto.randomUUID();
+---
+
+<div data-scope={scopeId}>
+    {
+        video && (
+            <video class="video" loop muted playsinline aria-hidden="true">
+                <source src={video.src} type={video.mimeType} />
+            </video>
+        )
+    }
+    {
+        video && image && (
+            <template class="image-tpl">
+                <WpImage class="image" image={image} />
+            </template>
+        )
+    }
+    {!video && image && <WpImage class="image" image={image} />}
+</div>
+
+<script define:vars={{ scopeId, hasVideo: !!video, hasImage: !!image }}>
+    if (!hasVideo) {
+        return;
+    }
+
+    const root = document.querySelector(`[data-scope="${scopeId}"]`);
+    const video = root.querySelector(".video");
+
+    const showImage = () => {
+        const tpl = root.querySelector(`.image-tpl`);
+        video.remove();
+        tpl.replaceWith(tpl.content.cloneNode(true));
+    };
+
+    const prefersReducedMotion = matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    if (prefersReducedMotion) {
+        if (hasImage) {
+            showImage();
+        }
+
+        return;
+    }
+
+    const timeout = setTimeout(showImage, 1000);
+
+    video.addEventListener("playing", () => {
+        clearTimeout(timeout);
+    });
+
+    video.play().catch(() => {
+        clearTimeout(timeout);
+
+        showImage();
+    });
+</script>
+
+<style>
+    .video,
+    .image {
+        min-height: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: fill;
+        display: block;
+    }
+</style>

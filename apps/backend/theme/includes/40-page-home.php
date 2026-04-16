@@ -24,6 +24,13 @@ function _app_page_home_register_options() {
 					'type'       => 'file',
 					'mime_types' => 'mp4',
 				),
+				array(
+					'key'           => _app_page_home_field_key( 'hero', 'image' ),
+					'label'         => 'Fallback Image',
+					'name'          => 'hero_image',
+					'type'          => 'image',
+					'return_format' => 'id',
+				),
 			),
 			'location'       => array( $location ),
 			'hide_on_screen' => array(
