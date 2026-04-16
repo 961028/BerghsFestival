@@ -27,12 +27,12 @@ const LearnMoreSchema = z
     }));
 
 const { page } = Astro.props;
-const { title, acf } = page;
+const { title, metaDescription, image, acf } = page;
 const sections = SectionsSchema.parse(acf.sections);
 const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
 ---
 
-<Layout title={title}>
+<Layout title={title} metaDescription={metaDescription} ogImage={image}>
     <h1 class="page-title" data-scramble>{title}</h1>
 
     {

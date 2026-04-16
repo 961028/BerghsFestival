@@ -58,7 +58,7 @@ const GroupsSchema = z.array(
 
 const { page } = Astro.props;
 
-const { title, acf } = page;
+const { title, metaDescription, image, acf } = page;
 
 const schedule = ScheduleSchema.parse(acf.schedule);
 const groups = GroupsSchema.parse(acf.groups);
@@ -69,7 +69,7 @@ const sections = [
 ];
 ---
 
-<Layout title={title}>
+<Layout title={title} metaDescription={metaDescription} ogImage={image}>
     <nav aria-label="Page sections">
         {
             sections.map((s, i) => (

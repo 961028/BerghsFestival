@@ -41,6 +41,26 @@ function _app_project_register_fields() {
 
 	acf_add_local_field_group(
 		array(
+			'key'          => _app_projects_group_key( 'meta_description' ),
+			'title'        => 'Meta Description',
+			'fields'       => array(
+				array(
+					'key'       => _app_projects_field_key( 'meta_description' ),
+					'name'      => 'meta_description',
+					'label'     => '',
+					'type'      => 'textarea',
+					'maxlength' => '155',
+				),
+			),
+			'location'     => array( $location ),
+			'menu_order'   => $menu_order++,
+			'position'     => 'acf_after_title',
+			'show_in_rest' => true,
+		)
+	);
+
+	acf_add_local_field_group(
+		array(
 			'key'          => _app_projects_group_key( 'project_type' ),
 			'title'        => 'Type',
 			'fields'       => array(

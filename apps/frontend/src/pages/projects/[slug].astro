@@ -20,34 +20,41 @@ export async function getStaticPaths() {
 
 const { project, allProjects } = Astro.props;
 
+const {
+    slug,
+    title,
+    metaDescription,
+    image,
+    company,
+    teamMembers,
+    contentSections,
+    video,
+} = project;
+
 const relatedProjects = allProjects
-    .filter((p) => p.slug !== project.slug)
+    .filter((p) => p.slug !== slug)
     .sort(() => Math.random() - 0.5)
     .slice(0, 3);
 ---
 
-<Layout title={project.title}>
+<Layout title={title} metaDescription={metaDescription} ogImage={image}>
     <article>
         {
-            !project.image || (
+            !image || (
                 <div class="project-hero">
-                    <WpImage
-                        image={project.image}
-                        loading="eager"
-                        alt={project.title}
-                    />
+                    <WpImage image={image} loading="eager" alt={title} />
                 </div>
             )
         }
 
         <div class="project-body">
             <div>
-                <div>{project.company}</div>
-                <h1 class="page-title">{project.title}</h1>
+                <div>{company}</div>
+                <h1 class="page-title">{title}</h1>
 
                 <ul>
                     {
-                        project.teamMembers.map((teamMember) => (
+                        teamMembers.map((teamMember) => (
                             <li>
                                 <div>{teamMember.name}</div>
                                 <div>{teamMember.class}</div>
@@ -59,7 +66,7 @@ const relatedProjects = allProjects
 
             <div>
                 {
-                    project.contentSections.map((contentSection) => (
+                    contentSections.map((contentSection) => (
                         <>
                             <h2>{contentSection.title}</h2>
                             <div set:html={contentSection.content.html} />
@@ -69,14 +76,7 @@ const relatedProjects = allProjects
             </div>
         </div>
 
-        {
-            !project.video || (
-                <WpVideo
-                    video={project.video}
-                    title={`${project.title} — project video`}
-                />
-            )
-        }
+        {!video || <WpVideo video={video} title={`${title} — project video`} />}
     </article>
 
     <ul class="related-projects">

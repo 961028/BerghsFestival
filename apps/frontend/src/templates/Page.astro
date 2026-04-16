@@ -8,10 +8,10 @@ type Props = {
 
 const { page } = Astro.props;
 
-const { title, content } = page;
+const { title, metaDescription, image, content } = page;
 ---
 
-<Layout title={title}>
+<Layout title={title} metaDescription={metaDescription} ogImage={image}>
     <h1 class="page-title">{title}</h1>
 
     <div class="page-content" set:html={content.html} />

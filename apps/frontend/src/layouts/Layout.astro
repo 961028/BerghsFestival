@@ -4,18 +4,42 @@ import CtaBanner from "../components/site/CtaBanner.astro";
 import Header from "../components/site/Header.astro";
 import Iq from "../components/site/Iq.astro";
 import Sponsors from "../components/site/Sponsors.astro";
-import { getCollection } from "astro:content";
+import { getCollection, type ReferenceDataEntry } from "astro:content";
 
 import "../styles/global.css";
+import { getImage } from "astro:assets";
+import { getEntry } from "astro:content";
 
 type Props = {
     title: string;
-    metaTitle?: string;
+    metaDescription?: string;
+    ogType?: string;
+    ogImage?: ReferenceDataEntry<"media"> | null;
 };
 
 const settings = (await getCollection("settings"))[0].data;
+const seo = (await getCollection("seo"))[0].data;
 
-const { title, metaTitle } = Astro.props;
+const { title, ogType } = Astro.props;
+
+const metaTitle = title ? `${title} | ${settings.title}` : settings.title;
+const metaDescription =
+    Astro.props.metaDescription || seo.metaDescription || settings.description;
+const ogImageRef = Astro.props.ogImage || seo.ogImage;
+
+let ogImage;
+if (ogImageRef) {
+    const ogImageEntry = await getEntry(ogImageRef);
+
+    if (ogImageEntry) {
+        ogImage = await getImage({
+            src: ogImageEntry.data.sourceUrl,
+            width: 1200,
+            height: 630,
+            format: "webp",
+        });
+    }
+}
 ---
 
 <!doctype html>
@@ -25,7 +49,40 @@ const { title, metaTitle } = Astro.props;
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" href="/favicon.ico" />
-        <title>{metaTitle ?? `${title} | ${settings.title}`}</title>
+        <title>{metaTitle}</title>
+        {
+            metaDescription && (
+                <meta name="description" content={metaDescription} />
+            )
+        }
+        <meta property="og:title" content={title || settings.title} />
+        <meta property="og:type" content={ogType || "article"} />
+        <meta property="og:url" content={Astro.url} />
+        {ogImage && <meta property="og:image" content={ogImage.src} />}
+        {
+            ogImage?.attributes.width && (
+                <meta
+                    property="og:image:width"
+                    content={`${ogImage.attributes.width}`}
+                />
+            )
+        }
+        {
+            ogImage?.attributes.height && (
+                <meta
+                    property="og:image:width"
+                    content={`${ogImage.attributes.height}`}
+                />
+            )
+        }
+        {
+            ogImage?.attributes.format && (
+                <meta
+                    property="og:image:type"
+                    content={`image/${ogImage.attributes.format}`}
+                />
+            )
+        }
     </head>
     <body>
         <a href="#main-content" class="skip-link">Skip to main content</a>
