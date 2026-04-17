@@ -1,5 +1,3 @@
-// @ts-check
-
 import { strict as assert } from "node:assert";
 
 import { defineConfig, fontProviders } from "astro/config";
