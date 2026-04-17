@@ -2,6 +2,8 @@
 import { getCollection } from "astro:content";
 import { z } from "astro/zod";
 
+const RegistrationUrlSchema = z.string().optional().catch(undefined);
+
 const FestivalDaysSchema = z
     .array(
         z.object({
@@ -17,6 +19,7 @@ const pages = await getCollection("pages");
 const homePage = pages.find((p) => settings.pageOnFront?.id === p.data.id);
 const acf = homePage?.data.acf;
 
+const registrationUrl = RegistrationUrlSchema.parse(acf?.registration_url);
 const festivalDays = FestivalDaysSchema.parse(acf?.festival_days);
 
 // Derive month + year from opening_date (format: "YYYY-MM-DD HH:mm:ss")
@@ -49,7 +52,7 @@ const ctaDates =
     tabindex="-1"
 >
     <a
-        href="#"
+        href={registrationUrl}
         class="cta-inner"
         aria-label={ctaDates
             ? `Register now — ${ctaDates}${venue ? ` — ${venue}` : ""}`

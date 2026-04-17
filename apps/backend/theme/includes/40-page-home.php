@@ -85,6 +85,12 @@ function _app_page_home_register_options() {
 			'title'          => 'Festival',
 			'fields'         => array(
 				array(
+					'key'   => _app_page_home_field_key( 'registration_url' ),
+					'label' => 'Registration URL',
+					'name'  => 'registration_url',
+					'type'  => 'text',
+				),
+				array(
 					'key'            => _app_page_home_field_key( 'opening_date' ),
 					'label'          => 'Opening Date & Time',
 					'name'           => 'opening_date',
