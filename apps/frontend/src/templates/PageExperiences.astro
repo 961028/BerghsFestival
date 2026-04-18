@@ -7,16 +7,16 @@ import { z } from "astro/zod";
 import WpImage from "../components/elements/WpImage.astro";
 import MusicList from "../components/experiences/MusicList.astro";
 import InstallationsList from "../components/experiences/InstallationsList.astro";
-import { nullableIntReference } from "../lib/schema";
+import { nullableIntReference, repeater } from "../lib/schema";
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
 };
 
-const ScheduleSchema = z.array(
+const ScheduleSchema = repeater(
     z.object({
         day: z.string(),
-        events: z.array(
+        events: repeater(
             z
                 .object({
                     start_time: z.string(),
@@ -24,24 +24,24 @@ const ScheduleSchema = z.array(
                     image: nullableIntReference("media"),
                     description: z.string().nullable().optional(),
                 })
-                .transform((data) => ({
-                    startTime: data.start_time,
-                    title: data.title,
-                    image: data.image ?? null,
-                    description: data.description ?? null,
+                .transform((item) => ({
+                    startTime: item.start_time,
+                    title: item.title,
+                    image: item.image ?? null,
+                    description: item.description ?? null,
                 })),
         ),
     }),
 );
 
-const GroupsSchema = z.array(
+const GroupsSchema = repeater(
     z
         .object({
             title: z.string(),
             slug: z.string().optional(),
             layout: z.enum(["music", "installations", "food"]),
             description: z.string().transform((val) => ({ html: val })),
-            items: z.array(
+            items: repeater(
                 z.object({
                     name: z.string(),
                     image: nullableIntReference("media"),

@@ -8,6 +8,7 @@ import {
     intReference,
     nullableIntId,
     nullableIntReference,
+    repeater,
 } from "./lib/schema";
 
 const definePaginatedCollection = <S extends BaseSchema>(
@@ -195,7 +196,7 @@ const projects = definePaginatedCollection(
                 company: z.string(),
                 image: nullableIntReference("media"),
                 video: z.string().nullable(),
-                team_members: z.array(
+                team_members: repeater(
                     z.object({
                         name: z.string(),
                         class: z.string(),
@@ -262,7 +263,7 @@ const contact = defineSingletonCollection(
         .object({
             address: z.string(),
             phone: z.string(),
-            social_services: z.array(
+            social_services: repeater(
                 z.object({
                     icon: z.string(),
                     label: z.string(),

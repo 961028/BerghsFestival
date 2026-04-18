@@ -26,3 +26,9 @@ export function nullableIntReference<C extends keyof DataEntryMap>(
 ) {
     return nullableIntId().pipe(reference(collection).nullable());
 }
+
+export function repeater<TOut extends Record<string, unknown>>(
+    schema: z.ZodType<TOut>,
+) {
+    return z.preprocess((val) => (val === false ? [] : val), z.array(schema));
+}
