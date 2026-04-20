@@ -68,9 +68,18 @@ export default defineConfig({
     },
     fonts: [
         {
-            provider: fontProviders.fontsource(),
+            provider: fontProviders.local(),
             name: "Inter",
             cssVariable: "--font-inter",
+            options: {
+                variants: [
+                    {
+                        src: ["./src/fonts/InterVariable.woff2"],
+                        weight: "100 900",
+                        style: "normal",
+                    },
+                ],
+            },
         },
     ],
     image: {
