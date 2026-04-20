@@ -66,41 +66,38 @@
     }
 
     /* ── Responsive breakpoints ──────────────────────────────────────────────
-       Two global viewport breakpoints: 27rem and 50rem.
-       All layout changes across the site should align with these two thresholds.
+       Five layout tiers using four viewport media queries:
 
-       Container queries inside .wrapper must subtract the wrapper's padding:
-       - At 27rem viewport: padding = 1.75rem × 2 = 3.5rem → use 23.5rem
-       - At 50rem viewport: padding = 2.5rem  × 2 = 5rem   → use 45rem
-
-       The CTA banner is position:fixed full-width, so its container queries
-       use the raw viewport values (27rem, 50rem) directly.
-
-       Component-specific breakpoints (container queries) live in:
-       - src/templates/PageHome.astro — hero schedule + section layout
-       - src/layouts/Layout.astro — footer columns
-       - src/components/site/Header.astro — nav visibility (48rem viewport)
-       - src/components/site/CtaBanner.astro — CTA layout
+       - Mobile:      default — stacked, smallest text, CTA 3 lines
+       - Large phone: 30rem (480px) — CTA 2 lines, schedule inline
+       - Wide phone:  34rem (544px) — hero footer horizontal
+       - Tablet:      48rem (768px) — CTA 1 line, full layouts, medium text
+       - Desktop:     64rem (1024px) — largest text, wider spacing
     */
-    @media (min-width: 27rem) {
+    @media (min-width: 30rem) {
+        :root {
+            --cta-height: 5.625rem;
+        }
+    }
+
+    @media (min-width: 48rem) {
         :root {
             --font-size-lg: 1.75rem;
             --font-size-display: 3.5rem;
             --space-lg: 1.75rem;
             --space-xl: 4rem;
             --site-padding-inline: 1.75rem;
-            --cta-height: 5.625rem;
+            --cta-height: 4.125rem;
         }
     }
 
-    @media (min-width: 50rem) {
+    @media (min-width: 64rem) {
         :root {
             --font-size-lg: 2rem;
             --font-size-display: 4.5rem;
             --space-lg: 2.5rem;
             --space-xl: 6.25rem;
             --site-padding-inline: 2.5rem;
-            --cta-height: 4.125rem;
         }
     }
 

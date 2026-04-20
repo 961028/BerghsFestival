@@ -62,11 +62,17 @@ const ctaDates =
         {
             ctaDates && (
                 <span class="cta-details">
-                    <span class="cta-dates" data-scramble>{ctaDates}</span>
+                    <span class="cta-dates" data-scramble>
+                        {ctaDates}
+                    </span>
                     {venue && (
                         <>
-                            <span class="cta-separator" aria-hidden="true">&mdash;</span>
-                            <span class="cta-venue" data-scramble>{venue}</span>
+                            <span class="cta-separator" aria-hidden="true">
+                                &mdash;
+                            </span>
+                            <span class="cta-venue" data-scramble>
+                                {venue}
+                            </span>
                         </>
                     )}
                 </span>
@@ -85,7 +91,6 @@ const ctaDates =
         background: var(--color-accent-1);
         color: var(--color-text);
         border-block-start: var(--border-thick);
-        container-type: inline-size;
     }
 
     .cta-inner {
@@ -104,13 +109,13 @@ const ctaDates =
     }
 
     .cta-details {
-        /* Full width forces details below .cta-action in the wrapped state,
-           preventing a premature 3→2 line jump before the 27rem breakpoint. */
+        /* Full width forces details below .cta-action on mobile.
+           flex-direction: column stacks dates and venue into separate lines. */
         width: 100%;
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 0 var(--space-xs);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0;
         font-size: var(--font-size-xs);
         font-weight: var(--font-weight-bold);
         text-transform: uppercase;
@@ -126,24 +131,27 @@ const ctaDates =
         display: none;
     }
 
-    /* 27rem: CTA goes from 3 lines to 2 lines.
-       The CTA container is full-viewport-width (position: fixed; inset-inline: 0),
-       so container queries here use the same values as the global viewport breakpoints. */
-    @container (min-width: 27rem) {
+    /* Large phone: dates + separator + venue on one row */
+    @media (min-width: 30rem) {
+        .cta-details {
+            flex-direction: row;
+            align-items: center;
+            gap: 0 var(--space-xs);
+        }
+
         .cta-separator {
             display: inline;
+        }
+    }
+
+    /* Tablet: CTA goes to 1 line — all content on a single row */
+    @media (min-width: 48rem) {
+        .cta-inner {
+            flex-wrap: nowrap;
         }
 
         .cta-details {
             width: auto;
-            flex-wrap: nowrap;
-        }
-    }
-
-    /* 50rem: CTA goes from 2 lines to 1 line. */
-    @container (min-width: 50rem) {
-        .cta-inner {
-            flex-wrap: nowrap;
         }
     }
 
