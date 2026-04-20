@@ -191,10 +191,13 @@ const projectCount = acf.project_count as number | undefined;
         display: grid;
         grid-template-rows: 1fr auto;
         width: 100%;
-        height: calc(
-            100dvh - var(--header-height, 0px) - var(--cta-height, 0px)
-        );
+        height: calc(100dvh - var(--header-height) - 1px - var(--cta-height));
+    }
+
+    .hero > :global(.hero-media) {
+        position: relative;
         overflow: hidden;
+        min-height: 0;
     }
 
     .hero-panel {
@@ -219,7 +222,10 @@ const projectCount = acf.project_count as number | undefined;
         text-transform: uppercase;
     }
 
-    @container (min-width: 35rem) {
+    /* 23.5rem = aligns with the global 27rem viewport breakpoint.
+       The container is inside .wrapper which has padding-inline: 1.75rem × 2
+       at that breakpoint, so container width = 27rem - 3.5rem = 23.5rem. */
+    @container (min-width: 23.5rem) {
         .hero-footer {
             flex-direction: row;
             justify-content: space-between;
@@ -284,8 +290,9 @@ const projectCount = acf.project_count as number | undefined;
         color: var(--color-text-muted);
     }
 
-    /* Within each day: abbr+date | hours side by side */
-    @container (min-width: 28rem) {
+    /* Within each day: abbr+date | hours side by side.
+       23.5rem = global 27rem viewport minus .wrapper padding (3.5rem). */
+    @container (min-width: 23.5rem) {
         .schedule-day {
             display: flex;
             align-items: center;
@@ -293,8 +300,12 @@ const projectCount = acf.project_count as number | undefined;
         }
     }
 
-    /* Two days side by side at 50/50 */
-    @container (min-width: 55rem) {
+    /* Two days side by side at 50/50.
+       Uses a viewport media query (not container query) because the wrapper
+       padding also changes at this breakpoint — the container shrinks as
+       padding grows, making it impossible to pick a single container-width
+       value that fires at exactly the right moment. */
+    @media (min-width: 50rem) {
         .schedule-days {
             grid-template-columns: 1fr 1fr;
         }
@@ -335,7 +346,8 @@ const projectCount = acf.project_count as number | undefined;
         border-block-start: var(--border-default);
     }
 
-    @container (min-width: 36rem) {
+    /* 23.5rem = global 27rem viewport minus .wrapper padding (3.5rem). */
+    @container (min-width: 23.5rem) {
         .section-label {
             writing-mode: vertical-lr;
             rotate: 180deg;

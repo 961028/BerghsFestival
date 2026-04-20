@@ -18,7 +18,7 @@ const { video, image } = Astro.props;
 const scopeId = crypto.randomUUID();
 ---
 
-<div data-scope={scopeId}>
+<div class="hero-media" data-scope={scopeId}>
     {
         video && (
             <video class="video" loop muted playsinline aria-hidden="true">
@@ -100,7 +100,8 @@ const scopeId = crypto.randomUUID();
 <style>
     .video,
     .image {
-        min-height: 0;
+        position: absolute;
+        inset: 0;
         width: 100%;
         height: 100%;
         object-fit: fill;

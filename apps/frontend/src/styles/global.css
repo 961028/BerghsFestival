@@ -30,8 +30,8 @@
         --font-family-base: var(--font-inter);
         --font-size-xs: 1rem;
         --font-size-base: 1.125rem;
-        --font-size-lg: 2rem;
-        --font-size-display: clamp(2.75rem, 9vw, 4.5rem);
+        --font-size-lg: 1.5rem;
+        --font-size-display: 2.75rem;
         --font-weight-normal: 400;
         --font-weight-bold: 700;
         --line-height-base: 1.4;
@@ -43,15 +43,13 @@
         --space-xs: 0.5rem;
         --space-sm: 1rem;
         --space-md: 1.25rem;
-        --space-lg: clamp(1.25rem, 4vmax, 2.5rem);
-        --space-xl: clamp(2.5rem, 8vmax, 6.25rem);
+        --space-lg: 1.25rem;
+        --space-xl: 2.5rem;
 
         /* Layout */
         --max-width: 64rem;
         --prose-width: 40rem;
-        --site-padding-inline: clamp(1.25rem, 5vw, 2.5rem);
-        --breakpoint-sm: 40rem;
-        --breakpoint-md: 48rem;
+        --site-padding-inline: 1.25rem;
         --section-label-width: 7rem;
 
         /* Borders */
@@ -63,6 +61,47 @@
         --schedule-time-col: 4rem;
         --schedule-food-col-min: 12rem;
         --experiences-nav-height: 3rem;
+        --header-height: 3.625rem;
+        --cta-height: 6.5rem;
+    }
+
+    /* ── Responsive breakpoints ──────────────────────────────────────────────
+       Two global viewport breakpoints: 27rem and 50rem.
+       All layout changes across the site should align with these two thresholds.
+
+       Container queries inside .wrapper must subtract the wrapper's padding:
+       - At 27rem viewport: padding = 1.75rem × 2 = 3.5rem → use 23.5rem
+       - At 50rem viewport: padding = 2.5rem  × 2 = 5rem   → use 45rem
+
+       The CTA banner is position:fixed full-width, so its container queries
+       use the raw viewport values (27rem, 50rem) directly.
+
+       Component-specific breakpoints (container queries) live in:
+       - src/templates/PageHome.astro — hero schedule + section layout
+       - src/layouts/Layout.astro — footer columns
+       - src/components/site/Header.astro — nav visibility (48rem viewport)
+       - src/components/site/CtaBanner.astro — CTA layout
+    */
+    @media (min-width: 27rem) {
+        :root {
+            --font-size-lg: 1.75rem;
+            --font-size-display: 3.5rem;
+            --space-lg: 1.75rem;
+            --space-xl: 4rem;
+            --site-padding-inline: 1.75rem;
+            --cta-height: 5.625rem;
+        }
+    }
+
+    @media (min-width: 50rem) {
+        :root {
+            --font-size-lg: 2rem;
+            --font-size-display: 4.5rem;
+            --space-lg: 2.5rem;
+            --space-xl: 6.25rem;
+            --site-padding-inline: 2.5rem;
+            --cta-height: 4.125rem;
+        }
     }
 
     html {
@@ -148,6 +187,7 @@
         background: var(--color-bg);
         line-height: var(--line-height-base);
         text-wrap: pretty;
+        padding-bottom: var(--cta-height);
     }
 
     a {
