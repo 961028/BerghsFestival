@@ -28,6 +28,7 @@ const metaDescription =
 const ogImageRef = Astro.props.ogImage || seo.ogImage;
 
 let ogImage;
+let ogImageUrl;
 if (ogImageRef) {
     const ogImageEntry = await getEntry(ogImageRef);
 
@@ -38,6 +39,7 @@ if (ogImageRef) {
             height: 630,
             format: "webp",
         });
+        ogImageUrl = new URL(ogImage.src, Astro.url).href;
     }
 }
 ---
@@ -57,7 +59,7 @@ if (ogImageRef) {
         <meta property="og:title" content={title || settings.title} />
         <meta property="og:type" content={ogType || "article"} />
         <meta property="og:url" content={Astro.url} />
-        {ogImage && <meta property="og:image" content={ogImage.src} />}
+        {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
         {
             ogImage?.attributes.width && (
                 <meta
@@ -69,19 +71,12 @@ if (ogImageRef) {
         {
             ogImage?.attributes.height && (
                 <meta
-                    property="og:image:width"
+                    property="og:image:height"
                     content={`${ogImage.attributes.height}`}
                 />
             )
         }
-        {
-            ogImage?.attributes.format && (
-                <meta
-                    property="og:image:type"
-                    content={`image/${ogImage.attributes.format}`}
-                />
-            )
-        }
+        {ogImage && <meta property="og:image:type" content={`image/webp`} />}
         <Font cssVariable="--font-inter" />
     </head>
     <body>

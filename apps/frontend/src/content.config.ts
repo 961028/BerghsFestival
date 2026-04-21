@@ -1,5 +1,6 @@
 import { defineCollection, type BaseSchema } from "astro:content";
 import { z } from "astro/zod";
+import { decodeHTML } from "entities";
 
 import { wpGet, wpGetAll } from "./lib/wp-api";
 import { stripHtml } from "./lib/html";
@@ -69,7 +70,7 @@ const settings = defineSingletonCollection(
         })
         .transform((item) => ({
             title: item.title,
-            description: item.description,
+            description: decodeHTML(item.description),
             pageOnFront: item.page_on_front,
         })),
 );
