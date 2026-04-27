@@ -20,19 +20,9 @@ const aboutHref = aboutPage
     : "https://www.berghs.se/om-berghs/";
 ---
 
-<!--
-  MOBILE MENU — currently disabled (only one nav item).
-  To re-enable when more nav items are added:
-
-  1. Header.astro  — uncomment the <button class="menu-toggle"> block
-  2. Header.astro  — uncomment the <div class="mobile-menu"> block
-  3. Header.astro  — uncomment the CSS block near the bottom (marked "MOBILE MENU")
-  4. header.ts     — uncomment the toggle logic block (marked "MOBILE MENU")
--->
 <header>
     <nav aria-label="Site navigation">
-        {
-            /* <button
+        <button
             class="menu-toggle"
             aria-expanded="false"
             aria-controls="mobile-menu"
@@ -41,8 +31,7 @@ const aboutHref = aboutPage
             <span class="bar bar-top"></span>
             <span class="bar bar-mid"></span>
             <span class="bar bar-bot"></span>
-        </button> */
-        }
+        </button>
 
         <ul class="nav-links">
             {
@@ -80,23 +69,26 @@ const aboutHref = aboutPage
         </a>
     </nav>
 
-    {
-        /* <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-        {menuItems.map((menuItem) => (
-            <a
-                href={menuItem.data.url}
-                aria-current={
-                    Astro.url.pathname === new URL(menuItem.data.url).pathname
-                        ? "page"
-                        : undefined
-                }
-                class="nav-link"
-            >
-                <span class="nav-link-text">{menuItem.data.title}</span>
-            </a>
-        ))}
-    </div> */
-    }
+    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+        {
+            menuItems.map((menuItem) => (
+                <a
+                    href={menuItem.data.url}
+                    aria-current={
+                        Astro.url.pathname ===
+                        new URL(menuItem.data.url).pathname
+                            ? "page"
+                            : undefined
+                    }
+                    class="nav-link"
+                >
+                    <span class="nav-link-text" data-scramble>
+                        {menuItem.data.title}
+                    </span>
+                </a>
+            ))
+        }
+    </div>
 </header>
 
 <script src="../../scripts/header.ts"></script>
@@ -169,7 +161,7 @@ const aboutHref = aboutPage
     /* ── Desktop nav links ── */
 
     .nav-links {
-        display: flex;
+        display: none;
         flex-direction: row;
         gap: var(--space-md);
         list-style: none;
@@ -194,51 +186,42 @@ const aboutHref = aboutPage
         .menu-toggle {
             display: none;
         }
-    }
-
-    /* MOBILE MENU: uncomment to hide nav-links on mobile */
-    /*
-    @media (max-width: 47.999rem) {
         .nav-links {
-            display: none;
+            display: flex;
         }
     }
-    */
 
     /* ── Mobile menu overlay ── */
 
     .mobile-menu {
-        position: absolute;
+        position: fixed;
         inset-inline: 0;
-        top: 100%;
-        background: var(--color-accent-1);
-        color: var(--color-text);
+        top: var(--header-height);
+        bottom: 0;
+        background: var(--color-bg);
+        color: var(--color-text-on-bg);
         display: flex;
         flex-direction: column;
-        padding-block: var(--space-lg);
         gap: var(--space-md);
+        padding-block: var(--space-xl);
+        padding-inline: var(--site-padding-inline);
         visibility: hidden;
         opacity: 0;
-        translate: 0 calc(-1 * var(--space-xs));
         transition:
             opacity 0.2s ease,
-            translate 0.2s ease,
             visibility 0s 0.2s;
     }
 
     .mobile-menu[aria-hidden="false"] {
         visibility: visible;
         opacity: 1;
-        translate: 0 0;
         transition:
             opacity 0.2s ease,
-            translate 0.2s ease,
             visibility 0s 0s;
     }
 
     .mobile-menu a {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
-        text-align: end;
     }
 </style>

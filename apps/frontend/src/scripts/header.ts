@@ -8,31 +8,41 @@ const LOGO_STROBE_INTERVAL_MS = 50;
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-// MOBILE MENU: uncomment to enable toggle logic
-// const toggle = document.querySelector(".menu-toggle") as HTMLButtonElement;
-// const menu = document.getElementById("mobile-menu")!;
-//
-// function open() {
-//     toggle.setAttribute("aria-expanded", "true");
-//     toggle.setAttribute("aria-label", "Close menu");
-//     menu.setAttribute("aria-hidden", "false");
-//     document.body.style.overflow = "hidden";
-// }
-//
-// function close() {
-//     toggle.setAttribute("aria-expanded", "false");
-//     toggle.setAttribute("aria-label", "Open menu");
-//     menu.setAttribute("aria-hidden", "true");
-//     document.body.style.overflow = "";
-// }
-//
-// toggle.addEventListener("click", () => {
-//     toggle.getAttribute("aria-expanded") === "true" ? close() : open();
-// });
-//
-// menu.querySelectorAll("a").forEach((link) => {
-//     link.addEventListener("click", close);
-// });
+const toggle = document.querySelector(".menu-toggle") as HTMLButtonElement;
+const menu = document.getElementById("mobile-menu")!;
+
+function open() {
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-label", "Close menu");
+    menu.setAttribute("aria-hidden", "false");
+    document.body.style.overflow = "hidden";
+}
+
+function close() {
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+    menu.setAttribute("aria-hidden", "true");
+    document.body.style.overflow = "";
+}
+
+toggle.addEventListener("click", () => {
+    if (toggle.getAttribute("aria-expanded") === "true") {
+        close();
+    } else {
+        open();
+    }
+});
+
+menu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", close);
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        close();
+        toggle.focus();
+    }
+});
 
 // ── Font cycling ──
 
