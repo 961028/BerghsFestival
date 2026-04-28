@@ -1,0 +1,97 @@
+---
+import type { Group } from "../lib/experiences";
+
+import WpImage from "../components/elements/WpImage.astro";
+import MusicList from "../components/experiences/MusicList.astro";
+import InstallationsList from "../components/experiences/InstallationsList.astro";
+
+interface Props {
+    group: Group;
+}
+
+const { group } = Astro.props;
+---
+
+<section>
+    <div set:html={group.description.html} />
+
+    {group.layout === "music" && <MusicList items={group.items} />}
+    {group.layout === "installations" && (
+        <InstallationsList items={group.items} />
+    )}
+    {group.layout === "food" && (
+        <ul>
+            {group.items.map((item) => (
+                <li>
+                    {item.image && (
+                        <WpImage
+                            image={item.image}
+                            width={600}
+                            height={300}
+                            alt={item.name}
+                        />
+                    )}
+                    <div>
+                        <p>{item.name}</p>
+                        <div set:html={item.description.html} />
+                    </div>
+                </li>
+            ))}
+        </ul>
+    )}
+</section>
+
+<style>
+    section {
+        padding-block: var(--space-xl);
+    }
+
+    /* ── Group intro ──────────────────────────────────────────────── */
+    section > div:first-child {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+        max-width: var(--prose-width);
+        margin-block-end: var(--space-md);
+    }
+
+    /* ── Food & drink ─────────────────────────────────────────────── */
+    section > ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(100%, var(--schedule-food-col-min)), 1fr)
+        );
+        gap: var(--space-xs);
+    }
+
+    section > ul li {
+        border: var(--border-default);
+        overflow: hidden;
+    }
+
+    section > ul li :global(img) {
+        display: block;
+        width: 100%;
+        aspect-ratio: 2 / 1;
+        object-fit: cover;
+    }
+
+    section > ul li > div {
+        padding: var(--space-sm);
+    }
+
+    section > ul li p {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        margin-block-end: var(--space-xxs);
+    }
+
+    section > ul li div > div {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+        margin: 0;
+    }
+</style>
