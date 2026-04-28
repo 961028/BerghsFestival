@@ -63,6 +63,7 @@
         --experiences-nav-height: 3rem;
         --header-height: 3.625rem;
         --cta-height: 6.5rem;
+        --cta-height-compact: 3.5rem;
     }
 
     /* ── Responsive breakpoints ──────────────────────────────────────────────
@@ -186,6 +187,15 @@
         line-height: var(--line-height-base);
         text-wrap: pretty;
         padding-bottom: var(--cta-height);
+    }
+
+    /* Compact CTA pages: shrink --cta-height below the desktop breakpoint so
+       the body padding and the fixed banner both follow the smaller value.
+       Desktop (64rem+) keeps the full CTA. */
+    @media (max-width: 63.999rem) {
+        body.has-compact-cta {
+            --cta-height: var(--cta-height-compact);
+        }
     }
 
     a {

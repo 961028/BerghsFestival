@@ -15,12 +15,13 @@ type Props = {
     metaDescription?: string;
     ogType?: string;
     ogImage?: ReferenceDataEntry<"media"> | null;
+    ctaCompact?: boolean;
 };
 
 const settings = (await getCollection("settings"))[0].data;
 const seo = (await getCollection("seo"))[0].data;
 
-const { title, ogType } = Astro.props;
+const { title, ogType, ctaCompact = false } = Astro.props;
 
 const metaTitle = title ? `${title} | ${settings.title}` : settings.title;
 const metaDescription =
@@ -79,7 +80,7 @@ if (ogImageRef) {
         {ogImage && <meta property="og:image:type" content={`image/webp`} />}
         <Font cssVariable="--font-inter" />
     </head>
-    <body>
+    <body class:list={[{ "has-compact-cta": ctaCompact }]}>
         <a href="#main-content" class="skip-link">Skip to main content</a>
         <a href="#cta" class="skip-link">Skip to apply</a>
         <div class="wrapper">
@@ -103,7 +104,7 @@ if (ogImageRef) {
                 </div>
             </footer>
         </div>
-        <CtaBanner />
+        <CtaBanner compact={ctaCompact} />
     </body>
 </html>
 

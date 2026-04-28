@@ -48,6 +48,8 @@ Each section has a distinct layout treatment. This is intentional: the three con
 
 **Why both days are always accessible:** An earlier approach hid Saturday during Friday evening. This was overengineered. Simple preselection is less code, less confusing, and more respectful of user autonomy.
 
+**Why a compact registration CTA on this page (mobile + tablet only):** The Experiences page already has a sticky in-page section nav below the site header, so vertical real estate is tighter than on other pages. Below the desktop breakpoint (64rem), the CTA drops the dates/venue line to reduce its height. On desktop the full CTA returns — there is enough room for both.
+
 ### Projects
 
 - Filter between **All**, **Group**, and **Individual** projects at the top of the page.

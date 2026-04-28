@@ -2,6 +2,12 @@
 import { getCollection } from "astro:content";
 import { z } from "astro/zod";
 
+type Props = {
+    compact?: boolean;
+};
+
+const { compact = false } = Astro.props;
+
 const RegistrationUrlSchema = z.string().optional().catch(undefined);
 
 const FestivalDaysSchema = z
@@ -45,7 +51,7 @@ const ctaDates =
 ---
 
 <aside
-    class="cta-banner"
+    class:list={["cta-banner", { "cta-banner--compact": compact }]}
     id="cta"
     data-region="cta"
     aria-label="Apply to Berghs Festival"
@@ -162,6 +168,14 @@ const ctaDates =
         letter-spacing: var(--letter-spacing-label);
         line-height: 1;
         white-space: nowrap;
+    }
+
+    /* Compact variant — hide the dates/venue line below the desktop
+       breakpoint. Desktop (64rem+) shows the full CTA. */
+    @media (max-width: 63.999rem) {
+        .cta-banner--compact .cta-details {
+            display: none;
+        }
     }
 
     /* Overlay must use the same color as CTA text, not the global default */
