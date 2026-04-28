@@ -162,43 +162,19 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                     experiencesSubItems.length > 0;
 
                 if (isExperiences) {
-                    const inExperiencesSection = experiencesSubItems.some(
-                        (sub) => currentPath === sub.href,
-                    );
-                    return (
-                        <div class="mobile-group">
-                            <span
-                                class="mobile-group-label"
-                                aria-current={
-                                    inExperiencesSection ? "page" : undefined
-                                }
-                            >
-                                {menuItem.data.title}
+                    return experiencesSubItems.map((sub) => (
+                        <a
+                            href={sub.href}
+                            aria-current={
+                                currentPath === sub.href ? "page" : undefined
+                            }
+                            class="nav-link"
+                        >
+                            <span class="nav-link-text" data-scramble>
+                                {sub.label}
                             </span>
-                            <ul class="mobile-submenu">
-                                {experiencesSubItems.map((sub) => (
-                                    <li>
-                                        <a
-                                            href={sub.href}
-                                            aria-current={
-                                                currentPath === sub.href
-                                                    ? "page"
-                                                    : undefined
-                                            }
-                                            class="nav-link"
-                                        >
-                                            <span
-                                                class="nav-link-text"
-                                                data-scramble
-                                            >
-                                                {sub.label}
-                                            </span>
-                                        </a>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    );
+                        </a>
+                    ));
                 }
 
                 return (
@@ -302,9 +278,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
         text-transform: lowercase;
     }
 
-    .nav-link[aria-current="page"]:not(.submenu-link) {
+    .nav-link[aria-current="page"] {
         font-weight: var(--font-weight-bold);
         text-transform: uppercase;
+    }
+
+    .submenu-link[aria-current="page"] {
+        background: var(--color-text-on-bg);
+        color: var(--color-bg);
     }
 
     .nav-link:focus-visible,
@@ -378,35 +359,6 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
     .submenu-link {
         display: block;
         padding: var(--space-xxs) var(--space-xs);
-    }
-
-    .submenu-link[aria-current="page"] {
-        background: var(--color-text-on-bg);
-        color: var(--color-bg);
-    }
-
-    /* ── Mobile submenu ── */
-    .mobile-group {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-sm);
-    }
-
-    .mobile-group-label {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-text-muted);
-        text-transform: lowercase;
-    }
-
-    .mobile-submenu {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-        padding-inline-start: var(--space-md);
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-sm);
     }
 
     /* Tablet: hide hamburger, show full nav */

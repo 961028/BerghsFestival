@@ -60,11 +60,20 @@ const { group } = Astro.props;
         margin: 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(
-            auto-fill,
-            minmax(min(100%, var(--schedule-food-col-min)), 1fr)
-        );
-        gap: var(--space-xs);
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    @media (min-width: 30rem) {
+        section > ul {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 48rem) {
+        section > ul {
+            grid-template-columns: repeat(3, 1fr);
+        }
     }
 
     section > ul li {
