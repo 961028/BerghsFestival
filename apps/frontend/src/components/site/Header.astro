@@ -98,13 +98,14 @@ const aboutHref = aboutPage
         border-block-end: var(--border-default);
         position: relative;
         z-index: 100;
+        block-size: var(--header-height);
     }
 
     nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding-block: var(--space-sm);
+        block-size: 100%;
     }
 
     /* ── Hamburger button ── */
@@ -121,6 +122,7 @@ const aboutHref = aboutPage
         gap: var(--bar-gap);
         width: max(44px, 2em);
         height: max(44px, 2em);
+        margin-inline-start: calc((var(--bar-w) - max(44px, 2em)) / 2);
         background: none;
         border: none;
         cursor: pointer;
@@ -134,7 +136,6 @@ const aboutHref = aboutPage
         height: var(--bar-h);
         background: currentColor;
 
-        transform-origin: center;
         transition:
             transform 0.25s ease,
             opacity 0.15s ease;
@@ -162,7 +163,6 @@ const aboutHref = aboutPage
 
     .nav-links {
         display: none;
-        flex-direction: row;
         gap: var(--space-md);
         list-style: none;
         padding: 0;
