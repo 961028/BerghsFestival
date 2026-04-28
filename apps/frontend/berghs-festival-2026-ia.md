@@ -193,6 +193,16 @@ _Limits will be enforced in the content collection schema (Zod validation at bui
 
 ---
 
+## Cross-page consistency pass (April 2026)
+
+Several small, interlocking changes to make the experiences subpages read as part of the same family as the rest of the site, without altering the per-section layouts the user wanted preserved (Music as image-left rows, Food & Drink as a card grid, Installations as a wide gallery).
+
+- **`.section-body` shared class.** Body prose styling (`font-size-base`, `line-height-base`, `max-width: prose-width`) was duplicated in PageHome, ExperiencesSchedule, and ExperiencesGroup. Promoted to a single class in the `global` layer of `global.css` (per `css-rules.md` shared-classes rule). Used by the home content sections, the schedule intro, and the group intros.
+- **Installations row rhythm.** Installations previously stacked items with a large `--space-xl` gap and no dividers. Switched to the same top-border row pattern used by Music and the home schedule list (image-left at ≥30rem). Music and Food & Drink layouts kept unchanged.
+- **Header text-transform consistency.** The desktop "Experiences" submenu toggle is a `<button>`, which doesn't reliably inherit `text-transform` from `.nav-links` across browsers — added `text-transform: inherit` on `.submenu-toggle` so it follows the nav's lowercase rule. Mobile menu links also gained the same lowercase / uppercase-on-`[aria-current="page"]` treatment as the desktop nav (was previously always bold, no case toggle).
+
+---
+
 ## What was kept from previous years
 
 - Eventbrite for registration.

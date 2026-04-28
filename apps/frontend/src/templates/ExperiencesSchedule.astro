@@ -11,7 +11,7 @@ const { description, schedule } = Astro.props;
 
 <section>
     {description && (
-        <div class="description" set:html={description.html} />
+        <div class="section-body intro" set:html={description.html} />
     )}
 
     <ol class="day-toggle" role="group" aria-label="Select day">
@@ -86,11 +86,7 @@ const { description, schedule } = Astro.props;
         padding-block-end: var(--space-xl);
     }
 
-    /* ── Intro description (matches group intro pattern) ──────────── */
-    .description {
-        font-size: var(--font-size-base);
-        line-height: var(--line-height-base);
-        max-width: var(--prose-width);
+    .intro {
         margin-block-end: var(--space-md);
     }
 

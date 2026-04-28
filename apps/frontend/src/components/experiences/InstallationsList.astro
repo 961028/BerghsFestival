@@ -25,8 +25,10 @@ const { items } = Astro.props;
                         alt={item.name}
                     />
                 )}
-                <p class="name">{item.name}</p>
-                <div class="description" set:html={item.description.html} />
+                <div class="text">
+                    <p class="name">{item.name}</p>
+                    <div class="description" set:html={item.description.html} />
+                </div>
             </li>
         ))
     }
@@ -37,8 +39,24 @@ const { items } = Astro.props;
         list-style: none;
         margin: 0;
         padding: 0;
+        container-type: inline-size;
+    }
+
+    li {
         display: grid;
-        gap: var(--space-xl);
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+        padding-block: var(--space-lg);
+        border-block-start: var(--border-default);
+        align-items: start;
+    }
+
+    /* Wide phone+: image left, text right — matches MusicList rhythm */
+    @container (min-width: 30rem) {
+        li {
+            grid-template-columns: 40% 1fr;
+            gap: var(--space-md);
+        }
     }
 
     li :global(img) {
@@ -48,12 +66,18 @@ const { items } = Astro.props;
         object-fit: cover;
     }
 
+    .text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+        min-width: 0;
+    }
+
     .name {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
-        margin-block: var(--space-xs) var(--space-xs);
     }
 
     .description {

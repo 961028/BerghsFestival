@@ -170,6 +170,12 @@
         margin-block-end: var(--space-md);
     }
 
+    .section-body {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+        max-width: var(--prose-width);
+    }
+
     .footer-label {
         font-size: var(--font-size-xs);
         font-weight: var(--font-weight-bold);

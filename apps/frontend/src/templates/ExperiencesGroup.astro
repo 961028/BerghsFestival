@@ -13,14 +13,14 @@ const { group } = Astro.props;
 ---
 
 <section>
-    <div set:html={group.description.html} />
+    <div class="section-body intro" set:html={group.description.html} />
 
     {group.layout === "music" && <MusicList items={group.items} />}
     {group.layout === "installations" && (
         <InstallationsList items={group.items} />
     )}
     {group.layout === "food" && (
-        <ul>
+        <ul class="food-list">
             {group.items.map((item) => (
                 <li>
                     {item.image && (
@@ -46,16 +46,12 @@ const { group } = Astro.props;
         padding-block-end: var(--space-xl);
     }
 
-    /* ── Group intro ──────────────────────────────────────────────── */
-    section > div:first-child {
-        font-size: var(--font-size-base);
-        line-height: var(--line-height-base);
-        max-width: var(--prose-width);
+    .intro {
         margin-block-end: var(--space-md);
     }
 
     /* ── Food & drink ─────────────────────────────────────────────── */
-    section > ul {
+    .food-list {
         list-style: none;
         margin: 0;
         padding: 0;
@@ -65,34 +61,34 @@ const { group } = Astro.props;
     }
 
     @media (min-width: 30rem) {
-        section > ul {
+        .food-list {
             grid-template-columns: repeat(2, 1fr);
         }
     }
 
     @media (min-width: 48rem) {
-        section > ul {
+        .food-list {
             grid-template-columns: repeat(3, 1fr);
         }
     }
 
-    section > ul li {
+    .food-list li {
         border: var(--border-default);
         overflow: hidden;
     }
 
-    section > ul li :global(img) {
+    .food-list li :global(img) {
         display: block;
         width: 100%;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 1 / 1;
         object-fit: cover;
     }
 
-    section > ul li > div {
+    .food-list li > div {
         padding: var(--space-sm);
     }
 
-    section > ul li p {
+    .food-list li p {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
@@ -100,7 +96,7 @@ const { group } = Astro.props;
         margin-block-end: var(--space-xs);
     }
 
-    section > ul li div > div {
+    .food-list li div > div {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         color: var(--color-text-muted);
