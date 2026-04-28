@@ -15,7 +15,7 @@ Four pages. Same nav on every page.
 
 ### Changes from previous years
 
-- "Installations" and "Happening" merged to **Experiences**, now organized as three tabs: Schedule, Installations, Food & drink.
+- "Installations" and "Happening" merged to **Experiences**, now split across one route per section (Schedule + one per content group, e.g. Music, Installations, Food & drink). Sections are surfaced as a dropdown in the site header, not as in-page tabs or anchors.
 - **About** expanded to include a new "The team" section crediting students and teachers, organized by festival role.
 
 ---
@@ -32,23 +32,29 @@ Four pages. Same nav on every page.
 
 ### Experiences
 
-Single scrollable page. Sections are navigated via anchor links in a nav bar at the top of the page content. The nav is sticky on desktop (sits below the site header), and scrolls away naturally on mobile.
+Split across one route per section. The base URL `/experiences/` redirects to `/experiences/schedule` (the default landing). Each WP-defined group gets its own route at `/experiences/<group-slug>`. Sections are surfaced through a dropdown on the "Experiences" item in the site header — there is no in-page section nav.
 
-1. **Schedule** — two-day timeline (Friday evening, Saturday daytime). Both days are always visible; the relevant day is preselected based on the current date. Before or after the festival, Friday is preselected. On Saturday, Saturday is preselected. Events without artist data render as compact rows; events with an image and description render as richer rows with the artist name, a short description (2–4 sentences), and a square image.
-2. **Installations** — full-width gallery. One installation per row with a large landscape image, name, and description. Installations are art pieces and get visual presence accordingly.
-3. **Food & drink** — compact 2-column card grid. Vendor name, short description, and image. Density signals "there are options" and makes this section feel browsable and distinct from Installations.
+1. **Schedule** (`/experiences/schedule`) — two-day timeline (Friday evening, Saturday daytime). Both days are always visible; the relevant day is preselected based on the current date. Before or after the festival, Friday is preselected. On Saturday, Saturday is preselected. Events without artist data render as compact rows; events with an image and description render as richer rows with the artist name, a short description (2–4 sentences), and a square image.
+2. **Installations** (`/experiences/installations`) — full-width gallery. One installation per row with a large landscape image, name, and description. Installations are art pieces and get visual presence accordingly.
+3. **Food & drink** (`/experiences/food-drink`) — compact 2-column card grid. Vendor name, short description, and image. Density signals "there are options" and makes this section feel browsable and distinct from Installations.
+
+Additional groups (e.g. **Music**) follow the same pattern — slug derived from the group's WP `slug` field, falling back to slugified title. Each group's layout is one of `music`, `installations`, or `food`, set per group in WP.
 
 "Other activities" has been dropped.
 
-Each section has a distinct layout treatment. This is intentional: the three content types have different data shapes and different browsing behaviors.
+Each section has a distinct layout treatment. This is intentional: the content types have different data shapes and different browsing behaviors.
 
-**Why scroll instead of tabs:** Tabs hide content — users who don't notice the tabs miss entire sections. Scrolling is universal, and anchor links let users jump directly to a section while still supporting discovery through scrolling.
+**Why per-section routes instead of a single scrollable page:** The earlier single-page approach used an in-page sticky section nav with scroll-spy (IntersectionObserver) to highlight the active section. It worked, but URLs were not section-specific (everything lived at `/experiences/#anchor`), so links and bookmarks couldn't deep-link reliably to a section, and the page accumulated all sections' DOM and styles regardless of what the visitor wanted to see. Splitting the page makes each section its own URL — bookmarkable, shareable, and independently rendered — and replaces the scroll-spy machinery with a plain header dropdown.
 
-**Why the nav is not sticky on mobile:** A sticky nav on small screens consumes too much vertical space relative to the content it navigates. Mobile users scroll naturally; the nav serves as a jump-off point at the top of the page.
+**Why the section nav lives in the site header, not on the page:** The header is already the persistent navigation surface. Promoting "Experiences" to a dropdown reuses that surface instead of inventing a second navigation pattern below it. It also means the section list is always visible at the top of the viewport without any sticky-nav layout cost.
+
+**Why the dropdown opens on click, hover, and focus-within:** Mouse users get hover (low effort, conventional). Touch users get click (hover doesn't exist for them). Keyboard users get focus-within (tabbing into the toggle reveals the submenu). Escape closes it and returns focus to the toggle. This covers all three input modalities without forcing any one of them through a different interaction.
+
+**Why `/experiences/` redirects via meta-refresh, not a server redirect:** This is a static deploy. Astro's `Astro.redirect` in a static page emits a `<meta http-equiv="refresh">` with a 2-second delay. A `_redirects` rule at the host (Netlify / Vercel / Cloudflare) would be instant; we may add one at deploy time, but the meta-refresh is the portable fallback and works on any static host.
 
 **Why both days are always accessible:** An earlier approach hid Saturday during Friday evening. This was overengineered. Simple preselection is less code, less confusing, and more respectful of user autonomy.
 
-**Why a compact registration CTA on this page (mobile + tablet only):** The Experiences page already has a sticky in-page section nav below the site header, so vertical real estate is tighter than on other pages. Below the desktop breakpoint (64rem), the CTA drops the dates/venue line to reduce its height. On desktop the full CTA returns — there is enough room for both.
+**Why a compact registration CTA on this page (mobile + tablet only):** Carried over from the single-page version. Below the desktop breakpoint (64rem), the CTA drops the dates/venue line to reduce its height. On desktop the full CTA returns. Originally justified by the in-page sticky nav (now gone), but kept for now — revisit if the constraint that motivated it no longer applies.
 
 ### Projects
 
