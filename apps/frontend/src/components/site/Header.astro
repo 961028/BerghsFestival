@@ -2,6 +2,7 @@
 import { getCollection, getEntry } from "astro:content";
 import Svg from "../elements/Svg.astro";
 import { resolvePageLink } from "../../lib/content";
+import { getExperiencesPage } from "../../lib/experiences";
 
 const menuLocation = await getEntry("menuLocations", "primary");
 const menuItems = (
@@ -18,6 +19,28 @@ const aboutPage = pages.find(
 const aboutHref = aboutPage
     ? `/${await resolvePageLink(aboutPage)}`
     : "https://www.berghs.se/om-berghs/";
+
+const experiencesData = await getExperiencesPage();
+const experiencesSubItems: Array<{ label: string; href: string }> =
+    experiencesData
+        ? [
+              { label: "Schedule", href: "/experiences/schedule" },
+              ...experiencesData.groups.map((group) => ({
+                  label: group.title,
+                  href: `/experiences/${group.slug}`,
+              })),
+          ]
+        : [];
+
+function isExperiencesItem(url: string): boolean {
+    try {
+        return new URL(url).pathname === "/experiences";
+    } catch {
+        return false;
+    }
+}
+
+const currentPath = Astro.url.pathname;
 ---
 
 <header>
@@ -35,24 +58,68 @@ const aboutHref = aboutPage
 
         <ul class="nav-links">
             {
-                menuItems.map((menuItem) => (
-                    <li>
-                        <a
-                            href={menuItem.data.url}
-                            aria-current={
-                                Astro.url.pathname ===
-                                new URL(menuItem.data.url).pathname
-                                    ? "page"
-                                    : undefined
-                            }
-                            class="nav-link"
-                        >
-                            <span class="nav-link-text" data-scramble>
-                                {menuItem.data.title}
-                            </span>
-                        </a>
-                    </li>
-                ))
+                menuItems.map((menuItem) => {
+                    const isExperiences =
+                        isExperiencesItem(menuItem.data.url) &&
+                        experiencesSubItems.length > 0;
+
+                    if (isExperiences) {
+                        return (
+                            <li class="has-submenu">
+                                <button
+                                    type="button"
+                                    class="nav-link submenu-toggle"
+                                    aria-expanded="false"
+                                    aria-controls="experiences-submenu"
+                                >
+                                    <span class="nav-link-text" data-scramble>
+                                        {menuItem.data.title}
+                                    </span>
+                                    <Svg
+                                        name="chevron"
+                                        alt=""
+                                        class="submenu-chevron"
+                                    />
+                                </button>
+                                <ul class="submenu" id="experiences-submenu">
+                                    {experiencesSubItems.map((sub) => (
+                                        <li>
+                                            <a
+                                                href={sub.href}
+                                                aria-current={
+                                                    currentPath === sub.href
+                                                        ? "page"
+                                                        : undefined
+                                                }
+                                            >
+                                                {sub.label}
+                                            </a>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </li>
+                        );
+                    }
+
+                    return (
+                        <li>
+                            <a
+                                href={menuItem.data.url}
+                                aria-current={
+                                    currentPath ===
+                                    new URL(menuItem.data.url).pathname
+                                        ? "page"
+                                        : undefined
+                                }
+                                class="nav-link"
+                            >
+                                <span class="nav-link-text" data-scramble>
+                                    {menuItem.data.title}
+                                </span>
+                            </a>
+                        </li>
+                    );
+                })
             }
         </ul>
 
@@ -71,22 +138,60 @@ const aboutHref = aboutPage
 
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         {
-            menuItems.map((menuItem) => (
-                <a
-                    href={menuItem.data.url}
-                    aria-current={
-                        Astro.url.pathname ===
-                        new URL(menuItem.data.url).pathname
-                            ? "page"
-                            : undefined
-                    }
-                    class="nav-link"
-                >
-                    <span class="nav-link-text" data-scramble>
-                        {menuItem.data.title}
-                    </span>
-                </a>
-            ))
+            menuItems.map((menuItem) => {
+                const isExperiences =
+                    isExperiencesItem(menuItem.data.url) &&
+                    experiencesSubItems.length > 0;
+
+                if (isExperiences) {
+                    return (
+                        <div class="mobile-group">
+                            <span class="mobile-group-label">
+                                {menuItem.data.title}
+                            </span>
+                            <ul class="mobile-submenu">
+                                {experiencesSubItems.map((sub) => (
+                                    <li>
+                                        <a
+                                            href={sub.href}
+                                            aria-current={
+                                                currentPath === sub.href
+                                                    ? "page"
+                                                    : undefined
+                                            }
+                                            class="nav-link"
+                                        >
+                                            <span
+                                                class="nav-link-text"
+                                                data-scramble
+                                            >
+                                                {sub.label}
+                                            </span>
+                                        </a>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    );
+                }
+
+                return (
+                    <a
+                        href={menuItem.data.url}
+                        aria-current={
+                            currentPath ===
+                            new URL(menuItem.data.url).pathname
+                                ? "page"
+                                : undefined
+                        }
+                        class="nav-link"
+                    >
+                        <span class="nav-link-text" data-scramble>
+                            {menuItem.data.title}
+                        </span>
+                    </a>
+                );
+            })
         }
     </div>
 </header>
@@ -179,6 +284,100 @@ const aboutHref = aboutPage
     .nav-link:focus-visible,
     .logo-link:focus-visible {
         border-radius: 1px;
+    }
+
+    /* ── Submenu (desktop) ── */
+    .has-submenu {
+        position: relative;
+    }
+
+    .submenu-toggle {
+        appearance: none;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-xxs);
+    }
+
+    .submenu-chevron {
+        width: 0.75em;
+        height: 0.75em;
+        transition: transform 0.15s ease;
+    }
+
+    .submenu-toggle[aria-expanded="true"] .submenu-chevron {
+        transform: rotate(180deg);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .submenu-chevron {
+            transition: none;
+        }
+    }
+
+    .submenu {
+        position: absolute;
+        inset-inline-start: 0;
+        inset-block-start: 100%;
+        list-style: none;
+        margin: 0;
+        padding: var(--space-xs) var(--space-sm);
+        background: var(--color-bg);
+        border: var(--border-default);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+        min-width: max-content;
+        visibility: hidden;
+        opacity: 0;
+        transition:
+            opacity 0.15s ease,
+            visibility 0s 0.15s;
+    }
+
+    .has-submenu:hover .submenu,
+    .has-submenu:focus-within .submenu,
+    .submenu-toggle[aria-expanded="true"] + .submenu {
+        visibility: visible;
+        opacity: 1;
+        transition:
+            opacity 0.15s ease,
+            visibility 0s 0s;
+    }
+
+    .submenu a[aria-current="page"] {
+        font-weight: var(--font-weight-bold);
+        text-transform: uppercase;
+    }
+
+    /* ── Mobile submenu ── */
+    .mobile-group {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .mobile-group-label {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text-muted);
+        text-transform: lowercase;
+    }
+
+    .mobile-submenu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        padding-inline-start: var(--space-md);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
     }
 
     /* Tablet: hide hamburger, show full nav */
