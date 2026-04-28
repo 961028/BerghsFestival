@@ -119,3 +119,57 @@ document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
         stopCycling(span, timer);
     });
 });
+
+// ── Experiences submenu toggle ──
+
+const submenuToggle =
+    document.querySelector<HTMLButtonElement>(".submenu-toggle");
+const submenu = document.querySelector<HTMLElement>("#experiences-submenu");
+
+if (submenuToggle && submenu) {
+    function openSubmenu() {
+        submenuToggle!.setAttribute("aria-expanded", "true");
+    }
+
+    function closeSubmenu() {
+        submenuToggle!.setAttribute("aria-expanded", "false");
+    }
+
+    submenuToggle.addEventListener("click", () => {
+        const open =
+            submenuToggle.getAttribute("aria-expanded") === "true";
+        if (open) {
+            closeSubmenu();
+        } else {
+            openSubmenu();
+        }
+    });
+
+    // Close when a sub-item is clicked.
+    submenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", closeSubmenu);
+    });
+
+    // Close on outside click.
+    document.addEventListener("click", (event) => {
+        const target = event.target as Node;
+        if (
+            submenuToggle.getAttribute("aria-expanded") === "true" &&
+            !submenuToggle.contains(target) &&
+            !submenu.contains(target)
+        ) {
+            closeSubmenu();
+        }
+    });
+
+    // Close on Escape.
+    document.addEventListener("keydown", (event) => {
+        if (
+            event.key === "Escape" &&
+            submenuToggle.getAttribute("aria-expanded") === "true"
+        ) {
+            closeSubmenu();
+            submenuToggle.focus();
+        }
+    });
+}
