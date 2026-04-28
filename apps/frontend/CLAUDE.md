@@ -40,6 +40,7 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 ## Commands
 
 ```sh
+.devcontainer % docker compose up -d
 npm run dev      # Start dev server
 npm run build    # Production build
 ```
