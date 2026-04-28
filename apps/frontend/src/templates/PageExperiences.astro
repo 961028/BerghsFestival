@@ -222,6 +222,23 @@ const sections = [
     );
 
     sections.forEach((section) => observer.observe(section));
+
+    // Keep --sticky-nav-height in sync with the actual rendered nav height so
+    // anchor scrolling lands sections flush below the sticky nav at every
+    // breakpoint (the nav stacks vertically on narrow viewports).
+    const stickyNav = document.querySelector<HTMLElement>(
+        "nav[aria-label='Page sections']",
+    );
+    if (stickyNav) {
+        const setNavHeight = () => {
+            document.documentElement.style.setProperty(
+                "--sticky-nav-height",
+                `${stickyNav.offsetHeight}px`,
+            );
+        };
+        setNavHeight();
+        new ResizeObserver(setNavHeight).observe(stickyNav);
+    }
 </script>
 
 <style>
@@ -230,7 +247,6 @@ const sections = [
         display: flex;
         gap: var(--space-xs);
         border-block-end: var(--border-default);
-        margin-block-end: var(--space-lg);
         background: var(--color-bg);
         position: sticky;
         top: 0;
@@ -261,8 +277,12 @@ const sections = [
 
     /* Sections */
     section {
-        scroll-margin-top: var(--experiences-nav-height);
-        margin-block-end: var(--space-xl);
+        scroll-margin-top: var(--sticky-nav-height, var(--experiences-nav-height));
+        padding-block: var(--space-xl);
+    }
+
+    section + section {
+        border-block-start: var(--border-default);
     }
 
     /* Day toggle */
