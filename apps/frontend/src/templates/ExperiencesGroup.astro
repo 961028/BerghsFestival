@@ -84,7 +84,7 @@ const { group } = Astro.props;
     section > ul li :global(img) {
         display: block;
         width: 100%;
-        aspect-ratio: 2 / 1;
+        aspect-ratio: 4 / 3;
         object-fit: cover;
     }
 
@@ -93,14 +93,17 @@ const { group } = Astro.props;
     }
 
     section > ul li p {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
-        margin-block-end: var(--space-xxs);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        margin-block-end: var(--space-xs);
     }
 
     section > ul li div > div {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
+        color: var(--color-text-muted);
         margin: 0;
     }
 </style>

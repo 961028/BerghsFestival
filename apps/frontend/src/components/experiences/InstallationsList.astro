@@ -25,8 +25,8 @@ const { items } = Astro.props;
                         alt={item.name}
                     />
                 )}
-                <p>{item.name}</p>
-                <div set:html={item.description.html} />
+                <p class="name">{item.name}</p>
+                <div class="description" set:html={item.description.html} />
             </li>
         ))
     }
@@ -38,7 +38,7 @@ const { items } = Astro.props;
         margin: 0;
         padding: 0;
         display: grid;
-        gap: var(--space-md);
+        gap: var(--space-xl);
     }
 
     li :global(img) {
@@ -48,14 +48,17 @@ const { items } = Astro.props;
         object-fit: cover;
     }
 
-    li p {
-        font-size: var(--font-size-base);
+    .name {
+        font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
-        margin-block: var(--space-xs) var(--space-xxs);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        margin-block: var(--space-xs) var(--space-xs);
     }
 
-    li div {
+    .description {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
+        color: var(--color-text-muted);
     }
 </style>

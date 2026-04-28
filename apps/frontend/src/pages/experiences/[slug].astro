@@ -9,7 +9,12 @@ import {
 } from "../../lib/experiences";
 
 type Section =
-    | { kind: "schedule"; label: string; schedule: Schedule }
+    | {
+          kind: "schedule";
+          label: string;
+          description: { html: string } | null;
+          schedule: Schedule;
+      }
     | { kind: "group"; label: string; group: Group };
 
 export async function getStaticPaths() {
@@ -19,12 +24,17 @@ export async function getStaticPaths() {
         return [];
     }
 
-    const { page, scheduleTitle, schedule, groups } = data;
+    const { page, scheduleTitle, scheduleDescription, schedule, groups } = data;
 
     const sections: Array<{ slug: string; section: Section }> = [
         {
             slug: "schedule",
-            section: { kind: "schedule", label: scheduleTitle, schedule },
+            section: {
+                kind: "schedule",
+                label: scheduleTitle,
+                description: scheduleDescription,
+                schedule,
+            },
         },
         ...groups.map((group) => ({
             slug: group.slug,
@@ -56,7 +66,10 @@ const title = `${page.title} — ${section.label}`;
     <h1 class="page-title" data-scramble>{section.label}</h1>
 
     {section.kind === "schedule" && (
-        <ExperiencesSchedule schedule={section.schedule} />
+        <ExperiencesSchedule
+            description={section.description}
+            schedule={section.schedule}
+        />
     )}
     {section.kind === "group" && <ExperiencesGroup group={section.group} />}
 </Layout>

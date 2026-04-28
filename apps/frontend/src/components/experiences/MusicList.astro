@@ -20,13 +20,15 @@ const { items } = Astro.props;
                 {item.image && (
                     <WpImage
                         image={item.image}
-                        width={1200}
+                        width={800}
                         height={800}
                         alt={item.name}
                     />
                 )}
-                <p>{item.name}</p>
-                <div set:html={item.description.html} />
+                <div class="text">
+                    <p class="name">{item.name}</p>
+                    <div class="description" set:html={item.description.html} />
+                </div>
             </li>
         ))
     }
@@ -37,25 +39,49 @@ const { items } = Astro.props;
         list-style: none;
         margin: 0;
         padding: 0;
+    }
+
+    li {
         display: grid;
-        gap: var(--space-md);
+        grid-template-columns: 1fr;
+        gap: var(--space-sm);
+        padding-block: var(--space-lg);
+        border-block-start: var(--border-default);
+        align-items: start;
+    }
+
+    /* Wide phone+: image left, text right — tour-poster lineup */
+    @media (min-width: 30rem) {
+        li {
+            grid-template-columns: 40% 1fr;
+            gap: var(--space-md);
+        }
     }
 
     li :global(img) {
         display: block;
         width: 100%;
-        aspect-ratio: 3 / 2;
+        aspect-ratio: 1 / 1;
         object-fit: cover;
     }
 
-    li p {
-        font-size: var(--font-size-base);
-        font-weight: var(--font-weight-bold);
-        margin-block: var(--space-xs) var(--space-xxs);
+    .text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+        min-width: 0;
     }
 
-    li div {
+    .name {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+    }
+
+    .description {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
+        color: var(--color-text-muted);
     }
 </style>

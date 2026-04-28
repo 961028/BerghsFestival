@@ -215,7 +215,7 @@ const projectCount = acf.project_count as number | undefined;
         padding-block: var(--space-xs);
         border-block-start: var(--border-default);
         font-size: var(--font-size-xs);
-        letter-spacing: 0.1em;
+        letter-spacing: var(--letter-spacing-label);
         color: var(--color-text-muted);
         font-weight: var(--font-weight-normal);
         text-transform: uppercase;
@@ -268,20 +268,20 @@ const projectCount = acf.project_count as number | undefined;
     .schedule-abbr {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
-        letter-spacing: -0.03em;
+        letter-spacing: var(--letter-spacing-tight);
     }
 
     .schedule-num {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
-        letter-spacing: -0.04em;
+        letter-spacing: var(--letter-spacing-tight);
         color: var(--color-text-muted);
     }
 
     .schedule-hours {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
-        letter-spacing: -0.03em;
+        letter-spacing: var(--letter-spacing-tight);
         font-variant-numeric: tabular-nums;
         color: var(--color-text-muted);
     }

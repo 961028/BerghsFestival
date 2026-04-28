@@ -44,7 +44,7 @@ If you need a value that no token covers, add the token to `global.css` first, t
 
 ## No magic numbers
 
-Every spacing, sizing, or colour value in a `<style>` block must come from a token. The only exceptions are:
+Every spacing, sizing, typographic, or colour value in a `<style>` block must come from a token. This includes `letter-spacing`, `font-size`, `font-weight`, `color`, `border-*`, and the spacing scale. The only exceptions are:
 
 - `0`, `100%`, `100dvh` — structural/reset values
 - `aspect-ratio` values (`3/2`, `16/9`) — intrinsic content ratios
@@ -53,8 +53,11 @@ Every spacing, sizing, or colour value in a `<style>` block must come from a tok
 - `opacity` values for hover/muted states (no opacity token system exists)
 - Pixel-precise CSS tricks like `margin-bottom: -1px` for border overlap or `0.5px` hairline borders — document why
 - Component-specific fixed dimensions like image heights (`140px`, `200px`) — these are content constraints, not spacing
+- Semantic keywords like `inherit`, `currentColor`, `transparent`
 
 When in doubt: if the value feels arbitrary, it should be a token.
+
+`npm run lint:css` enforces the rule mechanically for `letter-spacing`, `font-size`, and `font-weight`. Extend [`scripts/check-css-tokens.mjs`](scripts/check-css-tokens.mjs) when adding new properties to the rule.
 
 ---
 

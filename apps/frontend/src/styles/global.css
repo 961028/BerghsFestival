@@ -36,6 +36,7 @@
         --font-weight-bold: 700;
         --line-height-base: 1.4;
         --line-height-tight: 1.2;
+        --letter-spacing-tight: -0.03em;
         --letter-spacing-label: 0.15em;
 
         /* Spacing */

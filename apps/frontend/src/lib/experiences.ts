@@ -52,6 +52,7 @@ export type Group = z.infer<typeof GroupsSchema>[number];
 export async function getExperiencesPage(): Promise<{
     page: CollectionEntry<"pages">;
     scheduleTitle: string;
+    scheduleDescription: { html: string } | null;
     schedule: Schedule;
     groups: Group[];
 } | null> {
@@ -64,12 +65,19 @@ export async function getExperiencesPage(): Promise<{
         return null;
     }
 
+    const description = z
+        .string()
+        .nullable()
+        .catch(null)
+        .parse(page.data.acf.schedule_description);
+
     return {
         page,
         scheduleTitle: z
             .string()
             .catch("Schedule")
             .parse(page.data.acf.schedule_title),
+        scheduleDescription: description ? { html: description } : null,
         schedule: ScheduleSchema.parse(page.data.acf.schedule),
         groups: GroupsSchema.parse(page.data.acf.groups),
     };

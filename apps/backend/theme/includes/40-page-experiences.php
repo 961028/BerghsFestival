@@ -24,6 +24,13 @@ function _app_page_experiences_register_fields() {
 					'type'  => 'text',
 				),
 				array(
+					'key'          => _app_page_experiences_field_key( 'schedule_description' ),
+					'label'        => 'Description',
+					'name'         => 'schedule_description',
+					'type'         => 'wysiwyg',
+					'media_upload' => 0,
+				),
+				array(
 					'key'          => _app_page_experiences_field_key( 'schedule' ),
 					'label'        => '',
 					'name'         => 'schedule',
