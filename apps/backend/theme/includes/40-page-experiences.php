@@ -154,6 +154,41 @@ function _app_page_experiences_register_fields() {
 									'type'  => 'text',
 								),
 								array(
+									'key'           => _app_page_experiences_field_key( 'groups', 'items', 'day' ),
+									'label'         => 'Day',
+									'name'          => 'day',
+									'type'          => 'select',
+									'instructions'  => 'Optional. Choices are pulled from the festival days defined in Schedule.',
+									'choices'       => array(),
+									'allow_null'    => 1,
+									'return_format' => 'value',
+									'wrapper'       => array(
+										'width' => 30,
+									),
+								),
+								array(
+									'key'     => _app_page_experiences_field_key( 'groups', 'items', 'start_time' ),
+									'label'   => 'Start time',
+									'name'    => 'start_time',
+									'type'    => 'text',
+									'wrapper' => array(
+										'width' => 30,
+									),
+								),
+								array(
+									'key'           => _app_page_experiences_field_key( 'groups', 'items', 'location' ),
+									'label'         => 'Location',
+									'name'          => 'location',
+									'type'          => 'select',
+									'instructions'  => 'Optional. Edit choices via Custom Fields → Field Groups.',
+									'choices'       => array(),
+									'allow_null'    => 1,
+									'return_format' => 'value',
+									'wrapper'       => array(
+										'width' => 40,
+									),
+								),
+								array(
 									'key'           => _app_page_experiences_field_key( 'groups', 'items', 'image' ),
 									'label'         => 'Image',
 									'name'          => 'image',
@@ -186,3 +221,37 @@ function _app_page_experiences_register_fields() {
 	);
 }
 add_action( 'acf/init', '_app_page_experiences_register_fields' );
+
+function _app_page_experiences_load_day_choices( $field ) {
+	$post_id = (int) ( $_POST['post_id'] ?? get_the_ID() ?? 0 );
+
+	if ( ! $post_id ) {
+		return $field;
+	}
+
+	$schedule = get_field( 'schedule', $post_id );
+
+	if ( ! is_array( $schedule ) ) {
+		return $field;
+	}
+
+	$choices = array();
+
+	foreach ( $schedule as $row ) {
+		$day = isset( $row['day'] ) ? trim( (string) $row['day'] ) : '';
+
+		if ( '' === $day ) {
+			continue;
+		}
+
+		$choices[ $day ] = $day;
+	}
+
+	$field['choices'] = $choices;
+
+	return $field;
+}
+add_filter(
+	'acf/load_field/key=' . _app_page_experiences_field_key( 'groups', 'items', 'day' ),
+	'_app_page_experiences_load_day_choices'
+);

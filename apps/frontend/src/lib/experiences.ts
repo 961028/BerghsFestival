@@ -32,12 +32,27 @@ export const GroupsSchema = repeater(
             layout: z.enum(["music", "installations", "food"]),
             description: z.string().transform((val) => ({ html: val })),
             items: repeater(
-                z.object({
-                    name: z.string(),
-                    image: nullableIntReference("media"),
-                    description: z.string().transform((val) => ({ html: val })),
-                    url: z.string().optional(),
-                }),
+                z
+                    .object({
+                        name: z.string(),
+                        day: z.string().nullable().optional(),
+                        start_time: z.string().nullable().optional(),
+                        location: z.string().nullable().optional(),
+                        image: nullableIntReference("media"),
+                        description: z
+                            .string()
+                            .transform((val) => ({ html: val })),
+                        url: z.string().optional(),
+                    })
+                    .transform((item) => ({
+                        name: item.name,
+                        day: item.day || null,
+                        startTime: item.start_time || null,
+                        location: item.location || null,
+                        image: item.image,
+                        description: item.description,
+                        url: item.url,
+                    })),
             ),
         })
         .transform((val) => ({

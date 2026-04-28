@@ -203,6 +203,18 @@ Several small, interlocking changes to make the experiences subpages read as par
 
 ---
 
+## Experiences items — day, start time, location (April 2026)
+
+Added three optional fields to the shared `groups.items` repeater (used by Music, Installations, and Food & drink): `day`, `start_time`, `location`.
+
+- **`day`** is an ACF Select. Choices are populated dynamically from the page's existing `schedule` repeater (`acf/load_field` filter), so the day choices stay in sync with the festival days defined in Schedule — no parallel list to maintain.
+- **`start_time`** is plain text, matching the format used by `schedule.events.start_time`.
+- **`location`** is an ACF Select with admin-managed choices (edit via Custom Fields → Field Groups). Used as a stage / venue label.
+
+All three are optional. They were added to the shared item schema rather than being split into a music-only repeater because the cost of editors seeing three optional fields on food/installations is small, and it keeps the data shape uniform. None of the rendered templates use the new fields yet — they exist as a foundation for a future pass that brings the Music subpage closer to the Schedule subpage's time-led list shape.
+
+---
+
 ## What was kept from previous years
 
 - Eventbrite for registration.
