@@ -254,7 +254,7 @@ const sections = [
        labels with active in full color and inactive muted. */
     .page-nav {
         position: sticky;
-        top: 0;
+        top: var(--header-height);
         z-index: 10;
         background: var(--color-bg);
         border-block-end: var(--border-default);
@@ -306,9 +306,9 @@ const sections = [
 
     /* ── Sections ─────────────────────────────────────────────────── */
     section {
-        scroll-margin-top: var(
-            --sticky-nav-height,
-            var(--experiences-nav-height)
+        scroll-margin-top: calc(
+            var(--header-height) +
+                var(--sticky-nav-height, var(--experiences-nav-height))
         );
         padding-block: var(--space-xl);
     }
@@ -335,17 +335,19 @@ const sections = [
         width: 100%;
         padding: var(--space-sm) var(--space-xs);
         font-size: var(--font-size-base);
-        font-weight: var(--font-weight-bold);
         font-family: inherit;
         line-height: var(--line-height-tight);
         color: var(--color-text-muted);
         cursor: pointer;
         text-align: center;
+        text-transform: lowercase;
     }
 
     .day-toggle button[aria-pressed="true"] {
         background: var(--color-text-on-bg);
         color: var(--color-text);
+        font-weight: var(--font-weight-bold);
+        text-transform: uppercase;
     }
 
     /* ── Schedule rows ────────────────────────────────────────────── */
@@ -373,7 +375,7 @@ const sections = [
 
     [data-day-panel] li p {
         font-size: var(--font-size-base);
-        font-weight: var(--font-weight-bold);
+        font-weight: var(--font-weight-normal);
         margin: 0;
     }
 
