@@ -18,6 +18,12 @@ function _app_page_experiences_register_fields() {
 			'title'        => 'Schedule',
 			'fields'       => array(
 				array(
+					'key'   => _app_page_experiences_field_key( 'schedule_title' ),
+					'label' => 'Title',
+					'name'  => 'schedule_title',
+					'type'  => 'text',
+				),
+				array(
 					'key'          => _app_page_experiences_field_key( 'schedule' ),
 					'label'        => '',
 					'name'         => 'schedule',

@@ -19,12 +19,12 @@ export async function getStaticPaths() {
         return [];
     }
 
-    const { page, schedule, groups } = data;
+    const { page, scheduleTitle, schedule, groups } = data;
 
     const sections: Array<{ slug: string; section: Section }> = [
         {
             slug: "schedule",
-            section: { kind: "schedule", label: "Schedule", schedule },
+            section: { kind: "schedule", label: scheduleTitle, schedule },
         },
         ...groups.map((group) => ({
             slug: group.slug,
@@ -53,6 +53,8 @@ const title = `${page.title} — ${section.label}`;
     ogImage={page.image}
     ctaCompact
 >
+    <h1 class="page-title" data-scramble>{section.label}</h1>
+
     {section.kind === "schedule" && (
         <ExperiencesSchedule schedule={section.schedule} />
     )}
