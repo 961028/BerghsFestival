@@ -66,6 +66,10 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                         experiencesSubItems.length > 0;
 
                     if (isExperiences) {
+                        const inExperiencesSection =
+                            experiencesSubItems.some(
+                                (sub) => currentPath === sub.href,
+                            );
                         return (
                             <li class="has-submenu">
                                 <button
@@ -74,6 +78,11 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                                     aria-expanded="false"
                                     aria-haspopup="true"
                                     aria-controls="experiences-submenu"
+                                    aria-current={
+                                        inExperiencesSection
+                                            ? "page"
+                                            : undefined
+                                    }
                                 >
                                     <span class="nav-link-text" data-scramble>
                                         {menuItem.data.title}
@@ -89,13 +98,19 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                                         <li>
                                             <a
                                                 href={sub.href}
+                                                class="nav-link submenu-link"
                                                 aria-current={
                                                     currentPath === sub.href
                                                         ? "page"
                                                         : undefined
                                                 }
                                             >
-                                                {sub.label}
+                                                <span
+                                                    class="nav-link-text"
+                                                    data-scramble
+                                                >
+                                                    {sub.label}
+                                                </span>
                                             </a>
                                         </li>
                                     ))}
@@ -147,9 +162,17 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                     experiencesSubItems.length > 0;
 
                 if (isExperiences) {
+                    const inExperiencesSection = experiencesSubItems.some(
+                        (sub) => currentPath === sub.href,
+                    );
                     return (
                         <div class="mobile-group">
-                            <span class="mobile-group-label">
+                            <span
+                                class="mobile-group-label"
+                                aria-current={
+                                    inExperiencesSection ? "page" : undefined
+                                }
+                            >
                                 {menuItem.data.title}
                             </span>
                             <ul class="mobile-submenu">
@@ -279,7 +302,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
         text-transform: lowercase;
     }
 
-    .nav-link[aria-current="page"] {
+    .nav-link[aria-current="page"]:not(.submenu-link) {
         font-weight: var(--font-weight-bold);
         text-transform: uppercase;
     }
@@ -352,9 +375,14 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
             visibility 0s 0s;
     }
 
-    .submenu a[aria-current="page"] {
-        font-weight: var(--font-weight-bold);
-        text-transform: uppercase;
+    .submenu-link {
+        display: block;
+        padding: var(--space-xxs) var(--space-xs);
+    }
+
+    .submenu-link[aria-current="page"] {
+        background: var(--color-text-on-bg);
+        color: var(--color-bg);
     }
 
     /* ── Mobile submenu ── */
