@@ -36,6 +36,7 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 - **All other CSS** goes in component `<style>` blocks. Astro scopes these to the component automatically, so styles never leak out. Use design tokens from `global.css` via `var(--token-name)`.
 - **CSS rules and conventions** are documented in [`css-rules.md`](css-rules.md). Read it before writing any CSS.
 - **Design system** (visual theme, color palette, typography, component styling, spacing) is documented in [`DESIGN.md`](DESIGN.md). Read it before making any visual or styling decisions.
+- **Token enforcement** — `npm run lint:css` runs [`scripts/check-css-tokens.mjs`](scripts/check-css-tokens.mjs), which fails if any component `<style>` block uses a hardcoded value for a tokenised property (currently `letter-spacing`, `font-size`, `font-weight`). Extend the script when adding new properties to the rule.
 
 ## Commands
 
@@ -43,6 +44,7 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 .devcontainer % docker compose up -d
 npm run dev      # Start dev server
 npm run build    # Production build
+npm run lint:css # Check that styles only use design tokens
 ```
 
 ## End of session

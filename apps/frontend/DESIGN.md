@@ -67,8 +67,8 @@ The accent system is the site's defining interactive feature. Everything below i
 
 **Letter spacing:**
 
-- `--letter-spacing-label: 0.15em` — all-caps section labels
-- `--letter-spacing-logo: 0.125em` — logo wordmark
+- `--letter-spacing-label: 0.15em` — all-caps section labels and small uppercase metadata lines
+- `--letter-spacing-tight: -0.03em` — large bold display text at `--font-size-lg` (schedule headlines, item names across experiences subpages)
 
 **Line heights:**
 
