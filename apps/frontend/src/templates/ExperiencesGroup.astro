@@ -27,7 +27,7 @@ const { group } = Astro.props;
                         <WpImage
                             image={item.image}
                             width={600}
-                            height={300}
+                            height={600}
                             alt={item.name}
                         />
                     )}
@@ -80,6 +80,7 @@ const { group } = Astro.props;
     .food-list li :global(img) {
         display: block;
         width: 100%;
+        height: auto;
         aspect-ratio: 1 / 1;
         object-fit: cover;
     }
