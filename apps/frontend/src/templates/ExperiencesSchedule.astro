@@ -1,0 +1,189 @@
+---
+import type { Schedule } from "../lib/experiences";
+
+import WpImage from "../components/elements/WpImage.astro";
+
+interface Props {
+    schedule: Schedule;
+}
+
+const { schedule } = Astro.props;
+---
+
+<section>
+    <ol class="day-toggle" role="group" aria-label="Select day">
+        {
+            schedule.map((dayData, i) => (
+                <li>
+                    <button
+                        data-day={i}
+                        aria-pressed={i === 0 ? "true" : "false"}
+                    >
+                        {dayData.day}
+                    </button>
+                </li>
+            ))
+        }
+    </ol>
+
+    {
+        schedule.map((dayData, dayIndex) => (
+            <div data-day-panel={dayIndex} hidden>
+                <ul>
+                    {dayData.events.map((event) =>
+                        event.image && event.description ? (
+                            <li data-rich>
+                                <span>{event.startTime}</span>
+                                <div>
+                                    <div>
+                                        <p>{event.title}</p>
+                                        <p>{event.description}</p>
+                                    </div>
+                                    <WpImage
+                                        image={event.image}
+                                        width={140}
+                                        height={140}
+                                        alt={event.title}
+                                    />
+                                </div>
+                            </li>
+                        ) : (
+                            <li>
+                                <span>{event.startTime}</span>
+                                <p>{event.title}</p>
+                            </li>
+                        ),
+                    )}
+                </ul>
+            </div>
+        ))
+    }
+</section>
+
+<script>
+    const dayPills = document.querySelectorAll<HTMLButtonElement>("[data-day]");
+    const dayPanels =
+        document.querySelectorAll<HTMLElement>("[data-day-panel]");
+
+    function selectDay(dayIndex: number) {
+        dayPills.forEach((p) => {
+            p.setAttribute(
+                "aria-pressed",
+                String(Number(p.dataset.day) === dayIndex),
+            );
+        });
+        dayPanels.forEach((p) => {
+            p.hidden = Number(p.dataset.dayPanel) !== dayIndex;
+        });
+    }
+
+    dayPills.forEach((pill) => {
+        pill.addEventListener("click", () =>
+            selectDay(Number(pill.dataset.day)),
+        );
+    });
+
+    // Default day: Saturday (day 6) → index 1, otherwise → index 0.
+    const defaultDay = new Date().getDay() === 6 ? 1 : 0;
+
+    selectDay(defaultDay);
+</script>
+
+<style>
+    section {
+        padding-block: var(--space-xl);
+    }
+
+    /* ── Day toggle ───────────────────────────────────────────────────
+       Same 1px-grid vocabulary as the page nav, but at base size. */
+    .day-toggle {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .day-toggle button {
+        appearance: none;
+        background: none;
+        border: none;
+        width: 100%;
+        padding: var(--space-sm) var(--space-xs);
+        font-size: var(--font-size-base);
+        font-family: inherit;
+        line-height: var(--line-height-tight);
+        color: var(--color-text-muted);
+        cursor: pointer;
+        text-align: center;
+        text-transform: lowercase;
+    }
+
+    .day-toggle button[aria-pressed="true"] {
+        background: var(--color-text-on-bg);
+        color: var(--color-text);
+        font-weight: var(--font-weight-bold);
+        text-transform: uppercase;
+    }
+
+    /* ── Schedule rows ────────────────────────────────────────────── */
+    [data-day-panel] ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    [data-day-panel] li {
+        display: grid;
+        grid-template-columns: var(--schedule-time-col) 1fr;
+        gap: var(--space-sm);
+        padding-block: var(--space-md);
+        border-block-start: var(--border-default);
+    }
+
+    [data-day-panel] li span {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text-muted);
+        line-height: var(--line-height-tight);
+        padding-block-start: 0.1em;
+    }
+
+    [data-day-panel] li p {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-normal);
+        margin: 0;
+    }
+
+    /* Rich row */
+    [data-day-panel] li[data-rich] > div {
+        display: flex;
+        align-items: flex-start;
+        gap: var(--space-md);
+    }
+
+    [data-day-panel] li[data-rich] > div > div {
+        flex: 1;
+    }
+
+    [data-day-panel] li[data-rich] p:first-child {
+        font-size: var(--font-size-base);
+        margin-block-end: var(--space-xs);
+    }
+
+    [data-day-panel] li[data-rich] p:last-child {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-normal);
+        line-height: var(--line-height-base);
+        margin: 0;
+    }
+
+    [data-day-panel] li[data-rich] :global(img) {
+        flex-shrink: 0;
+        width: clamp(5rem, 20%, 8.75rem);
+        aspect-ratio: 1;
+        object-fit: cover;
+        display: block;
+    }
+</style>
