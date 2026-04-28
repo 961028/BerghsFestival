@@ -1,0 +1,60 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ExperiencesSchedule from "../../templates/ExperiencesSchedule.astro";
+import ExperiencesGroup from "../../templates/ExperiencesGroup.astro";
+import {
+    getExperiencesPage,
+    type Group,
+    type Schedule,
+} from "../../lib/experiences";
+
+type Section =
+    | { kind: "schedule"; label: string; schedule: Schedule }
+    | { kind: "group"; label: string; group: Group };
+
+export async function getStaticPaths() {
+    const data = await getExperiencesPage();
+
+    if (!data) {
+        return [];
+    }
+
+    const { page, schedule, groups } = data;
+
+    const sections: Array<{ slug: string; section: Section }> = [
+        {
+            slug: "schedule",
+            section: { kind: "schedule", label: "Schedule", schedule },
+        },
+        ...groups.map((group) => ({
+            slug: group.slug,
+            section: {
+                kind: "group" as const,
+                label: group.title,
+                group,
+            },
+        })),
+    ];
+
+    return sections.map(({ slug, section }) => ({
+        params: { slug },
+        props: { page: page.data, section },
+    }));
+}
+
+const { page, section } = Astro.props;
+
+const title = `${page.title} — ${section.label}`;
+---
+
+<Layout
+    title={title}
+    metaDescription={page.metaDescription}
+    ogImage={page.image}
+    ctaCompact
+>
+    {section.kind === "schedule" && (
+        <ExperiencesSchedule schedule={section.schedule} />
+    )}
+    {section.kind === "group" && <ExperiencesGroup group={section.group} />}
+</Layout>
