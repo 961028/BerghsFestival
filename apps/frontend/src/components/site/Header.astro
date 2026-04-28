@@ -34,13 +34,15 @@ const experiencesSubItems: Array<{ label: string; href: string }> =
 
 function isExperiencesItem(url: string): boolean {
     try {
-        return new URL(url).pathname === "/experiences";
+        return (
+            new URL(url).pathname.replace(/\/$/, "") === "/experiences"
+        );
     } catch {
         return false;
     }
 }
 
-const currentPath = Astro.url.pathname;
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 ---
 
 <header>
