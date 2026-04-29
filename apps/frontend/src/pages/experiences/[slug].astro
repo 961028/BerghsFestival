@@ -15,7 +15,12 @@ type Section =
           description: { html: string } | null;
           schedule: Schedule;
       }
-    | { kind: "group"; label: string; group: Group };
+    | {
+          kind: "group";
+          label: string;
+          group: Group;
+          scheduleDays: string[];
+      };
 
 export async function getStaticPaths() {
     const data = await getExperiencesPage();
@@ -25,6 +30,8 @@ export async function getStaticPaths() {
     }
 
     const { page, scheduleTitle, scheduleDescription, schedule, groups } = data;
+
+    const scheduleDays = schedule.map((day) => day.day);
 
     const sections: Array<{ slug: string; section: Section }> = [
         {
@@ -42,6 +49,7 @@ export async function getStaticPaths() {
                 kind: "group" as const,
                 label: group.title,
                 group,
+                scheduleDays,
             },
         })),
     ];
@@ -71,5 +79,10 @@ const title = `${page.title} — ${section.label}`;
             schedule={section.schedule}
         />
     )}
-    {section.kind === "group" && <ExperiencesGroup group={section.group} />}
+    {section.kind === "group" && (
+        <ExperiencesGroup
+            group={section.group}
+            scheduleDays={section.scheduleDays}
+        />
+    )}
 </Layout>

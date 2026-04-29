@@ -7,15 +7,18 @@ import InstallationsList from "../components/experiences/InstallationsList.astro
 
 interface Props {
     group: Group;
+    scheduleDays: string[];
 }
 
-const { group } = Astro.props;
+const { group, scheduleDays } = Astro.props;
 ---
 
 <section>
     <div class="section-body intro" set:html={group.description.html} />
 
-    {group.layout === "music" && <MusicList items={group.items} />}
+    {group.layout === "music" && (
+        <MusicList items={group.items} scheduleDays={scheduleDays} />
+    )}
     {group.layout === "installations" && (
         <InstallationsList items={group.items} />
     )}

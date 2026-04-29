@@ -1,5 +1,21 @@
 # Berghs Festival 2026 — Frontend
 
+## Communication style
+
+Output: terse & exact, !filler
+Fragments: ok
+Bad ideas: flag
+Em dashes: null
+Pattern: [thing] → [action] → [reason] → [next]
+Drift: !allowed
+Format:
+
+key: value (aligned)
+code/literals: backticks
+compare: table or columns
+structure: predictable, scannable
+prose: only when structure fails
+
 ## Architecture
 
 Headless WordPress (with ACF) serves content via REST API. Astro fetches this data at build time through content collections (`src/content.config.ts`) and generates a static site.

@@ -2,39 +2,115 @@
 import WpImage from "../elements/WpImage.astro";
 import type { ReferenceDataEntry } from "astro:content";
 
-interface Props {
-    items: {
-        name: string;
-        image: ReferenceDataEntry<"media"> | null;
-        description: { html: string };
-    }[];
+interface Item {
+    name: string;
+    day: string | null;
+    startTime: string | null;
+    location: string | null;
+    image: ReferenceDataEntry<"media"> | null;
+    description: { html: string };
 }
 
-const { items } = Astro.props;
+interface Props {
+    items: Item[];
+    scheduleDays: string[];
+}
+
+const { items, scheduleDays } = Astro.props;
+
+// Group items by day in schedule order. Items without a day, and items whose
+// day no longer matches a schedule day, fall into a single trailing bucket.
+const knownDays = new Set(scheduleDays);
+
+const buckets: { label: string | null; items: Item[] }[] = [
+    ...scheduleDays.map((day) => ({
+        label: day,
+        items: items.filter((item) => item.day === day),
+    })),
+    {
+        label: null,
+        items: items.filter(
+            (item) => !item.day || !knownDays.has(item.day),
+        ),
+    },
+].filter((bucket) => bucket.items.length > 0);
+
+function slugify(value: string): string {
+    return value
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+}
 ---
 
-<ul>
-    {
-        items.map((item) => (
-            <li>
-                {item.image && (
-                    <WpImage
-                        image={item.image}
-                        width={800}
-                        height={800}
-                        alt={item.name}
-                    />
-                )}
-                <div class="text">
-                    <p class="name">{item.name}</p>
-                    <div class="description" set:html={item.description.html} />
-                </div>
-            </li>
-        ))
-    }
-</ul>
+<div class="music">
+    {buckets.map((bucket) => (
+        <section
+            class="day"
+            id={bucket.label ? slugify(bucket.label) : undefined}
+        >
+            {bucket.label && <h2 class="day-heading">{bucket.label}</h2>}
+            <ul>
+                {bucket.items.map((item) => (
+                    <li>
+                        {item.image ? (
+                            <WpImage
+                                image={item.image}
+                                width={400}
+                                height={400}
+                                alt={item.name}
+                            />
+                        ) : (
+                            <div class="thumb-placeholder" aria-hidden="true" />
+                        )}
+                        <div class="text">
+                            {(item.startTime || item.location) && (
+                                <p class="meta">
+                                    {item.startTime && (
+                                        <span class="time">
+                                            {item.startTime}
+                                        </span>
+                                    )}
+                                    {item.startTime && item.location && (
+                                        <span class="meta-sep" aria-hidden="true">
+                                            ·
+                                        </span>
+                                    )}
+                                    {item.location && (
+                                        <span class="location">
+                                            {item.location}
+                                        </span>
+                                    )}
+                                </p>
+                            )}
+                            <p class="name">{item.name}</p>
+                            <div
+                                class="description"
+                                set:html={item.description.html}
+                            />
+                        </div>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    ))}
+</div>
 
 <style>
+    .day + .day:has(> .day-heading) {
+        margin-block-start: var(--space-xl);
+    }
+
+    .day-heading {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        margin: 0 0 var(--space-sm);
+    }
+
+    /* ── Music rows ──────────────────────────────────────────────────
+       thumb | text. Same border/padding rhythm as schedule rows. */
     ul {
         list-style: none;
         margin: 0;
@@ -43,34 +119,56 @@ const { items } = Astro.props;
 
     li {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: var(--space-sm);
-        padding-block: var(--space-lg);
+        grid-template-columns: var(--music-thumb-size) 1fr;
+        gap: var(--space-md);
+        padding-block: var(--space-md);
         border-block-start: var(--border-default);
         align-items: start;
     }
 
-    /* Wide phone+: image left, text right — tour-poster lineup */
-    @media (min-width: 30rem) {
+    @media (min-width: 64rem) {
         li {
-            grid-template-columns: 40% 1fr;
-            gap: var(--space-md);
+            padding-block: var(--space-lg);
         }
     }
 
-    li :global(img) {
+    li :global(img),
+    .thumb-placeholder {
         display: block;
-        width: 100%;
-        height: auto;
+        width: var(--music-thumb-size);
+        height: var(--music-thumb-size);
         aspect-ratio: 1 / 1;
         object-fit: cover;
+    }
+
+    .thumb-placeholder {
+        border: var(--border-default);
     }
 
     .text {
         display: flex;
         flex-direction: column;
-        gap: var(--space-xs);
+        gap: var(--space-xxs);
         min-width: 0;
+    }
+
+    .meta {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text-muted);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xxs) var(--space-xs);
+    }
+
+    .time {
+        font-variant-numeric: tabular-nums;
+    }
+
+    .meta-sep {
+        opacity: 0.6;
     }
 
     .name {
