@@ -85,6 +85,12 @@ function _app_page_home_register_options() {
 			'title'          => 'Festival',
 			'fields'         => array(
 				array(
+					'key'   => _app_page_home_field_key( 'register_label' ),
+					'label' => 'Register Label',
+					'name'  => 'register_label',
+					'type'  => 'text',
+				),
+				array(
 					'key'   => _app_page_home_field_key( 'registration_url' ),
 					'label' => 'Registration URL',
 					'name'  => 'registration_url',

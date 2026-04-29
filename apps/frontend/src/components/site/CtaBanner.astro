@@ -9,6 +9,11 @@ type Props = {
 const { compact = false } = Astro.props;
 
 const RegistrationUrlSchema = z.string().optional().catch(undefined);
+const RegisterLabelSchema = z
+    .string()
+    .transform((v) => v.trim())
+    .refine((v) => v.length > 0)
+    .catch("Register now");
 
 const FestivalDaysSchema = z
     .array(
@@ -26,6 +31,7 @@ const homePage = pages.find((p) => settings.pageOnFront?.id === p.data.id);
 const acf = homePage?.data.acf;
 
 const registrationUrl = RegistrationUrlSchema.parse(acf?.registration_url);
+const registerLabel = RegisterLabelSchema.parse(acf?.register_label);
 const festivalDays = FestivalDaysSchema.parse(acf?.festival_days);
 
 // Derive month + year from opening_date (format: "YYYY-MM-DD HH:mm:ss")
@@ -61,10 +67,10 @@ const ctaDates =
         href={registrationUrl}
         class="cta-inner"
         aria-label={ctaDates
-            ? `Register now — ${ctaDates}${venue ? ` — ${venue}` : ""}`
-            : "Register now"}
+            ? `${registerLabel} — ${ctaDates}${venue ? ` — ${venue}` : ""}`
+            : registerLabel}
     >
-        <span class="cta-action" data-scramble>Register now</span>
+        <span class="cta-action" data-scramble>{registerLabel}</span>
         {
             ctaDates && (
                 <span class="cta-details">
