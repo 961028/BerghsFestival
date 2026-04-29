@@ -5,6 +5,7 @@ import type { ReferenceDataEntry } from "astro:content";
 interface Props {
     items: {
         name: string;
+        location: string | null;
         image: ReferenceDataEntry<"media"> | null;
         description: { html: string };
     }[];
@@ -26,6 +27,9 @@ const { items } = Astro.props;
                     />
                 )}
                 <div class="text">
+                    {item.location && (
+                        <p class="meta">{item.location}</p>
+                    )}
                     <p class="name">{item.name}</p>
                     <div class="description" set:html={item.description.html} />
                 </div>
@@ -71,6 +75,14 @@ const { items } = Astro.props;
         flex-direction: column;
         gap: var(--space-xs);
         min-width: 0;
+    }
+
+    .meta {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-text-muted);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
     }
 
     .name {

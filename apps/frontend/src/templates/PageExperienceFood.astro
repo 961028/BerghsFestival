@@ -1,30 +1,37 @@
 ---
-import type { Group } from "../lib/experiences";
-
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
 import WpImage from "../components/elements/WpImage.astro";
-import MusicList from "../components/experiences/MusicList.astro";
-import InstallationsList from "../components/experiences/InstallationsList.astro";
+import { getFoodPage } from "../lib/experience-pages";
 
-interface Props {
-    group: Group;
-    scheduleDays: string[];
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const { page } = Astro.props;
+
+const data = await getFoodPage();
+
+if (!data) {
+    throw new Error("Food & drink page is missing — create a page using the Food & drink template.");
 }
-
-const { group, scheduleDays } = Astro.props;
 ---
 
-<section>
-    <div class="section-body intro" set:html={group.description.html} />
+<Layout
+    title={page.title}
+    metaDescription={page.metaDescription}
+    ogImage={page.image}
+    ctaCompact
+>
+    <h1 class="page-title" data-scramble>{page.title}</h1>
 
-    {group.layout === "music" && (
-        <MusicList items={group.items} scheduleDays={scheduleDays} />
-    )}
-    {group.layout === "installations" && (
-        <InstallationsList items={group.items} />
-    )}
-    {group.layout === "food" && (
+    <section>
+        {data.description && (
+            <div class="section-body intro" set:html={data.description.html} />
+        )}
+
         <ul class="food-list">
-            {group.items.map((item) => (
+            {data.items.map((item) => (
                 <li>
                     {item.image && (
                         <WpImage
@@ -36,13 +43,16 @@ const { group, scheduleDays } = Astro.props;
                     )}
                     <div>
                         <p>{item.name}</p>
+                        {item.location && (
+                            <p class="meta">{item.location}</p>
+                        )}
                         <div set:html={item.description.html} />
                     </div>
                 </li>
             ))}
         </ul>
-    )}
-</section>
+    </section>
+</Layout>
 
 <style>
     section {
@@ -53,7 +63,6 @@ const { group, scheduleDays } = Astro.props;
         margin-block-end: var(--space-md);
     }
 
-    /* ── Food & drink ─────────────────────────────────────────────── */
     .food-list {
         list-style: none;
         margin: 0;
@@ -98,6 +107,13 @@ const { group, scheduleDays } = Astro.props;
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
         margin-block-end: var(--space-xs);
+    }
+
+    .food-list li .meta {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-normal);
+        color: var(--color-text-muted);
+        text-transform: lowercase;
     }
 
     .food-list li div > div {

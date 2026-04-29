@@ -5,6 +5,10 @@ import { getCollection } from "astro:content";
 import PageDefault from "../templates/Page.astro";
 import PageAboutBerghs from "../templates/PageAboutBerghs.astro";
 import PageHome from "../templates/PageHome.astro";
+import PageSchedule from "../templates/PageSchedule.astro";
+import PageExperienceMusic from "../templates/PageExperienceMusic.astro";
+import PageExperienceInstallations from "../templates/PageExperienceInstallations.astro";
+import PageExperienceFood from "../templates/PageExperienceFood.astro";
 
 interface Props {
     page: CollectionEntry<"pages">;
@@ -12,6 +16,10 @@ interface Props {
 
 const SLUG_TO_TEMPLATE = {
     "page-about-berghs.php": PageAboutBerghs,
+    "page-schedule.php": PageSchedule,
+    "page-experience-music.php": PageExperienceMusic,
+    "page-experience-installations.php": PageExperienceInstallations,
+    "page-experience-food.php": PageExperienceFood,
 };
 
 function isValidTemplate(

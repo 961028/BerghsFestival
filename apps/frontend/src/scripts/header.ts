@@ -120,24 +120,26 @@ document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
     });
 });
 
-// ── Experiences submenu toggle ──
+// ── Submenu toggles (one per `.has-submenu` parent) ──
 
-const submenuToggle =
-    document.querySelector<HTMLButtonElement>(".submenu-toggle");
-const submenu = document.querySelector<HTMLElement>("#experiences-submenu");
+const submenuParents = document.querySelectorAll<HTMLElement>(".has-submenu");
 
-if (submenuToggle && submenu) {
-    function openSubmenu() {
-        submenuToggle!.setAttribute("aria-expanded", "true");
-    }
+submenuParents.forEach((parent) => {
+    const submenuToggle =
+        parent.querySelector<HTMLButtonElement>(".submenu-toggle");
+    const submenu = parent.querySelector<HTMLElement>(".submenu");
 
-    function closeSubmenu() {
-        submenuToggle!.setAttribute("aria-expanded", "false");
-    }
+    if (!submenuToggle || !submenu) return;
+
+    const closeSubmenu = () => {
+        submenuToggle.setAttribute("aria-expanded", "false");
+    };
+    const openSubmenu = () => {
+        submenuToggle.setAttribute("aria-expanded", "true");
+    };
 
     submenuToggle.addEventListener("click", () => {
-        const open =
-            submenuToggle.getAttribute("aria-expanded") === "true";
+        const open = submenuToggle.getAttribute("aria-expanded") === "true";
         if (open) {
             closeSubmenu();
         } else {
@@ -145,12 +147,10 @@ if (submenuToggle && submenu) {
         }
     });
 
-    // Close when a sub-item is clicked.
     submenu.querySelectorAll("a").forEach((link) => {
         link.addEventListener("click", closeSubmenu);
     });
 
-    // Close on outside click.
     document.addEventListener("click", (event) => {
         const target = event.target as Node;
         if (
@@ -162,7 +162,6 @@ if (submenuToggle && submenu) {
         }
     });
 
-    // Close on Escape.
     document.addEventListener("keydown", (event) => {
         if (
             event.key === "Escape" &&
@@ -172,4 +171,4 @@ if (submenuToggle && submenu) {
             submenuToggle.focus();
         }
     });
-}
+});

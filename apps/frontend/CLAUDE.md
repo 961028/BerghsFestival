@@ -1,6 +1,6 @@
 # Berghs Festival 2026 — Frontend
 
-## Communication style
+## Written communication style
 
 Output: terse & exact, !filler
 Fragments: ok
@@ -32,19 +32,27 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
     - `20-iq.php` — IQ section (title, content)
     - `20-sponsors.php` — Sponsors repeater (name, image, url)
     - `30-projects.php` — Project post type and fields
-    - `40-page-experiences.php` — Experiences page template (groups)
+    - `40-page-schedule.php` — Schedule page template (description + day/event repeater)
+    - `40-page-experience-music.php` — Music page template (items repeater with day/start_time/location)
+    - `40-page-experience-installations.php` — Installations page template (items repeater with location)
+    - `40-page-experience-food.php` — Food & drink page template (items repeater with location)
 - WordPress page templates (in `../backend/theme/`) register named templates for the WP admin. Current templates:
-    - `page-about.php` — About page
-    - `page-experiences.php` — Experiences page (rendered on the frontend by the dynamic `/experiences/[slug]` route, not by a single Astro template)
+    - `page-about-berghs.php` — About page
+    - `page-schedule.php` — Schedule page
+    - `page-experience-music.php` — Music page
+    - `page-experience-installations.php` — Installations page
+    - `page-experience-food.php` — Food & drink page
 - When adding or modifying content collection schemas in `src/content.config.ts`, read the corresponding ACF file to verify field names and types.
 
 ## Frontend (Astro)
 
-- **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), collection utilities (`content.ts`), and the experiences page schemas + page-load helper (`experiences.ts`).
+- **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), collection utilities (`content.ts`), and the per-experience-page schemas + page-load helpers (`experience-pages.ts`).
 - **Layouts** (`src/layouts/`) — `Layout.astro` is the main shell (header, main, footer).
-- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageAbout.astro` handles the About page (hardcoded institutional content); `ExperiencesSchedule.astro` and `ExperiencesGroup.astro` render one section of the experiences page each (schedule, or one WP-defined group).
-- **Pages** — `src/pages/[...link].astro` handles WP pages dynamically (excluding `page-experiences.php`). `src/pages/experiences/[slug].astro` is a dynamic route that emits one path per experiences section (`schedule` plus each ACF group slug); `src/pages/experiences/index.astro` is a static `Astro.redirect` to `/experiences/schedule`. `src/pages/projects/index.astro` and `[slug].astro` handle the project listing and detail pages.
-- **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo, ProjectCard), `src/components/experiences/` for experiences-specific list components (MusicList, InstallationsList).
+- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageAboutBerghs.astro` handles the About page (hardcoded institutional content); `PageSchedule.astro`, `PageExperienceMusic.astro`, `PageExperienceInstallations.astro`, and `PageExperienceFood.astro` render the four experience-section pages, each backed by its own WP page template.
+- **Pages**:
+    - `src/pages/[...link].astro` handles all WP pages dynamically. Each experience section is a regular WP page using its own template (`page-schedule.php`, `page-experience-music.php`, etc.) and reaches the right `Page*.astro` template through `PageTemplate.astro`'s `SLUG_TO_TEMPLATE` map. Section URLs (`/schedule`, `/music`, `/installations`, `/food-drink`) come from each WP page's slug — there is no separate `[section].astro` route or `/experiences` hub.
+    - `src/pages/projects/index.astro` and `[slug].astro` handle the project listing and detail pages.
+- **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq, CtaBanner), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo, ProjectCard), `src/components/experiences/` for experience-section list components (MusicList, InstallationsList). The food page renders its grid inline in `PageExperienceFood.astro`; the schedule day-toggle UI lives inline in `PageSchedule.astro`.
 
 ## Styling
 

@@ -112,6 +112,7 @@ const menuItems = definePaginatedCollection(
             id: intId(),
             menus: nullableIntId(),
             menu_order: z.int(),
+            parent: z.int(),
             title: z.union([
                 z.string(),
                 z.object({ rendered: z.string().optional() }),
@@ -122,6 +123,7 @@ const menuItems = definePaginatedCollection(
             id: item.id,
             menu: item.menus,
             order: item.menu_order,
+            parent: item.parent ? String(item.parent) : null,
             title:
                 typeof item.title === "string"
                     ? item.title

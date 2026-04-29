@@ -1,56 +1,74 @@
 ---
-import type { Schedule } from "../lib/experiences";
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import { getSchedulePage } from "../lib/experience-pages";
 
-interface Props {
-    description: { html: string } | null;
-    schedule: Schedule;
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const { page } = Astro.props;
+
+const data = await getSchedulePage();
+
+if (!data) {
+    throw new Error("Schedule page is missing — create a page using the Schedule template.");
 }
 
-const { description, schedule } = Astro.props;
+const { description, schedule } = data;
 ---
 
-<section>
-    {description && (
-        <div class="section-body intro" set:html={description.html} />
-    )}
+<Layout
+    title={page.title}
+    metaDescription={page.metaDescription}
+    ogImage={page.image}
+    ctaCompact
+>
+    <h1 class="page-title" data-scramble>{page.title}</h1>
 
-    <ol class="day-toggle" role="group" aria-label="Select day">
+    <section>
+        {description && (
+            <div class="section-body intro" set:html={description.html} />
+        )}
+
+        <ol class="day-toggle" role="group" aria-label="Select day">
+            {
+                schedule.map((dayData, i) => (
+                    <li>
+                        <button
+                            data-day={i}
+                            aria-pressed={i === 0 ? "true" : "false"}
+                        >
+                            {dayData.day}
+                        </button>
+                    </li>
+                ))
+            }
+        </ol>
+
         {
-            schedule.map((dayData, i) => (
-                <li>
-                    <button
-                        data-day={i}
-                        aria-pressed={i === 0 ? "true" : "false"}
-                    >
-                        {dayData.day}
-                    </button>
-                </li>
+            schedule.map((dayData, dayIndex) => (
+                <div data-day-panel={dayIndex} hidden>
+                    <ul>
+                        {dayData.events.map((event) => (
+                            <li>
+                                <span class="time">{event.startTime}</span>
+                                <div class="event">
+                                    <p class="title">{event.title}</p>
+                                    {event.description && (
+                                        <p class="description">
+                                            {event.description}
+                                        </p>
+                                    )}
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             ))
         }
-    </ol>
-
-    {
-        schedule.map((dayData, dayIndex) => (
-            <div data-day-panel={dayIndex} hidden>
-                <ul>
-                    {dayData.events.map((event) => (
-                        <li>
-                            <span class="time">{event.startTime}</span>
-                            <div class="event">
-                                <p class="title">{event.title}</p>
-                                {event.description && (
-                                    <p class="description">
-                                        {event.description}
-                                    </p>
-                                )}
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        ))
-    }
-</section>
+    </section>
+</Layout>
 
 <script>
     const dayPills = document.querySelectorAll<HTMLButtonElement>("[data-day]");
@@ -90,9 +108,6 @@ const { description, schedule } = Astro.props;
         margin-block-end: var(--space-md);
     }
 
-    /* ── Day toggle ───────────────────────────────────────────────────
-       Sticks under the global header so day context stays put while the
-       list scrolls. z-index sits below the header (100) and above rows. */
     .day-toggle {
         display: grid;
         grid-auto-flow: column;
@@ -129,7 +144,6 @@ const { description, schedule } = Astro.props;
         text-transform: uppercase;
     }
 
-    /* ── Schedule rows ────────────────────────────────────────────── */
     [data-day-panel] ul {
         list-style: none;
         margin: 0;

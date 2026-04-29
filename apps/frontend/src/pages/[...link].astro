@@ -25,9 +25,7 @@ export async function getStaticPaths() {
         };
     }
 
-    const pages = (await getCollection("pages")).filter(
-        (page) => page.data.template !== "page-experiences.php",
-    );
+    const pages = await getCollection("pages");
 
     return await Promise.all(pages.map(staticPathForPage));
 }

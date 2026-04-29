@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Experiences
+ * Template Name: Experience — Food & drink
  */
 ?><?php get_header(); ?>
 

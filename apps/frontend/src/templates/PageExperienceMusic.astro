@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import MusicList from "../components/experiences/MusicList.astro";
+import {
+    getMusicPage,
+    getScheduleDays,
+} from "../lib/experience-pages";
+
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const { page } = Astro.props;
+
+const data = await getMusicPage();
+
+if (!data) {
+    throw new Error("Music page is missing — create a page using the Music template.");
+}
+
+const scheduleDays = await getScheduleDays();
+---
+
+<Layout
+    title={page.title}
+    metaDescription={page.metaDescription}
+    ogImage={page.image}
+    ctaCompact
+>
+    <h1 class="page-title" data-scramble>{page.title}</h1>
+
+    <section>
+        {data.description && (
+            <div class="section-body intro" set:html={data.description.html} />
+        )}
+
+        <MusicList items={data.items} scheduleDays={scheduleDays} />
+    </section>
+</Layout>
+
+<style>
+    section {
+        padding-block-end: var(--space-xl);
+    }
+
+    .intro {
+        margin-block-end: var(--space-md);
+    }
+</style>

@@ -1,16 +1,27 @@
 ---
-import { getCollection, getEntry } from "astro:content";
+import { getCollection, getEntry, type CollectionEntry } from "astro:content";
 import Svg from "../elements/Svg.astro";
 import { resolvePageLink } from "../../lib/content";
-import { getExperiencesPage } from "../../lib/experiences";
+
+type MenuItem = CollectionEntry<"menuItems">["data"];
+type MenuNode = MenuItem & { children: MenuItem[] };
 
 const menuLocation = await getEntry("menuLocations", "primary");
-const menuItems = (
+const allItems = (
     await getCollection(
         "menuItems",
         (item) => item.data.menu === menuLocation?.data.menu,
     )
-).sort((a, b) => a.data.order - b.data.order);
+).map((entry) => entry.data);
+
+allItems.sort((a, b) => a.order - b.order);
+
+const tree: MenuNode[] = allItems
+    .filter((item) => !item.parent)
+    .map((item) => ({
+        ...item,
+        children: allItems.filter((child) => child.parent === String(item.id)),
+    }));
 
 const pages = await getCollection("pages");
 const aboutPage = pages.find(
@@ -20,29 +31,19 @@ const aboutHref = aboutPage
     ? `/${await resolvePageLink(aboutPage)}`
     : "https://www.berghs.se/om-berghs/";
 
-const experiencesData = await getExperiencesPage();
-const experiencesSubItems: Array<{ label: string; href: string }> =
-    experiencesData
-        ? [
-              { label: "Schedule", href: "/experiences/schedule" },
-              ...experiencesData.groups.map((group) => ({
-                  label: group.title,
-                  href: `/experiences/${group.slug}`,
-              })),
-          ]
-        : [];
+const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
-function isExperiencesItem(url: string): boolean {
+function menuItemPath(url: string): string {
     try {
-        return (
-            new URL(url).pathname.replace(/\/$/, "") === "/experiences"
-        );
+        return new URL(url, Astro.url).pathname.replace(/\/$/, "") || "/";
     } catch {
-        return false;
+        return url;
     }
 }
 
-const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
+function submenuId(node: MenuNode): string {
+    return `submenu-${node.id}`;
+}
 ---
 
 <header>
@@ -60,16 +61,12 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
         <ul class="nav-links">
             {
-                menuItems.map((menuItem) => {
-                    const isExperiences =
-                        isExperiencesItem(menuItem.data.url) &&
-                        experiencesSubItems.length > 0;
-
-                    if (isExperiences) {
-                        const inExperiencesSection =
-                            experiencesSubItems.some(
-                                (sub) => currentPath === sub.href,
-                            );
+                tree.map((node) => {
+                    if (node.children.length > 0) {
+                        const inSection = node.children.some(
+                            (child) =>
+                                currentPath === menuItemPath(child.url),
+                        );
                         return (
                             <li class="has-submenu">
                                 <button
@@ -77,15 +74,13 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                                     class="nav-link submenu-toggle"
                                     aria-expanded="false"
                                     aria-haspopup="true"
-                                    aria-controls="experiences-submenu"
+                                    aria-controls={submenuId(node)}
                                     aria-current={
-                                        inExperiencesSection
-                                            ? "page"
-                                            : undefined
+                                        inSection ? "page" : undefined
                                     }
                                 >
                                     <span class="nav-link-text" data-scramble>
-                                        {menuItem.data.title}
+                                        {node.title}
                                     </span>
                                     <Svg
                                         name="chevron"
@@ -93,14 +88,15 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                                         class="submenu-chevron"
                                     />
                                 </button>
-                                <ul class="submenu" id="experiences-submenu">
-                                    {experiencesSubItems.map((sub) => (
+                                <ul class="submenu" id={submenuId(node)}>
+                                    {node.children.map((child) => (
                                         <li>
                                             <a
-                                                href={sub.href}
+                                                href={child.url}
                                                 class="nav-link submenu-link"
                                                 aria-current={
-                                                    currentPath === sub.href
+                                                    currentPath ===
+                                                    menuItemPath(child.url)
                                                         ? "page"
                                                         : undefined
                                                 }
@@ -109,7 +105,7 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                                                     class="nav-link-text"
                                                     data-scramble
                                                 >
-                                                    {sub.label}
+                                                    {child.title}
                                                 </span>
                                             </a>
                                         </li>
@@ -122,17 +118,16 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
                     return (
                         <li>
                             <a
-                                href={menuItem.data.url}
+                                href={node.url}
                                 aria-current={
-                                    currentPath ===
-                                    new URL(menuItem.data.url).pathname
+                                    currentPath === menuItemPath(node.url)
                                         ? "page"
                                         : undefined
                                 }
                                 class="nav-link"
                             >
                                 <span class="nav-link-text" data-scramble>
-                                    {menuItem.data.title}
+                                    {node.title}
                                 </span>
                             </a>
                         </li>
@@ -156,22 +151,20 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
         {
-            menuItems.map((menuItem) => {
-                const isExperiences =
-                    isExperiencesItem(menuItem.data.url) &&
-                    experiencesSubItems.length > 0;
-
-                if (isExperiences) {
-                    return experiencesSubItems.map((sub) => (
+            tree.map((node) => {
+                if (node.children.length > 0) {
+                    return node.children.map((child) => (
                         <a
-                            href={sub.href}
+                            href={child.url}
                             aria-current={
-                                currentPath === sub.href ? "page" : undefined
+                                currentPath === menuItemPath(child.url)
+                                    ? "page"
+                                    : undefined
                             }
                             class="nav-link"
                         >
                             <span class="nav-link-text" data-scramble>
-                                {sub.label}
+                                {child.title}
                             </span>
                         </a>
                     ));
@@ -179,17 +172,16 @@ const currentPath = Astro.url.pathname.replace(/\/$/, "") || "/";
 
                 return (
                     <a
-                        href={menuItem.data.url}
+                        href={node.url}
                         aria-current={
-                            currentPath ===
-                            new URL(menuItem.data.url).pathname
+                            currentPath === menuItemPath(node.url)
                                 ? "page"
                                 : undefined
                         }
                         class="nav-link"
                     >
                         <span class="nav-link-text" data-scramble>
-                            {menuItem.data.title}
+                            {node.title}
                         </span>
                     </a>
                 );

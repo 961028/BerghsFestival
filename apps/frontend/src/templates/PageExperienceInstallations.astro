@@ -1,0 +1,47 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import InstallationsList from "../components/experiences/InstallationsList.astro";
+import { getInstallationsPage } from "../lib/experience-pages";
+
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const { page } = Astro.props;
+
+const data = await getInstallationsPage();
+
+if (!data) {
+    throw new Error(
+        "Installations page is missing — create a page using the Installations template.",
+    );
+}
+---
+
+<Layout
+    title={page.title}
+    metaDescription={page.metaDescription}
+    ogImage={page.image}
+    ctaCompact
+>
+    <h1 class="page-title" data-scramble>{page.title}</h1>
+
+    <section>
+        {data.description && (
+            <div class="section-body intro" set:html={data.description.html} />
+        )}
+
+        <InstallationsList items={data.items} />
+    </section>
+</Layout>
+
+<style>
+    section {
+        padding-block-end: var(--space-xl);
+    }
+
+    .intro {
+        margin-block-end: var(--space-md);
+    }
+</style>
