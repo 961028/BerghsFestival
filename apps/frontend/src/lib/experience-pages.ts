@@ -17,12 +17,12 @@ const ScheduleRepeater = repeater(
                 .object({
                     start_time: z.string(),
                     title: z.string(),
-                    description: z.string().nullable().optional(),
+                    url: z.string().optional(),
                 })
                 .transform((item) => ({
                     startTime: item.start_time,
                     title: item.title,
-                    description: item.description ?? null,
+                    url: item.url,
                 })),
         ),
     }),
