@@ -83,7 +83,7 @@ function submenuId(node: MenuNode): string {
                                         {node.title}
                                     </span>
                                     <Svg
-                                        name="chevron"
+                                        name="chevron-down"
                                         alt=""
                                         class="submenu-chevron"
                                     />
@@ -194,7 +194,6 @@ function submenuId(node: MenuNode): string {
 
 <style>
     header {
-        border-block-end: var(--border-default);
         position: relative;
         z-index: 100;
         block-size: var(--header-height);
@@ -262,17 +261,16 @@ function submenuId(node: MenuNode): string {
 
     .nav-links {
         display: none;
-        gap: var(--space-md);
+        gap: var(--space-lg);
         list-style: none;
         padding: 0;
         margin: 0;
         font-size: var(--font-size-base);
-        text-transform: lowercase;
+        text-transform: uppercase;
     }
 
     .nav-link[aria-current="page"] {
         font-weight: var(--font-weight-bold);
-        text-transform: uppercase;
     }
 
     .submenu-link[aria-current="page"] {
@@ -395,11 +393,10 @@ function submenuId(node: MenuNode): string {
 
     .mobile-menu a {
         font-size: var(--font-size-lg);
-        text-transform: lowercase;
+        text-transform: uppercase;
     }
 
     .mobile-menu a[aria-current="page"] {
         font-weight: var(--font-weight-bold);
-        text-transform: uppercase;
     }
 </style>

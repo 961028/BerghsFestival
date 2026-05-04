@@ -1,21 +1,5 @@
 # Berghs Festival 2026 — Frontend
 
-## Written communication style
-
-Output: terse & exact, !filler
-Fragments: ok
-Bad ideas: flag
-Em dashes: null
-Pattern: [thing] → [action] → [reason] → [next]
-Drift: !allowed
-Format:
-
-key: value (aligned)
-code/literals: backticks
-compare: table or columns
-structure: predictable, scannable
-prose: only when structure fails
-
 ## Architecture
 
 Headless WordPress (with ACF) serves content via REST API. Astro fetches this data at build time through content collections (`src/content.config.ts`) and generates a static site.
@@ -64,12 +48,27 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
 
 ## Commands
 
+Dev runs in two parts: Docker (Apache + WP + MySQL) and Astro dev (port 4321). Both must be cleanly stopped before restarting, or stale processes hold port 4321 and the proxy returns 503.
+
+Devcontainer: `app/public/.devcontainer/` (the outer `berghsfestivalen/.devcontainer/` is stale — ignore).
+
 ```sh
-.devcontainer % docker compose up -d
-npm run dev      # Start dev server
-npm run build    # Production build
-npm run lint:css # Check that styles only use design tokens
+# Stop previous session
+cd "/Users/emilholmsten/Local Sites/berghsfestivalen/app/public/.devcontainer" && \
+    docker compose -f docker-compose.yml -f docker-compose.override.yml down
+lsof -ti:4321 | xargs -r kill -9
+
+# Start Docker
+cd "/Users/emilholmsten/Local Sites/berghsfestivalen/app/public/.devcontainer" && \
+    docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
+
+# Start Astro dev (in this directory)
+npm run dev
+npm run build
+npm run lint:css
 ```
+
+Site: http://berghs-festival-2026.test/ (WP admin at `/wp/wp-admin/`). DB volume: `berghs-festival-2026_db_data`, backup at `~/berghs-db-backup/db.tar.gz`.
 
 ## End of session
 
@@ -77,4 +76,3 @@ At the end of every session:
 
 1. Update `berghs-festival-2026-ia.md` with any notable design decisions, content decisions, or UX choices made during the session.
 2. Review `CLAUDE.md` and update it to reflect any new files, templates, patterns, or conventions introduced during the session.
-3. Ask the user if they want to commit. If yes, stage the relevant files and commit with a descriptive commit message reflecting the work done.

@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import { getSchedulePage } from "../lib/experience-pages";
+import Svg from "../components/elements/Svg.astro";
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
@@ -12,7 +13,9 @@ const { page } = Astro.props;
 const data = await getSchedulePage();
 
 if (!data) {
-    throw new Error("Schedule page is missing — create a page using the Schedule template.");
+    throw new Error(
+        "Schedule page is missing — create a page using the Schedule template.",
+    );
 }
 
 const { description, schedule } = data;
@@ -27,9 +30,11 @@ const { description, schedule } = data;
     <h1 class="page-title" data-scramble>{page.title}</h1>
 
     <section>
-        {description && (
-            <div class="section-body intro" set:html={description.html} />
-        )}
+        {
+            description && (
+                <div class="section-body intro" set:html={description.html} />
+            )
+        }
 
         <ol class="day-toggle" role="group" aria-label="Select day">
             {
@@ -52,15 +57,24 @@ const { description, schedule } = data;
                     <ul>
                         {dayData.events.map((event) => (
                             <li>
-                                <span class="time">{event.startTime}</span>
-                                <div class="event">
-                                    <p class="title">{event.title}</p>
-                                    {event.description && (
-                                        <p class="description">
-                                            {event.description}
-                                        </p>
-                                    )}
-                                </div>
+                                {event.url ? (
+                                    <a class="event-row" href={event.url}>
+                                        <span class="time">
+                                            {event.startTime}
+                                        </span>
+                                        <p class="title">{event.title}</p>
+                                        <span class="event-icon">
+                                            <Svg name="chevron-right" alt="" />
+                                        </span>
+                                    </a>
+                                ) : (
+                                    <div class="event-row">
+                                        <span class="time">
+                                            {event.startTime}
+                                        </span>
+                                        <p class="title">{event.title}</p>
+                                    </div>
+                                )}
                             </li>
                         ))}
                     </ul>
@@ -105,7 +119,7 @@ const { description, schedule } = data;
     }
 
     .intro {
-        margin-block-end: var(--space-md);
+        margin-block-end: var(--space-xl);
     }
 
     .day-toggle {
@@ -128,20 +142,23 @@ const { description, schedule } = data;
         border: none;
         width: 100%;
         padding: var(--space-sm) var(--space-xs);
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-lg);
+
+        @media (min-width: 48rem) {
+            font-size: var(--font-size-display);
+        }
         font-family: inherit;
         line-height: var(--line-height-tight);
         color: var(--color-text-muted);
         cursor: pointer;
         text-align: center;
-        text-transform: lowercase;
+        text-transform: uppercase;
     }
 
     .day-toggle button[aria-pressed="true"] {
         background: var(--color-text-on-bg);
         color: var(--color-text);
         font-weight: var(--font-weight-bold);
-        text-transform: uppercase;
     }
 
     [data-day-panel] ul {
@@ -150,22 +167,26 @@ const { description, schedule } = data;
         padding: 0;
     }
 
-    [data-day-panel] li {
+    [data-day-panel] li + li {
+        border-block-start: var(--border-default);
+    }
+
+    [data-day-panel] li:has(a.event-row):hover :global(.event-icon) {
+        background: var(--color-text-on-bg);
+        color: var(--color-text);
+    }
+
+    .event-row {
         display: grid;
         grid-template-columns: var(--schedule-time-col) 1fr;
         gap: var(--space-md);
         padding-block: var(--space-md);
-        border-block-start: var(--border-default);
-    }
-
-    @media (min-width: 64rem) {
-        [data-day-panel] li {
-            padding-block: var(--space-lg);
-        }
+        align-items: center;
+        position: relative;
     }
 
     .time {
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-base);
         font-weight: var(--font-weight-bold);
         color: var(--color-text-muted);
         line-height: var(--line-height-tight);
@@ -173,23 +194,55 @@ const { description, schedule } = data;
         font-variant-numeric: tabular-nums;
     }
 
-    .event {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-xxs);
-        min-width: 0;
-    }
-
     .title {
         font-size: var(--font-size-base);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
+        min-width: 0;
+        margin: 0;
     }
 
-    .description {
-        font-size: var(--font-size-base);
-        font-weight: var(--font-weight-normal);
-        line-height: var(--line-height-base);
+    @media (min-width: 40rem) {
+        .time,
+        .title {
+            font-size: var(--font-size-lg);
+        }
+    }
+
+    a.event-row {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .event-icon {
         color: var(--color-text-muted);
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: calc(var(--space-md) * 1.75);
+        height: calc(var(--space-md) * 1.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (min-width: 40rem) {
+        .event-icon {
+            width: calc(var(--space-md) * 2.5);
+            height: calc(var(--space-md) * 2.5);
+        }
+    }
+
+    .event-icon :global(svg) {
+        width: 1rem;
+        height: 1rem;
+    }
+
+    @media (min-width: 40rem) {
+        .event-icon :global(svg) {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
     }
 </style>
