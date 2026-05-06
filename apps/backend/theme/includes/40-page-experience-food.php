@@ -17,13 +17,6 @@ function _app_page_experience_food_register_fields() {
 			'title'        => 'Food & drink',
 			'fields'       => array(
 				array(
-					'key'          => _app_page_experience_food_field_key( 'description' ),
-					'label'        => 'Description',
-					'name'         => 'description',
-					'type'         => 'wysiwyg',
-					'media_upload' => 0,
-				),
-				array(
 					'key'          => _app_page_experience_food_field_key( 'items' ),
 					'label'        => '',
 					'name'         => 'items',
@@ -43,7 +36,13 @@ function _app_page_experience_food_register_fields() {
 							'name'          => 'location',
 							'type'          => 'select',
 							'instructions'  => 'Optional. Edit choices via Custom Fields → Field Groups.',
-							'choices'       => array(),
+							'choices'       => array(
+								'Ljusgården'  => 'Ljusgården',
+								'Aulan'       => 'Aulan',
+								'Pink Room'   => 'Pink Room',
+								'Gränden'     => 'Gränden',
+								'Receptionen' => 'Receptionen',
+							),
 							'allow_null'    => 1,
 							'return_format' => 'value',
 						),
@@ -64,9 +63,15 @@ function _app_page_experience_food_register_fields() {
 						),
 						array(
 							'key'   => _app_page_experience_food_field_key( 'items', 'url' ),
-							'label' => 'URL',
+							'label' => 'Website URL',
 							'name'  => 'url',
-							'type'  => 'text',
+							'type'  => 'url',
+						),
+						array(
+							'key'   => _app_page_experience_food_field_key( 'items', 'social_url' ),
+							'label' => 'Social media URL',
+							'name'  => 'social_url',
+							'type'  => 'url',
 						),
 					),
 				),

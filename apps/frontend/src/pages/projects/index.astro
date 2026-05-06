@@ -2,36 +2,49 @@
 import { getCollection } from "astro:content";
 import Layout from "../../layouts/Layout.astro";
 import ProjectCard from "../../components/elements/ProjectCard.astro";
+import { getProjectsPage } from "../../lib/experience-pages";
 
 const allProjects = (await getCollection("projects")).map(
     (entry) => entry.data,
 );
+
+const projectsPage = await getProjectsPage();
+const title = projectsPage?.data.title ?? "Projects";
+const metaDescription = projectsPage?.data.metaDescription;
+const ogImage = projectsPage?.data.image;
+const description = projectsPage?.data.content;
 ---
 
-<Layout title="Projects">
-    <h1 class="visually-hidden">Projects</h1>
-    <div>
-        <button data-filter="all" aria-pressed="true">All Projects</button>
-        <button data-filter="group" aria-pressed="false">Group</button>
-        <button data-filter="individual" aria-pressed="false">Individual</button
-        >
-    </div>
+<Layout title={title} metaDescription={metaDescription} ogImage={ogImage} ctaCompact>
+    <h1 class="page-title" data-scramble>{title}</h1>
 
-    <ul>
-        {
-            allProjects.map((project) => (
-                <li data-type={project.type}>
-                    <ProjectCard
-                        company={project.company}
-                        title={project.title}
-                        image={project.image}
-                        teamMembers={project.teamMembers}
-                        href={`/projects/${project.slug}`}
-                    />
-                </li>
-            ))
-        }
-    </ul>
+    <section>
+        {description && (
+            <div class="section-body intro" set:html={description.html} />
+        )}
+
+        <div>
+            <button data-filter="all" aria-pressed="true">All Projects</button>
+            <button data-filter="group" aria-pressed="false">Group</button>
+            <button data-filter="individual" aria-pressed="false">Individual</button>
+        </div>
+
+        <ul>
+            {
+                allProjects.map((project) => (
+                    <li data-type={project.type}>
+                        <ProjectCard
+                            company={project.company}
+                            title={project.title}
+                            image={project.image}
+                            teamMembers={project.teamMembers}
+                            href={`/projects/${project.slug}`}
+                        />
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
 </Layout>
 
 <script>
@@ -55,6 +68,14 @@ const allProjects = (await getCollection("projects")).map(
 </script>
 
 <style>
+    section {
+        padding-block-end: var(--space-xl);
+    }
+
+    .intro {
+        margin-block-end: var(--space-xl);
+    }
+
     div {
         display: flex;
         gap: var(--space-xs);
@@ -90,7 +111,7 @@ const allProjects = (await getCollection("projects")).map(
         padding: 0;
         display: grid;
         grid-template-columns: repeat(
-            auto-fit,
+            auto-fill,
             minmax(min(100%, var(--col-min)), 1fr)
         );
         gap: var(--space-sm);

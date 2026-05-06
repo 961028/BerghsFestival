@@ -9,20 +9,14 @@ function _app_page_schedule_field_key( string ...$slugs ): string {
 }
 
 function _app_page_schedule_register_fields() {
-	$location = app_acf_get_page_template_location( 'page-schedule' );
+	$location              = app_acf_get_page_template_location( 'page-schedule' );
+	$music_item_field_key  = _app_page_schedule_field_key( 'schedule', 'events', 'music_item' );
 
 	acf_add_local_field_group(
 		array(
 			'key'          => _app_page_schedule_group_key( 'schedule' ),
 			'title'        => 'Schedule',
 			'fields'       => array(
-				array(
-					'key'          => _app_page_schedule_field_key( 'description' ),
-					'label'        => 'Description',
-					'name'         => 'description',
-					'type'         => 'wysiwyg',
-					'media_upload' => 0,
-				),
 				array(
 					'key'          => _app_page_schedule_field_key( 'schedule' ),
 					'label'        => '',
@@ -45,22 +39,45 @@ function _app_page_schedule_register_fields() {
 							'button_label' => 'Add Event',
 							'sub_fields'   => array(
 								array(
-									'key'   => _app_page_schedule_field_key( 'schedule', 'events', 'start_time' ),
-									'label' => 'Starts',
-									'name'  => 'start_time',
-									'type'  => 'text',
+									'key'           => $music_item_field_key,
+									'label'         => 'Music item',
+									'name'          => 'music_item',
+									'type'          => 'post_object',
+									'instructions'  => 'Optional. Link this event to a music item — title, time, and link will be inherited. Leave empty for non-music events (talks, breaks, etc.).',
+									'post_type'     => array( 'music_item' ),
+									'allow_null'    => 1,
+									'return_format' => 'id',
+									'ui'            => 1,
 								),
 								array(
-									'key'   => _app_page_schedule_field_key( 'schedule', 'events', 'title' ),
-									'label' => 'Title',
-									'name'  => 'title',
-									'type'  => 'text',
+									'key'               => _app_page_schedule_field_key( 'schedule', 'events', 'start_time' ),
+									'label'             => 'Starts',
+									'name'              => 'start_time',
+									'type'              => 'text',
+									'instructions'      => 'Used only when no music item is linked.',
+									'conditional_logic' => array(
+										array(
+											array(
+												'field'    => $music_item_field_key,
+												'operator' => '==empty',
+											),
+										),
+									),
 								),
 								array(
-									'key'   => _app_page_schedule_field_key( 'schedule', 'events', 'url' ),
-									'label' => 'Link',
-									'name'  => 'url',
-									'type'  => 'url',
+									'key'               => _app_page_schedule_field_key( 'schedule', 'events', 'title' ),
+									'label'             => 'Title',
+									'name'              => 'title',
+									'type'              => 'text',
+									'instructions'      => 'Used only when no music item is linked.',
+									'conditional_logic' => array(
+										array(
+											array(
+												'field'    => $music_item_field_key,
+												'operator' => '==empty',
+											),
+										),
+									),
 								),
 							),
 						),

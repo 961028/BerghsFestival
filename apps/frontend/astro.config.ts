@@ -57,8 +57,8 @@ function cmsWatcher(): AstroIntegration {
 export default defineConfig({
     site: APP_HOME,
     server: {
-        allowedHosts: [APP_HOST],
-        host: "127.0.0.1", // Apache needs this
+        allowedHosts: [APP_HOST, "192.168.103.174"],
+        host: "0.0.0.0",
     },
     vite: {
         envPrefix: ["VITE_", "APP_", "WP_"],

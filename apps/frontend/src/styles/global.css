@@ -14,10 +14,10 @@
         --color-accent-2: #ffffff; /* secondary fill — randomised per region on load */
         --color-accent-3: #ffffff; /* tertiary fill — randomised per region on load */
 
-        /* Accent color palette (source values for the randomiser - needs manual update) */
+        /* Accent color palette — must stay in sync with ACCENTS array in src/scripts/accents.ts */
         --color-accent-green: #00ff00;
         --color-accent-red: #ff0000;
-        --color-accent-blue: #0040ff;
+        --color-accent-blue: #00ffff;
         --color-accent-yellow: #eeff00;
         --color-accent-pink: #ff00d9;
 
@@ -32,6 +32,7 @@
         --font-size-base: 1.125rem;
         --font-size-lg: 1.5rem;
         --font-size-display: 2.75rem;
+        --font-weight-light: 300;
         --font-weight-normal: 400;
         --font-weight-bold: 700;
         --line-height-base: 1.4;
@@ -61,7 +62,7 @@
         --icon-size: 1.5rem;
         --schedule-time-col: max-content;
         --schedule-food-col-min: 12rem;
-        --music-thumb-size: 6rem;
+        --music-thumb-size: 20rem;
         --header-height: 3.625rem;
         --cta-height: 6.5rem;
         --cta-height-compact: 3.5rem;
@@ -90,7 +91,7 @@
             --space-xl: 4rem;
             --site-padding-inline: 1.75rem;
             --cta-height: 4.125rem;
-            --music-thumb-size: 8rem;
+            --music-thumb-size: 20rem;
         }
     }
 

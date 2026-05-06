@@ -1,18 +1,9 @@
 ---
 import WpImage from "../elements/WpImage.astro";
-import type { ReferenceDataEntry } from "astro:content";
-
-interface Item {
-    name: string;
-    day: string | null;
-    startTime: string | null;
-    location: string | null;
-    image: ReferenceDataEntry<"media"> | null;
-    description: { html: string };
-}
+import type { MusicItem } from "../../lib/experience-pages";
 
 interface Props {
-    items: Item[];
+    items: MusicItem[];
     scheduleDays: string[];
 }
 
@@ -22,7 +13,7 @@ const { items, scheduleDays } = Astro.props;
 // day no longer matches a schedule day, fall into a single trailing bucket.
 const knownDays = new Set(scheduleDays);
 
-const buckets: { label: string | null; items: Item[] }[] = [
+const buckets: { label: string | null; items: MusicItem[] }[] = [
     ...scheduleDays.map((day) => ({
         label: day,
         items: items.filter((item) => item.day === day),
@@ -52,42 +43,59 @@ function slugify(value: string): string {
             {bucket.label && <h2 class="day-heading">{bucket.label}</h2>}
             <ul>
                 {bucket.items.map((item) => (
-                    <li>
+                    <li id={item.slug}>
                         {item.image ? (
                             <WpImage
                                 image={item.image}
-                                width={400}
-                                height={400}
+                                width={600}
+                                height={600}
                                 alt={item.name}
                             />
                         ) : (
                             <div class="thumb-placeholder" aria-hidden="true" />
                         )}
                         <div class="text">
+                            <p class="name">{item.name}</p>
                             {(item.startTime || item.location) && (
                                 <p class="meta">
                                     {item.startTime && (
-                                        <span class="time">
-                                            {item.startTime}
-                                        </span>
-                                    )}
-                                    {item.startTime && item.location && (
-                                        <span class="meta-sep" aria-hidden="true">
-                                            ·
-                                        </span>
+                                        <span class="time">{item.startTime}</span>
                                     )}
                                     {item.location && (
-                                        <span class="location">
-                                            {item.location}
-                                        </span>
+                                        <span class="location">{item.location}</span>
                                     )}
                                 </p>
                             )}
-                            <p class="name">{item.name}</p>
                             <div
                                 class="description"
                                 set:html={item.description.html}
                             />
+                            {(item.url || item.socialUrl) && (
+                                <div class="links">
+                                    {item.url && (
+                                        <a
+                                            class="btn"
+                                            data-color-hover
+                                            href={item.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Website
+                                        </a>
+                                    )}
+                                    {item.socialUrl && (
+                                        <a
+                                            class="btn"
+                                            data-color-hover
+                                            href={item.socialUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Social
+                                        </a>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </li>
                 ))}
@@ -110,7 +118,9 @@ function slugify(value: string): string {
     }
 
     /* ── Music rows ──────────────────────────────────────────────────
-       thumb | text. Same border/padding rhythm as schedule rows. */
+       Mobile: image full-width on top, text below.
+       ≥40rem: thumb left fixed, text right. Border + padding rhythm
+       matches schedule rows. */
     ul {
         list-style: none;
         margin: 0;
@@ -119,11 +129,22 @@ function slugify(value: string): string {
 
     li {
         display: grid;
-        grid-template-columns: var(--music-thumb-size) 1fr;
         gap: var(--space-md);
         padding-block: var(--space-md);
         border-block-start: var(--border-default);
         align-items: start;
+    }
+
+    @media (min-width: 40rem) {
+        li {
+            grid-template-columns: var(--music-thumb-size) 1fr;
+            align-items: start;
+        }
+
+        .text {
+            height: var(--music-thumb-size);
+            overflow: hidden;
+        }
     }
 
     @media (min-width: 64rem) {
@@ -135,10 +156,17 @@ function slugify(value: string): string {
     li :global(img),
     .thumb-placeholder {
         display: block;
-        width: var(--music-thumb-size);
-        height: var(--music-thumb-size);
+        width: 100%;
         aspect-ratio: 1 / 1;
         object-fit: cover;
+    }
+
+    @media (min-width: 40rem) {
+        li :global(img),
+        .thumb-placeholder {
+            width: var(--music-thumb-size);
+            height: var(--music-thumb-size);
+        }
     }
 
     .thumb-placeholder {
@@ -152,35 +180,108 @@ function slugify(value: string): string {
         min-width: 0;
     }
 
-    .meta {
+    .name {
         font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        margin: 0;
+    }
+
+    .meta {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--space-xs);
+        margin: 0;
+    }
+
+    .time {
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
         color: var(--color-text-muted);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-xxs) var(--space-xs);
-    }
-
-    .time {
         font-variant-numeric: tabular-nums;
     }
 
-    .meta-sep {
-        opacity: 0.6;
-    }
-
-    .name {
-        font-size: var(--font-size-lg);
+    .location {
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
+        color: var(--color-text-muted);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
+    }
+
+    @media (min-width: 40rem) {
+        .name {
+            font-size: var(--font-size-lg);
+        }
+
+        .time,
+        .location {
+            font-size: var(--font-size-base);
+        }
     }
 
     .description {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         color: var(--color-text-muted);
+        margin-block-start: var(--space-xs);
+    }
+
+    .description :global(p:last-child) {
+        margin-block-end: 0;
+    }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+        margin-block-start: auto;
+        padding-block-start: var(--space-sm);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--color-text-on-bg);
+        color: var(--color-text);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        padding: var(--space-sm) var(--space-md);
+        text-decoration: none;
+        min-block-size: max(44px, 2em);
+        line-height: 1;
+        transition: background-color 0.08s;
     }
 </style>
+
+<script>
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
+
+    document
+        .querySelectorAll<HTMLElement>("[data-color-hover]")
+        .forEach((btn) => {
+            const nextAccent = makeColorPicker(2);
+            const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
+
+            btn.addEventListener("mouseenter", () => {
+                btn.style.backgroundColor = nextAccent();
+                if (!reducedMotion) {
+                    const interval = setInterval(() => {
+                        btn.style.backgroundColor = nextAccent();
+                    }, CYCLE_INTERVAL_MS);
+                    btn.dataset.colorInterval = String(interval);
+                }
+            });
+
+            btn.addEventListener("mouseleave", () => {
+                clearInterval(Number(btn.dataset.colorInterval));
+                btn.style.backgroundColor = "";
+            });
+        });
+</script>

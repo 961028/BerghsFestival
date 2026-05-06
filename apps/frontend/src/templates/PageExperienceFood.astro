@@ -47,6 +47,32 @@ if (!data) {
                             <p class="meta">{item.location}</p>
                         )}
                         <div set:html={item.description.html} />
+                        {(item.url || item.socialUrl) && (
+                            <div class="links">
+                                {item.url && (
+                                    <a
+                                        class="btn"
+                                        data-color-hover
+                                        href={item.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Website
+                                    </a>
+                                )}
+                                {item.socialUrl && (
+                                    <a
+                                        class="btn"
+                                        data-color-hover
+                                        href={item.socialUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        Social
+                                    </a>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </li>
             ))}
@@ -122,4 +148,52 @@ if (!data) {
         color: var(--color-text-muted);
         margin: 0;
     }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--color-text-on-bg);
+        color: var(--color-text);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        padding: var(--space-sm) var(--space-md);
+        text-decoration: none;
+        min-block-size: max(44px, 2em);
+        line-height: 1;
+        transition: background-color 0.08s;
+    }
 </style>
+
+<script>
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../scripts/accents";
+
+    document
+        .querySelectorAll<HTMLElement>("[data-color-hover]")
+        .forEach((btn) => {
+            const nextAccent = makeColorPicker(2);
+            const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
+
+            btn.addEventListener("mouseenter", () => {
+                btn.style.backgroundColor = nextAccent();
+                if (!reducedMotion) {
+                    const interval = setInterval(() => {
+                        btn.style.backgroundColor = nextAccent();
+                    }, CYCLE_INTERVAL_MS);
+                    btn.dataset.colorInterval = String(interval);
+                }
+            });
+
+            btn.addEventListener("mouseleave", () => {
+                clearInterval(Number(btn.dataset.colorInterval));
+                btn.style.backgroundColor = "";
+            });
+        });
+</script>

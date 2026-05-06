@@ -18,7 +18,7 @@ if (!data) {
     );
 }
 
-const { description, schedule } = data;
+const { schedule } = data;
 ---
 
 <Layout
@@ -27,25 +27,17 @@ const { description, schedule } = data;
     ogImage={page.image}
     ctaCompact
 >
-    <h1 class="page-title" data-scramble>{page.title}</h1>
-
     <section>
-        {
-            description && (
-                <div class="section-body intro" set:html={description.html} />
-            )
-        }
-
-        <ol class="day-toggle" role="group" aria-label="Select day">
+        <ol class="day-toggle" role="list">
             {
                 schedule.map((dayData, i) => (
                     <li>
-                        <button
+                        <a
                             data-day={i}
-                            aria-pressed={i === 0 ? "true" : "false"}
+                            href={`#day-${i}`}
                         >
                             {dayData.day}
-                        </button>
+                        </a>
                     </li>
                 ))
             }
@@ -53,12 +45,12 @@ const { description, schedule } = data;
 
         {
             schedule.map((dayData, dayIndex) => (
-                <div data-day-panel={dayIndex} hidden>
+                <div id={`day-${dayIndex}`} class="day-panel">
                     <ul>
                         {dayData.events.map((event) => (
                             <li>
-                                {event.url ? (
-                                    <a class="event-row" href={event.url}>
+                                {event.href ? (
+                                    <a class="event-row" href={event.href}>
                                         <span class="time">
                                             {event.startTime}
                                         </span>
@@ -85,41 +77,87 @@ const { description, schedule } = data;
 </Layout>
 
 <script>
-    const dayPills = document.querySelectorAll<HTMLButtonElement>("[data-day]");
-    const dayPanels =
-        document.querySelectorAll<HTMLElement>("[data-day-panel]");
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../scripts/accents";
 
-    function selectDay(dayIndex: number) {
-        dayPills.forEach((p) => {
-            p.setAttribute(
-                "aria-pressed",
-                String(Number(p.dataset.day) === dayIndex),
-            );
-        });
-        dayPanels.forEach((p) => {
-            p.hidden = Number(p.dataset.dayPanel) !== dayIndex;
-        });
-    }
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const nextAccent = makeColorPicker(2);
 
-    dayPills.forEach((pill) => {
-        pill.addEventListener("click", () =>
-            selectDay(Number(pill.dataset.day)),
-        );
+    document.querySelectorAll<HTMLElement>("[data-day]").forEach((link) => {
+        let timer: ReturnType<typeof setInterval>;
+        link.addEventListener("mouseenter", () => {
+            link.style.color = nextAccent();
+            if (!reducedMotion) {
+                timer = setInterval(() => {
+                    link.style.color = nextAccent();
+                }, CYCLE_INTERVAL_MS);
+            }
+        });
+        link.addEventListener("mouseleave", () => {
+            clearInterval(timer);
+            link.style.color = "";
+        });
     });
 
-    // Default day: Saturday (day 6) → index 1, otherwise → index 0.
-    const defaultDay = new Date().getDay() === 6 ? 1 : 0;
+    document
+        .querySelectorAll<HTMLElement>(".day-panel li:has(a.event-row)")
+        .forEach((li) => {
+            const title = li.querySelector<HTMLElement>(".title");
+            const time = li.querySelector<HTMLElement>(".time");
+            const icon = li.querySelector<HTMLElement>(".event-icon");
+            let timer: ReturnType<typeof setInterval>;
 
-    selectDay(defaultDay);
+            li.addEventListener("mouseenter", () => {
+                const color = nextAccent();
+                if (title) title.style.color = color;
+                if (time) time.style.color = color;
+                if (icon) icon.style.background = color;
+                if (!reducedMotion) {
+                    timer = setInterval(() => {
+                        const c = nextAccent();
+                        if (title) title.style.color = c;
+                        if (time) time.style.color = c;
+                        if (icon) icon.style.background = c;
+                    }, CYCLE_INTERVAL_MS);
+                }
+            });
+            li.addEventListener("mouseleave", () => {
+                clearInterval(timer);
+                if (title) title.style.color = "";
+                if (time) time.style.color = "";
+                if (icon) icon.style.background = "";
+            });
+        });
+
+    // Highlight nav link for the visible day panel.
+    const dayLinks = document.querySelectorAll<HTMLElement>("[data-day]");
+    const dayPanels = document.querySelectorAll<HTMLElement>(".day-panel");
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                const idx = [...dayPanels].indexOf(entry.target as HTMLElement);
+                dayLinks.forEach((l, i) =>
+                    l.setAttribute("aria-current", i === idx ? "true" : "false"),
+                );
+            });
+        },
+        { rootMargin: "-40% 0px -55% 0px" },
+    );
+
+    dayPanels.forEach((panel) => observer.observe(panel));
+
+    // On Saturday, jump to day-1 if no anchor already in URL.
+    if (!window.location.hash && new Date().getDay() === 6) {
+        document.getElementById("day-1")?.scrollIntoView();
+    }
 </script>
 
 <style>
     section {
         padding-block-end: var(--space-xl);
-    }
-
-    .intro {
-        margin-block-end: var(--space-xl);
     }
 
     .day-toggle {
@@ -136,10 +174,8 @@ const { description, schedule } = data;
         border-block-end: var(--border-default);
     }
 
-    .day-toggle button {
-        appearance: none;
-        background: none;
-        border: none;
+    .day-toggle a {
+        display: block;
         width: 100%;
         padding: var(--space-sm) var(--space-xs);
         font-size: var(--font-size-lg);
@@ -150,29 +186,36 @@ const { description, schedule } = data;
         font-family: inherit;
         line-height: var(--line-height-tight);
         color: var(--color-text-muted);
-        cursor: pointer;
         text-align: center;
         text-transform: uppercase;
+        text-decoration: none;
     }
 
-    .day-toggle button[aria-pressed="true"] {
+    .day-toggle a[aria-current="true"] {
         background: var(--color-text-on-bg);
         color: var(--color-text);
         font-weight: var(--font-weight-bold);
     }
 
-    [data-day-panel] ul {
+    .day-panel {
+        scroll-margin-top: calc(var(--header-height) + 3.5rem);
+    }
+
+    .day-panel + .day-panel {
+        margin-block-start: var(--space-xl);
+    }
+
+    .day-panel ul {
         list-style: none;
         margin: 0;
         padding: 0;
     }
 
-    [data-day-panel] li + li {
+    .day-panel li + li {
         border-block-start: var(--border-default);
     }
 
-    [data-day-panel] li:has(a.event-row):hover :global(.event-icon) {
-        background: var(--color-text-on-bg);
+    .day-panel li:has(a.event-row):hover :global(.event-icon) {
         color: var(--color-text);
     }
 
@@ -187,7 +230,7 @@ const { description, schedule } = data;
 
     .time {
         font-size: var(--font-size-base);
-        font-weight: var(--font-weight-bold);
+        font-weight: var(--font-weight-light);
         color: var(--color-text-muted);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
