@@ -48,7 +48,7 @@ function slugify(value: string): string {
                             <WpImage
                                 image={item.image}
                                 width={600}
-                                height={600}
+                                height={750}
                                 alt={item.name}
                             />
                         ) : (
@@ -137,12 +137,12 @@ function slugify(value: string): string {
 
     @media (min-width: 40rem) {
         li {
-            grid-template-columns: var(--music-thumb-size) 1fr;
+            grid-template-columns: var(--music-thumb-w) 1fr;
             align-items: start;
         }
 
         .text {
-            height: var(--music-thumb-size);
+            height: var(--music-thumb-h);
             overflow: hidden;
         }
     }
@@ -157,15 +157,15 @@ function slugify(value: string): string {
     .thumb-placeholder {
         display: block;
         width: 100%;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 4 / 5;
         object-fit: cover;
     }
 
     @media (min-width: 40rem) {
         li :global(img),
         .thumb-placeholder {
-            width: var(--music-thumb-size);
-            height: var(--music-thumb-size);
+            width: var(--music-thumb-w);
+            height: var(--music-thumb-h);
         }
     }
 

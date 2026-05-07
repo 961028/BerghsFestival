@@ -38,6 +38,7 @@ export type ScheduleEvent = {
 
 export type ScheduleDay = {
     day: string;
+    date: string | null;
     events: ScheduleEvent[];
 };
 
@@ -66,6 +67,27 @@ const SimpleItems = repeater(
 export type SimpleItem = z.infer<typeof SimpleItems>[number];
 
 export type MusicItem = CollectionEntry<"musicItems">["data"];
+
+const FestivalDaysSchema = z
+    .array(
+        z.object({
+            abbr: z.string(),
+            date: z.string(),
+            hours: z.string(),
+        }),
+    )
+    .catch([]);
+
+async function getFestivalDays(): Promise<string[]> {
+    const settings = (await getCollection("settings"))[0]?.data;
+    if (!settings?.pageOnFront) return [];
+    const pages = await getCollection("pages");
+    const home = pages.find((p) => p.data.id === settings.pageOnFront!.id);
+    if (!home) return [];
+    return FestivalDaysSchema.parse(home.data.acf.festival_days).map(
+        (d) => d.date,
+    );
+}
 
 async function findPageByTemplate(
     template: string,
@@ -96,9 +118,11 @@ export async function getSchedulePage() {
     const raw = ScheduleRepeater.parse(page.data.acf.schedule);
     const musicItems = await getMusicItems();
     const musicById = new Map(musicItems.map((item) => [item.id, item]));
+    const festivalDates = await getFestivalDays();
 
-    const schedule: Schedule = raw.map((dayRow) => ({
+    const schedule: Schedule = raw.map((dayRow, i) => ({
         day: dayRow.day,
+        date: festivalDates[i] ?? null,
         events: dayRow.events.map((event) => {
             const linked = event.musicItemId
                 ? musicById.get(event.musicItemId)

@@ -3,6 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import { getSchedulePage } from "../lib/experience-pages";
 import Svg from "../components/elements/Svg.astro";
+import PageIntro from "../components/site/PageIntro.astro";
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
@@ -27,25 +28,35 @@ const { schedule } = data;
     ogImage={page.image}
     ctaCompact
 >
-    <section>
-        <ol class="day-toggle" role="list">
-            {
-                schedule.map((dayData, i) => (
-                    <li>
-                        <a
-                            data-day={i}
-                            href={`#day-${i}`}
-                        >
-                            {dayData.day}
-                        </a>
-                    </li>
-                ))
-            }
-        </ol>
+    <PageIntro
+        title={page.title}
+        descriptionHtml={data.page.data.content?.html}
+    />
 
+    <section>
         {
             schedule.map((dayData, dayIndex) => (
                 <div id={`day-${dayIndex}`} class="day-panel">
+                    <ol class="day-toggle" role="list">
+                        {schedule.map((d, i) => (
+                            <li>
+                                <a
+                                    data-day={i}
+                                    href={`#day-${i}`}
+                                    aria-current={
+                                        i === dayIndex ? "true" : "false"
+                                    }
+                                >
+                                    {d.date && (
+                                        <span class="toggle-date">
+                                            {d.date}
+                                        </span>
+                                    )}
+                                    {d.day}
+                                </a>
+                            </li>
+                        ))}
+                    </ol>
                     <ul>
                         {dayData.events.map((event) => (
                             <li>
@@ -130,25 +141,6 @@ const { schedule } = data;
             });
         });
 
-    // Highlight nav link for the visible day panel.
-    const dayLinks = document.querySelectorAll<HTMLElement>("[data-day]");
-    const dayPanels = document.querySelectorAll<HTMLElement>(".day-panel");
-
-    const observer = new IntersectionObserver(
-        (entries) => {
-            entries.forEach((entry) => {
-                if (!entry.isIntersecting) return;
-                const idx = [...dayPanels].indexOf(entry.target as HTMLElement);
-                dayLinks.forEach((l, i) =>
-                    l.setAttribute("aria-current", i === idx ? "true" : "false"),
-                );
-            });
-        },
-        { rootMargin: "-40% 0px -55% 0px" },
-    );
-
-    dayPanels.forEach((panel) => observer.observe(panel));
-
     // On Saturday, jump to day-1 if no anchor already in URL.
     if (!window.location.hash && new Date().getDay() === 6) {
         document.getElementById("day-1")?.scrollIntoView();
@@ -161,9 +153,7 @@ const { schedule } = data;
     }
 
     .day-toggle {
-        display: grid;
-        grid-auto-flow: column;
-        grid-auto-columns: 1fr;
+        display: flex;
         list-style: none;
         margin: 0;
         padding: 0;
@@ -174,21 +164,30 @@ const { schedule } = data;
         border-block-end: var(--border-default);
     }
 
-    .day-toggle a {
-        display: block;
-        width: 100%;
-        padding: var(--space-sm) var(--space-xs);
-        font-size: var(--font-size-lg);
+    .day-toggle li {
+        flex: 1;
+        container-type: inline-size;
+    }
 
-        @media (min-width: 48rem) {
-            font-size: var(--font-size-display);
-        }
+    .day-toggle a {
+        display: flex;
+        align-items: baseline;
+        justify-content: center;
+        gap: var(--space-sm);
+        width: 100%;
+        padding: var(--space-sm) var(--space-sm);
+        font-size: 12cqi;
+        white-space: nowrap;
         font-family: inherit;
         line-height: var(--line-height-tight);
         color: var(--color-text-muted);
         text-align: center;
         text-transform: uppercase;
         text-decoration: none;
+    }
+
+    .toggle-date {
+        color: inherit;
     }
 
     .day-toggle a[aria-current="true"] {
@@ -211,8 +210,12 @@ const { schedule } = data;
         padding: 0;
     }
 
-    .day-panel li + li {
+    .day-panel li {
         border-block-start: var(--border-default);
+    }
+
+    .day-panel ul li:first-child {
+        border-block-start: none;
     }
 
     .day-panel li:has(a.event-row):hover :global(.event-icon) {

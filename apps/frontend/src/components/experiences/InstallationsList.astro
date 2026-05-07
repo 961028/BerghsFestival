@@ -8,6 +8,7 @@ interface Props {
         location: string | null;
         image: ReferenceDataEntry<"media"> | null;
         description: { html: string };
+        url: string | null;
     }[];
 }
 
@@ -27,11 +28,24 @@ const { items } = Astro.props;
                     />
                 )}
                 <div class="text">
+                    <p class="name">{item.name}</p>
                     {item.location && (
                         <p class="meta">{item.location}</p>
                     )}
-                    <p class="name">{item.name}</p>
                     <div class="description" set:html={item.description.html} />
+                    {item.url && (
+                        <div class="links">
+                            <a
+                                class="btn"
+                                data-color-hover
+                                href={item.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Website
+                            </a>
+                        </div>
+                    )}
                 </div>
             </li>
         ))
@@ -97,4 +111,53 @@ const { items } = Astro.props;
         line-height: var(--line-height-base);
         color: var(--color-text-muted);
     }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+        margin-block-start: var(--space-sm);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--color-text-on-bg);
+        color: var(--color-text);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        padding: var(--space-sm) var(--space-md);
+        text-decoration: none;
+        min-block-size: max(44px, 2em);
+        line-height: 1;
+        transition: background-color 0.08s;
+    }
 </style>
+
+<script>
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
+
+    document
+        .querySelectorAll<HTMLElement>("[data-color-hover]")
+        .forEach((btn) => {
+            const nextAccent = makeColorPicker(2);
+            const reducedMotion = window.matchMedia(
+                "(prefers-reduced-motion: reduce)",
+            ).matches;
+
+            btn.addEventListener("mouseenter", () => {
+                btn.style.backgroundColor = nextAccent();
+                if (!reducedMotion) {
+                    const interval = setInterval(() => {
+                        btn.style.backgroundColor = nextAccent();
+                    }, CYCLE_INTERVAL_MS);
+                    btn.dataset.colorInterval = String(interval);
+                }
+            });
+
+            btn.addEventListener("mouseleave", () => {
+                clearInterval(Number(btn.dataset.colorInterval));
+                btn.style.backgroundColor = "";
+            });
+        });
+</script>

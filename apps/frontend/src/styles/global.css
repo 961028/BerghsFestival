@@ -62,7 +62,8 @@
         --icon-size: 1.5rem;
         --schedule-time-col: max-content;
         --schedule-food-col-min: 12rem;
-        --music-thumb-size: 20rem;
+        --music-thumb-w: 20rem;
+        --music-thumb-h: 25rem;
         --header-height: 3.625rem;
         --cta-height: 6.5rem;
         --cta-height-compact: 3.5rem;
@@ -91,7 +92,8 @@
             --space-xl: 4rem;
             --site-padding-inline: 1.75rem;
             --cta-height: 4.125rem;
-            --music-thumb-size: 20rem;
+            --music-thumb-w: 20rem;
+            --music-thumb-h: 25rem;
         }
     }
 
@@ -171,6 +173,7 @@
         font-size: var(--font-size-display);
         font-weight: var(--font-weight-bold);
         margin-block-end: var(--space-md);
+        text-transform: uppercase;
     }
 
     .section-body {

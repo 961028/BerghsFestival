@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import MusicList from "../components/experiences/MusicList.astro";
+import PageIntro from "../components/site/PageIntro.astro";
 import {
     getMusicPage,
     getScheduleDays,
@@ -28,13 +29,9 @@ const scheduleDays = await getScheduleDays();
     ogImage={page.image}
     ctaCompact
 >
-    <h1 class="page-title" data-scramble>{page.title}</h1>
+    <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
     <section>
-        {data.description && (
-            <div class="section-body intro" set:html={data.description.html} />
-        )}
-
         <MusicList items={data.items} scheduleDays={scheduleDays} />
     </section>
 </Layout>
@@ -44,7 +41,4 @@ const scheduleDays = await getScheduleDays();
         padding-block-end: var(--space-xl);
     }
 
-    .intro {
-        margin-block-end: var(--space-xl);
-    }
 </style>

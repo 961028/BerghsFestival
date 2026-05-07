@@ -2,6 +2,7 @@
 import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import WpImage from "../components/elements/WpImage.astro";
+import PageIntro from "../components/site/PageIntro.astro";
 import { getFoodPage } from "../lib/experience-pages";
 
 type Props = {
@@ -23,12 +24,9 @@ if (!data) {
     ogImage={page.image}
     ctaCompact
 >
-    <h1 class="page-title" data-scramble>{page.title}</h1>
+    <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
     <section>
-        {data.description && (
-            <div class="section-body intro" set:html={data.description.html} />
-        )}
 
         <ul class="food-list">
             {data.items.map((item) => (
@@ -83,10 +81,6 @@ if (!data) {
 <style>
     section {
         padding-block-end: var(--space-xl);
-    }
-
-    .intro {
-        margin-block-end: var(--space-xl);
     }
 
     .food-list {
