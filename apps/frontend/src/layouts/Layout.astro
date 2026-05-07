@@ -2,7 +2,7 @@
 import Contact from "../components/site/Contact.astro";
 import CtaBanner from "../components/site/CtaBanner.astro";
 import Header from "../components/site/Header.astro";
-import Iq from "../components/site/Iq.astro";
+import FooterTextBlock from "../components/site/FooterTextBlock.astro";
 import Sponsors from "../components/site/Sponsors.astro";
 import { getCollection, type ReferenceDataEntry } from "astro:content";
 
@@ -95,12 +95,14 @@ if (ogImageRef) {
                 </div>
                 <div class="footer-row footer-row--info">
                     <div class="footer-col">
-                        <Iq />
+                        <FooterTextBlock collection="iq" />
                     </div>
                     <div class="footer-col">
-                        <h2 class="footer-label">Contact</h2>
-                        <Contact />
+                        <FooterTextBlock collection="photoNotice" />
                     </div>
+                </div>
+                <div class="footer-row footer-row--contact">
+                    <Contact />
                 </div>
             </footer>
         </div>
@@ -319,6 +321,10 @@ if (ogImageRef) {
         align-self: flex-start;
     }
 
+    .footer-row--contact {
+        border-block-start: var(--border-default);
+    }
+
     .footer-row--info {
         border-block-start: var(--border-default);
         display: grid;
@@ -326,6 +332,7 @@ if (ogImageRef) {
         gap: 1px;
         background: var(--color-border);
         padding-block: 0; /* cells carry their own padding */
+        container-type: inline-size;
     }
 
     .footer-col {
@@ -336,8 +343,10 @@ if (ogImageRef) {
         padding-block: var(--space-lg);
     }
 
-    /* Tablet: add inner padding when the footer columns are side by side */
-    @media (min-width: 48rem) {
+    /* Add inner padding when footer cols are side by side.
+       Container query matches the grid auto-fit flip (2 × 16rem minmax floor),
+       so padding kicks in exactly when the divider goes vertical. */
+    @container (min-width: 32rem) {
         .footer-col:first-child {
             padding-inline-end: var(--space-lg);
         }

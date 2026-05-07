@@ -35,13 +35,13 @@ function _app_contact_register_options() {
 
 	acf_add_local_field_group(
 		array(
-			'key'        => _app_contact_group_key( 'address_phone' ),
+			'key'        => _app_contact_group_key( 'name_phone' ),
 			'title'      => 'Contact',
 			'fields'     => array(
 				array(
-					'key'   => _app_contact_field_key( 'address' ),
-					'name'  => 'contact-address',
-					'label' => 'Address',
+					'key'   => _app_contact_field_key( 'name' ),
+					'name'  => 'contact-name',
+					'label' => 'Name',
 					'type'  => 'textarea',
 				),
 				array(
@@ -49,6 +49,12 @@ function _app_contact_register_options() {
 					'name'  => 'contact-phone',
 					'label' => 'Phone',
 					'type'  => 'text',
+				),
+				array(
+					'key'   => _app_contact_field_key( 'email' ),
+					'name'  => 'contact-email',
+					'label' => 'Email',
+					'type'  => 'email',
 				),
 			),
 			'location'   => array( $location ),
@@ -131,8 +137,9 @@ add_action( 'rest_api_init', '_app_contact_on_rest_api_init' );
 function _app_contact_rest_api_callback(): WP_REST_Response {
 	return rest_ensure_response(
 		array(
-			'address'         => _app_contact_get( 'address' ),
+			'name'            => _app_contact_get( 'name' ),
 			'phone'           => _app_contact_get( 'phone' ),
+			'email'           => _app_contact_get( 'email' ),
 			'social_services' => _app_contact_get_social_services(),
 		)
 	);

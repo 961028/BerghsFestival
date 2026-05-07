@@ -1,64 +1,97 @@
 ---
 import { getCollection } from "astro:content";
+import { z } from "astro/zod";
 
 import Svg from "../elements/Svg.astro";
 
 const contact = (await getCollection("contact"))[0].data;
+const { name, phone, email, socialServices } = contact;
 
-const { address, phone, socialServices } = contact;
+const settings = (await getCollection("settings"))[0].data;
+const pages = await getCollection("pages");
+const homePage = pages.find((p) => settings.pageOnFront?.id === p.data.id);
+const venue = z
+    .string()
+    .optional()
+    .catch(undefined)
+    .parse(homePage?.data.acf?.venue);
 ---
 
-<div>
-    <div class="address">{address}</div>
-
+<div class="contact">
+    <div class="contact-info">
+        {name && <div class="name">{name}</div>}
+        <div class="contact-links">
+            {email && <a href={`mailto:${email}`}>{email}</a>}
+            {phone && <a href={`tel:${phone}`}>{phone}</a>}
+            {venue && <div class="venue">{venue}</div>}
+        </div>
+    </div>
     {
-        phone && (
-            <div class="phone">
-                <a href={`tel:${phone}`}>{phone}</a>
-            </div>
+        socialServices.length > 0 && (
+            <ul class="socials">
+                {socialServices.map((service) => (
+                    <li>
+                        <a
+                            href={service.url}
+                            aria-label={service.label}
+                            title={service.label}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            <Svg name={service.icon} alt="" />
+                        </a>
+                    </li>
+                ))}
+            </ul>
         )
     }
-
-    <ul>
-        {
-            socialServices.map((service) => (
-                <li>
-                    <a
-                        href={service.url}
-                        aria-label={service.label}
-                        title={service.label}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <Svg name={service.icon} alt="" />
-                    </a>
-                </li>
-            ))
-        }
-    </ul>
 </div>
 
 <style>
-    .address {
+    .contact {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+    }
+
+    .contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .name {
         white-space: pre-wrap;
+        font-weight: var(--font-weight-bold);
     }
 
-    .phone {
-        margin-block-start: var(--space-xs);
+    .contact-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs) var(--space-sm);
     }
 
-    ul {
+    .socials {
         list-style: none;
         padding: 0;
+        margin: 0;
         display: flex;
         gap: var(--space-sm);
-        margin-block-start: var(--space-sm);
     }
 
-    ul :global(svg) {
+    .socials :global(svg) {
         display: block;
         width: var(--icon-size);
         height: auto;
         fill: currentColor;
+    }
+
+    @media (min-width: 48rem) {
+        .contact {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
     }
 </style>

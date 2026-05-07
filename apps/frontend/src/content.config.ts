@@ -297,8 +297,9 @@ const contact = defineSingletonCollection(
     "app/v1/contact",
     z
         .object({
-            address: z.string(),
+            name: z.string(),
             phone: z.string(),
+            email: z.string(),
             social_services: repeater(
                 z.object({
                     icon: z.string(),
@@ -308,23 +309,28 @@ const contact = defineSingletonCollection(
             ),
         })
         .transform((item) => ({
-            address: item.address,
+            name: item.name,
             phone: item.phone,
+            email: item.email,
             socialServices: item.social_services,
         })),
 );
 
-const iq = defineSingletonCollection(
-    "app/v1/iq",
-    z
-        .object({
-            title: z.string(),
-            content: z.string(),
-        })
-        .transform((item) => ({
-            title: item.title,
-            content: { html: item.content.trim() },
-        })),
+const footerTextBlockSchema = z
+    .object({
+        title: z.string(),
+        content: z.string(),
+    })
+    .transform((item) => ({
+        title: item.title,
+        content: { html: item.content.trim() },
+    }));
+
+const iq = defineSingletonCollection("app/v1/iq", footerTextBlockSchema);
+
+const photoNotice = defineSingletonCollection(
+    "app/v1/photo-notice",
+    footerTextBlockSchema,
 );
 
 export const collections = {
@@ -339,4 +345,5 @@ export const collections = {
     sponsors,
     contact,
     iq,
+    photoNotice,
 };

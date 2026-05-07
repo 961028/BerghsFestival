@@ -1,21 +1,26 @@
 ---
 import { getCollection } from "astro:content";
 
-const { title, content } = (await getCollection("iq"))[0].data;
+type Props = {
+    collection: "iq" | "photoNotice";
+};
+
+const { collection } = Astro.props;
+const { title, content } = (await getCollection(collection))[0].data;
 ---
 
-<div class="iq">
+<div class="footer-text-block">
     <h2 class="footer-label">{title}</h2>
     <div set:html={content.html} />
 </div>
 
 <style>
-    .iq {
+    .footer-text-block {
         display: grid;
         gap: var(--space-sm);
     }
 
-    .iq > div {
+    .footer-text-block > div {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
     }

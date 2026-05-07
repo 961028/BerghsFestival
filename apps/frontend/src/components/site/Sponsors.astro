@@ -2,7 +2,7 @@
 import { getCollection, getEntry } from "astro:content";
 import WpImage from "../elements/WpImage.astro";
 
-const BASELINE = 6; // rem — width of a square logo
+const BASELINE = 10; // rem — width of a square logo
 const EXPONENT = 0.6;
 
 const sponsors = (await getCollection("sponsors")).sort((a, b) => {
@@ -21,7 +21,7 @@ const sponsorLogos = (
             }
 
             const { url, name } = sponsor.data;
-            const { width, height } = image.data;
+            const { width, height, sourceUrl } = image.data;
             const ratio = width && height ? width / height : 1;
             const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
 
@@ -29,6 +29,7 @@ const sponsorLogos = (
                 url,
                 name,
                 image,
+                sourceUrl,
                 widthStyle: `${widthRem.toFixed(3)}rem`,
             };
         }),
@@ -36,15 +37,15 @@ const sponsorLogos = (
 ).filter((s) => s !== null);
 ---
 
-<ul>
+<ul data-sponsors>
     {
-        sponsorLogos.map(({ url, name, image, widthStyle }) => (
+        sponsorLogos.map(({ url, name, image, sourceUrl, widthStyle }) => (
             <li>
                 <a
                     href={url}
                     aria-label={name}
                     title={name}
-                    style={`width: ${widthStyle}`}
+                    style={`width: ${widthStyle}; --logo-url: url(${sourceUrl});`}
                 >
                     <WpImage data-logo image={image} alt={name} />
                 </a>
@@ -66,16 +67,65 @@ const sponsorLogos = (
 
     a {
         display: block;
+        position: relative;
     }
 
     [data-logo] {
         display: block;
         width: 100%;
         height: auto;
-        filter: grayscale(1);
     }
 
-    a:hover [data-logo] {
-        filter: grayscale(0);
+    @media (any-hover: hover) and (any-pointer: fine) {
+        a::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--color-accent-1);
+            mask-image: var(--logo-url);
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            mix-blend-mode: multiply;
+            opacity: 0;
+            transition: opacity 120ms;
+            pointer-events: none;
+        }
+
+        a:hover::after {
+            opacity: 1;
+        }
     }
 </style>
+
+<script>
+    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
+
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const nextAccent = makeColorPicker(2);
+
+    document
+        .querySelectorAll<HTMLElement>("[data-sponsors] a")
+        .forEach((link) => {
+            let timer: ReturnType<typeof setInterval> | undefined;
+
+            link.addEventListener("mouseenter", () => {
+                link.style.setProperty("--color-accent-1", nextAccent());
+                if (!reducedMotion) {
+                    timer = setInterval(() => {
+                        link.style.setProperty(
+                            "--color-accent-1",
+                            nextAccent(),
+                        );
+                    }, CYCLE_INTERVAL_MS);
+                }
+            });
+
+            link.addEventListener("mouseleave", () => {
+                clearInterval(timer);
+                link.style.removeProperty("--color-accent-1");
+            });
+        });
+</script>

@@ -425,8 +425,8 @@ final class App_Seed_Command {
 	private function set_contact_options(): void {
 		WP_CLI::line( 'Setting contact options' );
 
-		$address = "Berghs School of Communication\nBobergsgatan 48\n111 93 Stockholm";
-		update_field( _app_contact_field_key( 'address' ), $address, 'options' );
+		$name = "Berghs School of Communication\nBobergsgatan 48\n111 93 Stockholm";
+		update_field( _app_contact_field_key( 'name' ), $name, 'options' );
 
 		$phone = '+46 8 587 550 00';
 		update_field( _app_contact_field_key( 'phone' ), $phone, 'options' );
