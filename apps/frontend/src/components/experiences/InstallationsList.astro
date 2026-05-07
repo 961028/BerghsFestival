@@ -62,17 +62,15 @@ const { items } = Astro.props;
 
     li {
         display: grid;
-        grid-template-columns: 1fr;
         gap: var(--space-sm);
         padding-block: var(--space-lg);
         border-block-start: var(--border-default);
         align-items: start;
     }
 
-    /* Wide phone+: image left, text right — matches MusicList rhythm */
-    @container (min-width: 30rem) {
-        li {
-            grid-template-columns: 40% 1fr;
+    @container (min-width: 48rem) {
+        li:has(img) {
+            grid-template-columns: var(--installation-img-w) 1fr;
             gap: var(--space-md);
         }
     }
@@ -80,8 +78,16 @@ const { items } = Astro.props;
     li :global(img) {
         display: block;
         width: 100%;
-        aspect-ratio: 2 / 1;
+        height: auto;
+        aspect-ratio: 1 / 1;
         object-fit: cover;
+    }
+
+    @container (min-width: 48rem) {
+        li :global(img) {
+            width: var(--installation-img-w);
+            height: var(--installation-img-w);
+        }
     }
 
     .text {
