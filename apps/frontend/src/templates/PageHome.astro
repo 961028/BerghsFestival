@@ -261,7 +261,7 @@ const projectCount = acf.project_count as number | undefined;
     .schedule-headline {
         display: flex;
         align-items: baseline;
-        gap: var(--space-md);
+        gap: var(--space-sm);
         line-height: var(--line-height-tight);
     }
 
@@ -303,7 +303,7 @@ const projectCount = acf.project_count as number | undefined;
     }
 
     /* Tablet: two days side by side */
-    @media (min-width: 48rem) {
+    @media (min-width: 54rem) {
         .schedule-days {
             grid-template-columns: 1fr 1fr;
         }
@@ -345,7 +345,7 @@ const projectCount = acf.project_count as number | undefined;
     }
 
     /* Tablet: section label goes vertical alongside content */
-    @media (min-width: 48rem) {
+    @media (min-width: 54rem) {
         .section-label {
             writing-mode: vertical-lr;
             rotate: 180deg;
@@ -359,5 +359,4 @@ const projectCount = acf.project_count as number | undefined;
             gap: 0 var(--space-xl);
         }
     }
-
 </style>

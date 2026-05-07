@@ -2,7 +2,7 @@
 import { getCollection, getEntry } from "astro:content";
 import WpImage from "../elements/WpImage.astro";
 
-const BASELINE = 10; // rem — width of a square logo
+const BASELINE = 8; // rem — width of a square logo
 const EXPONENT = 0.6;
 
 const sponsors = (await getCollection("sponsors")).sort((a, b) => {

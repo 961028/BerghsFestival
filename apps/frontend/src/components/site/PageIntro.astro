@@ -9,12 +9,14 @@ const { title, descriptionHtml } = Astro.props;
 
 <h1 class="page-title" data-scramble>{title}</h1>
 
-{descriptionHtml && (
-    <div class="section-body intro" set:html={descriptionHtml} />
-)}
+{
+    descriptionHtml && (
+        <div class="section-body intro" set:html={descriptionHtml} />
+    )
+}
 
 <style>
     .intro {
-        margin-block-end: var(--space-xl);
+        margin-block-end: var(--space-lg);
     }
 </style>
