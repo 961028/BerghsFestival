@@ -64,8 +64,7 @@ function submenuId(node: MenuNode): string {
                 tree.map((node) => {
                     if (node.children.length > 0) {
                         const inSection = node.children.some(
-                            (child) =>
-                                currentPath === menuItemPath(child.url),
+                            (child) => currentPath === menuItemPath(child.url),
                         );
                         return (
                             <li class="has-submenu">
@@ -267,6 +266,8 @@ function submenuId(node: MenuNode): string {
         margin: 0;
         font-size: var(--font-size-base);
         text-transform: uppercase;
+        min-width: 0;
+        flex-wrap: wrap;
     }
 
     .nav-link[aria-current="page"] {

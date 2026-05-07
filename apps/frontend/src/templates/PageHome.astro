@@ -235,10 +235,6 @@ const projectCount = acf.project_count as number | undefined;
         margin: 0;
     }
 
-    .hero-stats {
-        white-space: nowrap;
-    }
-
     /* ── Schedule ──────────────────────────────────────────────────── */
 
     .schedule-days {
@@ -287,7 +283,7 @@ const projectCount = acf.project_count as number | undefined;
     }
 
     /* Schedule days go inline earlier — the content is short enough */
-    @media (min-width: 22rem) {
+    @media (min-width: 24rem) {
         .schedule-day {
             display: flex;
             align-items: center;
@@ -303,7 +299,7 @@ const projectCount = acf.project_count as number | undefined;
     }
 
     /* Tablet: two days side by side */
-    @media (min-width: 54rem) {
+    @media (min-width: 56rem) {
         .schedule-days {
             grid-template-columns: 1fr 1fr;
         }
@@ -345,7 +341,7 @@ const projectCount = acf.project_count as number | undefined;
     }
 
     /* Tablet: section label goes vertical alongside content */
-    @media (min-width: 54rem) {
+    @media (min-width: 56rem) {
         .section-label {
             writing-mode: vertical-lr;
             rotate: 180deg;
