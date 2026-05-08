@@ -15,7 +15,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ul>
+<ul role="list">
     {
         items.map((item) => (
             <li>
@@ -24,14 +24,12 @@ const { items } = Astro.props;
                         image={item.image}
                         width={1200}
                         height={600}
-                        alt={item.name}
+                        alt=""
                     />
                 )}
                 <div class="text">
-                    <p class="name">{item.name}</p>
-                    {item.location && (
-                        <p class="meta">{item.location}</p>
-                    )}
+                    <h2 class="name">{item.name}</h2>
+                    {item.location && <p class="meta">{item.location}</p>}
                     <div class="description" set:html={item.description.html} />
                     {item.url && (
                         <div class="links">
@@ -41,6 +39,7 @@ const { items } = Astro.props;
                                 href={item.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
+                                aria-label={`${item.name} website`}
                             >
                                 Website
                             </a>
@@ -105,11 +104,12 @@ const { items } = Astro.props;
         letter-spacing: var(--letter-spacing-tight);
     }
 
-    .name {
+    h2.name {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
+        margin: 0;
     }
 
     .description {
@@ -141,29 +141,11 @@ const { items } = Astro.props;
 </style>
 
 <script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
+    import { attachAccentCycle } from "../../scripts/accents";
 
     document
         .querySelectorAll<HTMLElement>("[data-color-hover]")
         .forEach((btn) => {
-            const nextAccent = makeColorPicker(2);
-            const reducedMotion = window.matchMedia(
-                "(prefers-reduced-motion: reduce)",
-            ).matches;
-
-            btn.addEventListener("mouseenter", () => {
-                btn.style.backgroundColor = nextAccent();
-                if (!reducedMotion) {
-                    const interval = setInterval(() => {
-                        btn.style.backgroundColor = nextAccent();
-                    }, CYCLE_INTERVAL_MS);
-                    btn.dataset.colorInterval = String(interval);
-                }
-            });
-
-            btn.addEventListener("mouseleave", () => {
-                clearInterval(Number(btn.dataset.colorInterval));
-                btn.style.backgroundColor = "";
-            });
+            attachAccentCycle(btn, (c) => (btn.style.backgroundColor = c));
         });
 </script>

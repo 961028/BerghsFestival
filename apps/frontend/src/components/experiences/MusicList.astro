@@ -20,9 +20,7 @@ const buckets: { label: string | null; items: MusicItem[] }[] = [
     })),
     {
         label: null,
-        items: items.filter(
-            (item) => !item.day || !knownDays.has(item.day),
-        ),
+        items: items.filter((item) => !item.day || !knownDays.has(item.day)),
     },
 ].filter((bucket) => bucket.items.length > 0);
 
@@ -35,73 +33,87 @@ function slugify(value: string): string {
 ---
 
 <div class="music">
-    {buckets.map((bucket) => (
-        <section
-            class="day"
-            id={bucket.label ? slugify(bucket.label) : undefined}
-        >
-            {bucket.label && <h2 class="day-heading">{bucket.label}</h2>}
-            <ul>
-                {bucket.items.map((item) => (
-                    <li id={item.slug}>
-                        {item.image ? (
-                            <WpImage
-                                image={item.image}
-                                width={600}
-                                height={750}
-                                alt={item.name}
-                            />
-                        ) : (
-                            <div class="thumb-placeholder" aria-hidden="true" />
-                        )}
-                        <div class="text">
-                            <p class="name">{item.name}</p>
-                            {(item.startTime || item.location) && (
-                                <p class="meta">
-                                    {item.startTime && (
-                                        <span class="time">{item.startTime}</span>
-                                    )}
-                                    {item.location && (
-                                        <span class="location">{item.location}</span>
-                                    )}
-                                </p>
+    {
+        buckets.map((bucket) => (
+            <div
+                class="day"
+                id={bucket.label ? slugify(bucket.label) : undefined}
+            >
+                {bucket.label && <h2 class="day-heading">{bucket.label}</h2>}
+                <ul role="list">
+                    {bucket.items.map((item) => (
+                        <li id={item.slug}>
+                            {item.image ? (
+                                <WpImage
+                                    image={item.image}
+                                    width={600}
+                                    height={750}
+                                    alt=""
+                                />
+                            ) : (
+                                <div
+                                    class="thumb-placeholder"
+                                    aria-hidden="true"
+                                />
                             )}
-                            <div
-                                class="description"
-                                set:html={item.description.html}
-                            />
-                            {(item.url || item.socialUrl) && (
-                                <div class="links">
-                                    {item.url && (
-                                        <a
-                                            class="btn"
-                                            data-color-hover
-                                            href={item.url}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Website
-                                        </a>
-                                    )}
-                                    {item.socialUrl && (
-                                        <a
-                                            class="btn"
-                                            data-color-hover
-                                            href={item.socialUrl}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Social
-                                        </a>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    </li>
-                ))}
-            </ul>
-        </section>
-    ))}
+                            <div class="text">
+                                {bucket.label
+                                    ? <h3 class="name">{item.name}</h3>
+                                    : <h2 class="name">{item.name}</h2>
+                                }
+                                {(item.startTime || item.location) && (
+                                    <p class="meta">
+                                        {item.startTime && (
+                                            <span class="time">
+                                                {item.startTime}
+                                            </span>
+                                        )}
+                                        {item.location && (
+                                            <span class="location">
+                                                {item.location}
+                                            </span>
+                                        )}
+                                    </p>
+                                )}
+                                <div
+                                    class="description"
+                                    set:html={item.description.html}
+                                />
+                                {(item.url || item.socialUrl) && (
+                                    <div class="links">
+                                        {item.url && (
+                                            <a
+                                                class="btn"
+                                                data-color-hover
+                                                href={item.url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={`${item.name} website`}
+                                            >
+                                                Website
+                                            </a>
+                                        )}
+                                        {item.socialUrl && (
+                                            <a
+                                                class="btn"
+                                                data-color-hover
+                                                href={item.socialUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={`${item.name} social media`}
+                                            >
+                                                Social
+                                            </a>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+        ))
+    }
 </div>
 
 <style>
@@ -259,29 +271,11 @@ function slugify(value: string): string {
 </style>
 
 <script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
+    import { attachAccentCycle } from "../../scripts/accents";
 
     document
         .querySelectorAll<HTMLElement>("[data-color-hover]")
         .forEach((btn) => {
-            const nextAccent = makeColorPicker(2);
-            const reducedMotion = window.matchMedia(
-                "(prefers-reduced-motion: reduce)",
-            ).matches;
-
-            btn.addEventListener("mouseenter", () => {
-                btn.style.backgroundColor = nextAccent();
-                if (!reducedMotion) {
-                    const interval = setInterval(() => {
-                        btn.style.backgroundColor = nextAccent();
-                    }, CYCLE_INTERVAL_MS);
-                    btn.dataset.colorInterval = String(interval);
-                }
-            });
-
-            btn.addEventListener("mouseleave", () => {
-                clearInterval(Number(btn.dataset.colorInterval));
-                btn.style.backgroundColor = "";
-            });
+            attachAccentCycle(btn, (c) => (btn.style.backgroundColor = c));
         });
 </script>

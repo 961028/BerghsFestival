@@ -33,26 +33,38 @@ const { schedule } = data;
         descriptionHtml={data.page.data.content?.html}
     />
 
-    <section>
+    <section aria-labelledby="page-title">
+        <div
+            class="day-toggle"
+            role="tablist"
+            aria-label="Festival days"
+        >
+            {schedule.map((d, i) => (
+                <div class="day-tab-cell" role="presentation">
+                    <button
+                        type="button"
+                        role="tab"
+                        id={`day-tab-${i}`}
+                        aria-controls={`day-${i}`}
+                        aria-selected={i === 0 ? "true" : "false"}
+                        tabindex={i === 0 ? 0 : -1}
+                    >
+                        {d.day}
+                    </button>
+                </div>
+            ))}
+        </div>
         {
             schedule.map((dayData, dayIndex) => (
-                <div id={`day-${dayIndex}`} class="day-panel">
-                    <ol class="day-toggle" role="list">
-                        {schedule.map((d, i) => (
-                            <li>
-                                <a
-                                    data-day={i}
-                                    href={`#day-${i}`}
-                                    aria-current={
-                                        i === dayIndex ? "true" : "false"
-                                    }
-                                >
-                                    {d.day}
-                                </a>
-                            </li>
-                        ))}
-                    </ol>
-                    <ul>
+                <div
+                    id={`day-${dayIndex}`}
+                    class="day-panel"
+                    role="tabpanel"
+                    aria-labelledby={`day-tab-${dayIndex}`}
+                    tabindex="0"
+                    hidden={dayIndex !== 0}
+                >
+                    <ul role="list">
                         {dayData.events.map((event) => (
                             <li>
                                 {event.href ? (
@@ -83,26 +95,53 @@ const { schedule } = data;
 </Layout>
 
 <script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../scripts/accents";
+    import { attachAccentCycle, makeColorPicker } from "../scripts/accents";
 
-    const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-    ).matches;
     const nextAccent = makeColorPicker(2);
 
-    document.querySelectorAll<HTMLElement>("[data-day]").forEach((link) => {
-        let timer: ReturnType<typeof setInterval>;
-        link.addEventListener("mouseenter", () => {
-            link.style.color = nextAccent();
-            if (!reducedMotion) {
-                timer = setInterval(() => {
-                    link.style.color = nextAccent();
-                }, CYCLE_INTERVAL_MS);
-            }
+    const dayTabs = Array.from(
+        document.querySelectorAll<HTMLButtonElement>('[role="tab"]'),
+    );
+    const dayPanels = Array.from(
+        document.querySelectorAll<HTMLElement>('[role="tabpanel"]'),
+    );
+
+    function selectDay(index: number, focus = false) {
+        dayTabs.forEach((tab, i) => {
+            const selected = i === index;
+            tab.setAttribute("aria-selected", selected ? "true" : "false");
+            tab.tabIndex = selected ? 0 : -1;
+            if (selected && focus) tab.focus();
         });
-        link.addEventListener("mouseleave", () => {
-            clearInterval(timer);
-            link.style.color = "";
+        dayPanels.forEach((panel, i) => {
+            panel.hidden = i !== index;
+        });
+    }
+
+    dayTabs.forEach((tab, index) => {
+        attachAccentCycle(tab, (c) => (tab.style.color = c), nextAccent);
+        tab.addEventListener("click", () => selectDay(index));
+        tab.addEventListener("keydown", (e) => {
+            const last = dayTabs.length - 1;
+            let next = -1;
+            switch (e.key) {
+                case "ArrowRight":
+                    next = index === last ? 0 : index + 1;
+                    break;
+                case "ArrowLeft":
+                    next = index === 0 ? last : index - 1;
+                    break;
+                case "Home":
+                    next = 0;
+                    break;
+                case "End":
+                    next = last;
+                    break;
+                default:
+                    return;
+            }
+            e.preventDefault();
+            selectDay(next, true);
         });
     });
 
@@ -112,33 +151,23 @@ const { schedule } = data;
             const title = li.querySelector<HTMLElement>(".title");
             const time = li.querySelector<HTMLElement>(".time");
             const icon = li.querySelector<HTMLElement>(".event-icon");
-            let timer: ReturnType<typeof setInterval>;
-
-            li.addEventListener("mouseenter", () => {
-                const color = nextAccent();
-                if (title) title.style.color = color;
-                if (time) time.style.color = color;
-                if (icon) icon.style.background = color;
-                if (!reducedMotion) {
-                    timer = setInterval(() => {
-                        const c = nextAccent();
-                        if (title) title.style.color = c;
-                        if (time) time.style.color = c;
-                        if (icon) icon.style.background = c;
-                    }, CYCLE_INTERVAL_MS);
-                }
-            });
-            li.addEventListener("mouseleave", () => {
-                clearInterval(timer);
-                if (title) title.style.color = "";
-                if (time) time.style.color = "";
-                if (icon) icon.style.background = "";
-            });
+            attachAccentCycle(
+                li,
+                (c) => {
+                    if (title) title.style.color = c;
+                    if (time) time.style.color = c;
+                    if (icon) icon.style.background = c;
+                },
+                nextAccent,
+            );
         });
 
-    // On Saturday, jump to day-1 if no anchor already in URL.
-    if (!window.location.hash && new Date().getDay() === 6) {
-        document.getElementById("day-1")?.scrollIntoView();
+    if (
+        !window.location.hash &&
+        new Date().getDay() === 6 &&
+        dayPanels.length > 1
+    ) {
+        selectDay(1);
     }
 </script>
 
@@ -149,9 +178,6 @@ const { schedule } = data;
 
     .day-toggle {
         display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
         position: sticky;
         top: var(--header-height);
         z-index: 50;
@@ -159,17 +185,17 @@ const { schedule } = data;
         border-block-end: var(--border-default);
     }
 
-    .day-toggle li {
+    .day-tab-cell {
         flex: 1;
         container-type: inline-size;
     }
 
-    .day-toggle a {
+    .day-toggle button {
+        width: 100%;
         display: flex;
         align-items: baseline;
         justify-content: center;
         gap: var(--space-sm);
-        width: 100%;
         padding: var(--space-sm) var(--space-sm);
         font-size: 16cqi;
         white-space: nowrap;
@@ -178,10 +204,12 @@ const { schedule } = data;
         color: var(--color-text-muted);
         text-align: center;
         text-transform: uppercase;
-        text-decoration: none;
+        background: transparent;
+        border: 0;
+        cursor: pointer;
     }
 
-    .day-toggle a[aria-current="true"] {
+    .day-toggle button[aria-selected="true"] {
         background: var(--color-text-on-bg);
         color: var(--color-text);
         font-weight: var(--font-weight-bold);
@@ -191,8 +219,8 @@ const { schedule } = data;
         scroll-margin-top: calc(var(--header-height) + 3.5rem);
     }
 
-    .day-panel + .day-panel {
-        margin-block-start: var(--space-xl);
+    .day-panel:focus-visible {
+        outline: none;
     }
 
     .day-panel ul {

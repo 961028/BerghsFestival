@@ -26,9 +26,9 @@ if (!data) {
 >
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
-    <section>
+    <div class="page-section">
 
-        <ul class="food-list">
+        <ul class="food-list" role="list">
             {data.items.map((item) => (
                 <li>
                     {item.image && (
@@ -36,11 +36,11 @@ if (!data) {
                             image={item.image}
                             width={600}
                             height={600}
-                            alt={item.name}
+                            alt=""
                         />
                     )}
                     <div>
-                        <p>{item.name}</p>
+                        <h2>{item.name}</h2>
                         {item.location && (
                             <p class="meta">{item.location}</p>
                         )}
@@ -54,6 +54,7 @@ if (!data) {
                                         href={item.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label={`${item.name} website`}
                                     >
                                         Website
                                     </a>
@@ -65,6 +66,7 @@ if (!data) {
                                         href={item.socialUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label={`${item.name} social media`}
                                     >
                                         Social
                                     </a>
@@ -75,11 +77,11 @@ if (!data) {
                 </li>
             ))}
         </ul>
-    </section>
+    </div>
 </Layout>
 
 <style>
-    section {
+    .page-section {
         padding-block-end: var(--space-xl);
     }
 
@@ -121,12 +123,12 @@ if (!data) {
         padding: var(--space-sm);
     }
 
-    .food-list li p {
+    .food-list li h2 {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
-        margin-block-end: var(--space-xs);
+        margin: 0 0 var(--space-xs);
     }
 
     .food-list li .meta {

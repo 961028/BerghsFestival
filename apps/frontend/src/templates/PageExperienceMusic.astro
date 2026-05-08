@@ -31,13 +31,13 @@ const scheduleDays = await getScheduleDays();
 >
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
-    <section>
+    <div class="page-section">
         <MusicList items={data.items} scheduleDays={scheduleDays} />
-    </section>
+    </div>
 </Layout>
 
 <style>
-    section {
+    .page-section {
         padding-block-end: var(--space-xl);
     }
 
