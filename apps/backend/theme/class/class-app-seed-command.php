@@ -390,20 +390,23 @@ Saturday 23 May, 12:00–18:00'
 
 		$page_id = $this->insert_post(
 			array(
-				'post_type'    => 'page',
-				'post_status'  => 'publish',
-				'post_title'   => 'Power of creativity',
-				'post_name'    => 'about-berghs',
-				'post_content' => wpautop(
-					'At Berghs, our passion for communication in all its forms drives us to educate and nurture the brightest communicators of the future, a mission we\'ve proudly upheld since 1941. We are dedicated to delivering top-quality education, ensuring that everyone can benefit fully from our teachings. Our approach centers on development and inclusion, seeking creative ways to address real-world problems. We believe in the positive impact of diverse skills, experiences, and perspectives on problem-solving. We celebrate the power of creativity and teamwork!'
-				),
-				'meta_input'   => array(
+				'post_type'   => 'page',
+				'post_status' => 'publish',
+				'post_title'  => 'About Berghs',
+				'post_name'   => 'about-berghs',
+				'meta_input'  => array(
 					'_wp_page_template' => 'page-about-berghs.php',
 				),
 			)
 		);
 
 		$sections = array(
+			array(
+				'title'   => 'Power of creativity',
+				'content' => wpautop(
+					'At Berghs, our passion for communication in all its forms drives us to educate and nurture the brightest communicators of the future, a mission we\'ve proudly upheld since 1941. We are dedicated to delivering top-quality education, ensuring that everyone can benefit fully from our teachings. Our approach centers on development and inclusion, seeking creative ways to address real-world problems. We believe in the positive impact of diverse skills, experiences, and perspectives on problem-solving. We celebrate the power of creativity and teamwork!'
+				),
+			),
 			array(
 				'title'   => 'Action-based learning',
 				'content' => wpautop(
