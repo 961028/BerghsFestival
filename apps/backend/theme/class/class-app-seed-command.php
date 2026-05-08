@@ -245,12 +245,12 @@ The festival dissolves the boundary between creator and observer, encouraging vi
 
 		$festival_days = array(
 			array(
-				'abbr'  => 'FRI',
+				'abbr'  => 'Fri',
 				'date'  => '22',
 				'hours' => '12:00 – 01:00',
 			),
 			array(
-				'abbr'  => 'SAT',
+				'abbr'  => 'Sat',
 				'date'  => '23',
 				'hours' => '12:00 – 18:00',
 			),
@@ -292,7 +292,7 @@ Saturday 23 May, 12:00–18:00'
 					array(
 						'music_item' => '',
 						'start_time' => '12:00',
-						'title'      => 'DOORS OPEN',
+						'title'      => 'Doors open',
 					),
 				),
 			),
@@ -302,7 +302,7 @@ Saturday 23 May, 12:00–18:00'
 					array(
 						'music_item' => '',
 						'start_time' => '12:00',
-						'title'      => 'DOORS OPEN',
+						'title'      => 'Doors open',
 					),
 				),
 			),
@@ -561,7 +561,7 @@ Saturday 23 May, 12:00–18:00'
 
 		update_field( _app_contact_field_key( 'name' ), 'Berghs School of Communication', 'options' );
 		update_field( _app_contact_field_key( 'phone' ), '08-587 550 00', 'options' );
-		update_field( _app_contact_field_key( 'email' ), 'INFO@BERGHS.SE', 'options' );
+		update_field( _app_contact_field_key( 'email' ), 'info@berghs.se', 'options' );
 
 		$service_slug_to_url = array(
 			'instagram' => 'https://www.instagram.com/berghs/',
@@ -589,7 +589,7 @@ Saturday 23 May, 12:00–18:00'
 	private function set_iq_options(): void {
 		WP_CLI::line( 'Setting IQ options' );
 
-		update_field( _app_footer_text_block_field_key( 'iq', 'title' ), 'DRINK WITH INTENTION', 'options' );
+		update_field( _app_footer_text_block_field_key( 'iq', 'title' ), 'Drink with intention', 'options' );
 
 		$content = 'At Friction Festival, we encourage conscious participation and responsible consumption. Beverage sales are restricted to guests over 18, and a range of non-alcoholic options will be available. Look after yourself and the people around you.
 
@@ -613,45 +613,58 @@ Thank you for helping us share the experience.';
 	private function set_sponsor_options(): void {
 		WP_CLI::line( 'Setting sponsor options' );
 
-		// The TSV's sponsor image URLs (Gmail/Drive share links) are not directly downloadable.
-		// We sideload generic placeholder logos and assign them by index — editors can replace
-		// them via the Sponsors options page.
-		$placeholder_logo_ids = array(
-			$this->sideload_image( 'https://unfinishedfestival.se/wp-content/uploads/2024/05/Djuce-Logo.png' ),
-			$this->sideload_image( 'https://unfinishedfestival.se/wp-content/uploads/2024/05/deglabbet-logo.png' ),
-			$this->sideload_image( 'https://unfinishedfestival.se/wp-content/uploads/2024/05/818_Logo_Lockup_HERO_Pina-1-1.png' ),
-			$this->sideload_image( 'https://unfinishedfestival.se/wp-content/uploads/2024/05/tapdance_logo-1.png' ),
-		);
-
+		// Drive share links resolve via the uc?export=download form. The Deglabbet logo
+		// in the TSV is a Gmail attachment URL that requires auth, so we substitute a
+		// public copy hosted elsewhere.
 		$sponsors_data = array(
 			array(
-				'name' => 'Deglabbet',
-				'url'  => '',
+				'name'      => 'Deglabbet',
+				'url'       => 'https://deglabbet.se',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=1GFKdPmDaOvmqLESm5XVZPMxW-kONWFRg',
 			),
 			array(
-				'name' => 'Simple Marketing',
-				'url'  => 'https://simplemarketing.se',
+				'name'      => 'Still Gin',
+				'url'       => 'https://eu.dreandsnoop.com/sv-se/products/still-gin',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=17XhPlTTsgbFA5PWKpkqkOTve3-xgwTl_',
 			),
 			array(
-				'name' => '818 Tequila',
-				'url'  => 'https://drink818.com',
+				'name'      => 'Coppa Cocktails',
+				'url'       => 'https://www.coppacocktails.com',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=1ZyGi4_7h_KbGf2kYpu_a0J5HsyLJhDwx',
 			),
 			array(
-				'name' => 'Le Tribute',
-				'url'  => 'https://letribute.com',
+				'name'      => '818 Tequila',
+				'url'       => 'https://drink818.com',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=1ouuWZHZN-TnpcS3vUL-lqlyF9K8hAH6V',
 			),
 			array(
-				'name' => 'QBN Spirit Connoisseurs',
-				'url'  => 'https://www.qbnbev.com/en/',
+				'name'      => 'Le Tribute',
+				'url'       => 'https://letribute.com',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=1D3qSNWJZ5pgxwYW23KB6lHFQgSqn4aya',
+			),
+			array(
+				'name'      => 'QBN Spirit Connoisseurs',
+				'url'       => 'https://www.qbnbev.com/en/',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=1toMBM6bJQZVn-WDZM40yKdLY7WZoDuoE',
+			),
+			array(
+				'name'      => 'Simple Marketing',
+				'url'       => 'https://simplemarketing.se',
+				'image_url' => 'https://drive.google.com/uc?export=download&id=1jJXH8F0NLeH2mtvrW7SAXxbGMFe61jFF',
 			),
 		);
 
 		$sponsors = array();
 
-		foreach ( $sponsors_data as $i => $row ) {
+		foreach ( $sponsors_data as $row ) {
+			$image_id = $this->sideload_image(
+				$row['image_url'],
+				sprintf( 'sponsor-%s.png', sanitize_title( $row['name'] ) )
+			);
+
 			$sponsors[] = array(
 				'name'  => $row['name'],
-				'image' => $placeholder_logo_ids[ $i % count( $placeholder_logo_ids ) ],
+				'image' => $image_id,
 				'url'   => $row['url'],
 			);
 		}
