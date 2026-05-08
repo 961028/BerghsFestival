@@ -1,4 +1,5 @@
 ---
+import { getImage } from "astro:assets";
 import { getCollection, getEntry } from "astro:content";
 import WpImage from "../elements/WpImage.astro";
 
@@ -24,12 +25,21 @@ const sponsorLogos = (
             const { width, height, sourceUrl } = image.data;
             const ratio = width && height ? width / height : 1;
             const widthRem = BASELINE * Math.pow(ratio, EXPONENT);
+            const scaledWidth = Math.round(widthRem * 16 * 2);
+            const scaledHeight = Math.round(scaledWidth / ratio);
+
+            const scaled = await getImage({
+                src: sourceUrl,
+                width: scaledWidth,
+                height: scaledHeight,
+            });
 
             return {
                 url,
                 name,
-                image,
-                sourceUrl,
+                src: scaled.src,
+                width: scaledWidth,
+                height: scaledHeight,
                 widthStyle: `${widthRem.toFixed(3)}rem`,
             };
         }),
@@ -39,15 +49,21 @@ const sponsorLogos = (
 
 <ul data-sponsors>
     {
-        sponsorLogos.map(({ url, name, image, sourceUrl, widthStyle }) => (
+        sponsorLogos.map(({ url, name, src, width, height, widthStyle }) => (
             <li>
                 <a
                     href={url}
                     aria-label={name}
                     title={name}
-                    style={`max-width: ${widthStyle}; --logo-url: url(${sourceUrl});`}
+                    style={`max-width: ${widthStyle}; --logo-url: url(${src});`}
                 >
-                    <WpImage data-logo image={image} alt={name} />
+                    <img
+                        data-logo
+                        src={src}
+                        width={width}
+                        height={height}
+                        alt={name}
+                    />
                 </a>
             </li>
         ))
