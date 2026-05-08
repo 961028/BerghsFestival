@@ -181,6 +181,10 @@
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         max-width: var(--prose-width);
+
+        & p + p {
+            margin-block-start: var(--space-md);
+        }
     }
 
     .footer-label {
