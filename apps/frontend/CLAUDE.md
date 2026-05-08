@@ -16,11 +16,11 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
     - `20-iq.php` — IQ section (title, content)
     - `20-sponsors.php` — Sponsors repeater (name, image, url)
     - `30-projects.php` — Project post type and fields
-    - `30-music-item.php` — Music Item custom post type and fields (name, day, start_time, location, image, description, url). Day choices are loaded dynamically from the Schedule page. Location choices: Ljusgården, Aulan, Pink Room, Gränden, Receptionen.
-    - `40-page-schedule.php` — Schedule page template (description + day/event repeater)
+    - `30-music-item.php` — Music Item custom post type and fields (name, day, start_time, location, image, description, url). Day and location choices are loaded dynamically from the Schedule page.
+    - `40-page-schedule.php` — Schedule page template (locations repeater + day/event repeater). Locations defined here are the single source of truth for the Location dropdowns on Music Items, Installations, and Food & drink — pulled via `app_acf_load_schedule_location_choices` (helper: `app_acf_get_schedule_location_choices`).
     - `40-page-experience-music.php` — Music page template (description only — items come from the Music Item post type, not page ACF)
-    - `40-page-experience-installations.php` — Installations page template (items repeater with name, location, image, description, url). Location choices: Ljusgården, Aulan, Pink Room, Gränden, Receptionen.
-    - `40-page-experience-food.php` — Food & drink page template (items repeater with name, location, image, description, url). Location choices: Ljusgården, Aulan, Pink Room, Gränden, Receptionen.
+    - `40-page-experience-installations.php` — Installations page template (items repeater with name, location, image, description, url). Location choices come from the Schedule page.
+    - `40-page-experience-food.php` — Food & drink page template (items repeater with name, location, image, description, url). Location choices come from the Schedule page.
 - WordPress page templates (in `../backend/theme/`) register named templates for the WP admin. Current templates:
     - `page-about-berghs.php` — About page
     - `page-schedule.php` — Schedule page

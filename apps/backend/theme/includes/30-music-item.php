@@ -70,14 +70,8 @@ function _app_music_item_register_fields() {
 					'label'         => 'Location',
 					'name'          => 'location',
 					'type'          => 'select',
-					'instructions'  => 'Optional. Edit choices via Custom Fields → Field Groups.',
-					'choices'       => array(
-						'Ljusgården' => 'Ljusgården',
-						'Aulan'      => 'Aulan',
-						'Pink Room'  => 'Pink Room',
-						'Gränden'    => 'Gränden',
-						'Receptionen' => 'Receptionen',
-					),
+					'instructions'  => 'Optional. Choices are pulled from the locations defined on the Schedule page.',
+					'choices'       => array(),
 					'allow_null'    => 1,
 					'return_format' => 'value',
 					'wrapper'       => array(
@@ -121,19 +115,7 @@ function _app_music_item_register_fields() {
 add_action( 'acf/init', '_app_music_item_register_fields' );
 
 function _app_music_item_load_day_choices( $field ) {
-	$schedule_page = get_page_by_path( 'schedule' );
-
-	if ( ! $schedule_page ) {
-		$pages = get_pages(
-			array(
-				'meta_key'   => '_wp_page_template',
-				'meta_value' => 'page-schedule.php',
-				'number'     => 1,
-			)
-		);
-
-		$schedule_page = $pages ? $pages[0] : null;
-	}
+	$schedule_page = app_acf_get_schedule_page();
 
 	if ( ! $schedule_page ) {
 		return $field;
@@ -164,4 +146,9 @@ function _app_music_item_load_day_choices( $field ) {
 add_filter(
 	'acf/load_field/key=' . _app_music_item_field_key( 'day' ),
 	'_app_music_item_load_day_choices'
+);
+
+add_filter(
+	'acf/load_field/key=' . _app_music_item_field_key( 'location' ),
+	'app_acf_load_schedule_location_choices'
 );

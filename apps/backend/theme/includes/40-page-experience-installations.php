@@ -35,14 +35,8 @@ function _app_page_experience_installations_register_fields() {
 							'label'         => 'Location',
 							'name'          => 'location',
 							'type'          => 'select',
-							'instructions'  => 'Optional. Edit choices via Custom Fields → Field Groups.',
-							'choices'       => array(
-								'Ljusgården'  => 'Ljusgården',
-								'Aulan'       => 'Aulan',
-								'Pink Room'   => 'Pink Room',
-								'Gränden'     => 'Gränden',
-								'Receptionen' => 'Receptionen',
-							),
+							'instructions'  => 'Optional. Choices are pulled from the locations defined on the Schedule page.',
+							'choices'       => array(),
 							'allow_null'    => 1,
 							'return_format' => 'value',
 						),
@@ -76,3 +70,8 @@ function _app_page_experience_installations_register_fields() {
 	);
 }
 add_action( 'acf/init', '_app_page_experience_installations_register_fields' );
+
+add_filter(
+	'acf/load_field/key=' . _app_page_experience_installations_field_key( 'items', 'location' ),
+	'app_acf_load_schedule_location_choices'
+);

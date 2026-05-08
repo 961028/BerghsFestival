@@ -18,6 +18,23 @@ function _app_page_schedule_register_fields() {
 			'title'        => 'Schedule',
 			'fields'       => array(
 				array(
+					'key'          => _app_page_schedule_field_key( 'locations' ),
+					'label'        => 'Locations',
+					'name'         => 'locations',
+					'type'         => 'repeater',
+					'instructions' => 'Locations available across the festival (e.g. Ljusgården, Aulan). Used as the choices for Location fields on Music Items, Installations, and Food & drink.',
+					'layout'       => 'table',
+					'button_label' => 'Add Location',
+					'sub_fields'   => array(
+						array(
+							'key'   => _app_page_schedule_field_key( 'locations', 'name' ),
+							'label' => 'Name',
+							'name'  => 'name',
+							'type'  => 'text',
+						),
+					),
+				),
+				array(
 					'key'          => _app_page_schedule_field_key( 'schedule' ),
 					'label'        => '',
 					'name'         => 'schedule',
@@ -90,3 +107,55 @@ function _app_page_schedule_register_fields() {
 	);
 }
 add_action( 'acf/init', '_app_page_schedule_register_fields' );
+
+function app_acf_get_schedule_page(): ?WP_Post {
+	$schedule_page = get_page_by_path( 'schedule' );
+
+	if ( $schedule_page ) {
+		return $schedule_page;
+	}
+
+	$pages = get_pages(
+		array(
+			'meta_key'   => '_wp_page_template',
+			'meta_value' => 'page-schedule.php',
+			'number'     => 1,
+		)
+	);
+
+	return $pages ? $pages[0] : null;
+}
+
+function app_acf_get_schedule_location_choices(): array {
+	$schedule_page = app_acf_get_schedule_page();
+
+	if ( ! $schedule_page ) {
+		return array();
+	}
+
+	$locations = get_field( 'locations', $schedule_page->ID );
+
+	if ( ! is_array( $locations ) ) {
+		return array();
+	}
+
+	$choices = array();
+
+	foreach ( $locations as $row ) {
+		$name = isset( $row['name'] ) ? trim( (string) $row['name'] ) : '';
+
+		if ( '' === $name ) {
+			continue;
+		}
+
+		$choices[ $name ] = $name;
+	}
+
+	return $choices;
+}
+
+function app_acf_load_schedule_location_choices( $field ) {
+	$field['choices'] = app_acf_get_schedule_location_choices();
+
+	return $field;
+}
