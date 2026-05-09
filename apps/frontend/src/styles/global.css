@@ -8,23 +8,11 @@
 @layer theme {
     :root {
         /* Colors */
-        --color-bg: #000000;
-        --color-text: #000000; /* text placed ON top of accent fills */
+        --color-ink: #000000;
+        --color-paper: #ffffff;
         --color-accent-1: #ffffff; /* primary fill — randomised per region on load */
         --color-accent-2: #ffffff; /* secondary fill — randomised per region on load */
         --color-accent-3: #ffffff; /* tertiary fill — randomised per region on load */
-
-        /* Accent color palette — must stay in sync with ACCENTS array in src/scripts/accents.ts */
-        --color-accent-green: #00ff00;
-        --color-accent-red: #ff0000;
-        --color-accent-blue: #00ffff;
-        --color-accent-yellow: #eeff00;
-        --color-accent-pink: #ff00d9;
-
-        /* Derived */
-        --color-border: #ffffff;
-        --color-text-on-bg: #ffffff;
-        --color-text-muted: #ffffff;
 
         /* Typography */
         --font-family-base: var(--font-inter);
@@ -55,8 +43,7 @@
         --section-label-width: 7rem;
 
         /* Borders */
-        --border-default: 1px solid var(--color-border);
-        --border-thick: 1px solid currentColor;
+        --border: 1px solid currentColor;
 
         /* Component layout */
         --icon-size: 1.5rem;
@@ -191,15 +178,15 @@
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--letter-spacing-label);
         text-transform: uppercase;
-        color: var(--color-text-muted);
+        color: var(--color-paper);
     }
 
     body {
         font-family: var(--font-family-base);
         font-size: var(--font-size-base);
         font-feature-settings: "ss01", "ss02", "zero";
-        color: var(--color-text-on-bg);
-        background: var(--color-bg);
+        color: var(--color-paper);
+        background: var(--color-ink);
         line-height: var(--line-height-base);
         text-wrap: pretty;
         padding-bottom: var(--cta-height);
@@ -258,7 +245,7 @@
             content: var(--scramble, none);
             position: absolute;
             inset: 0;
-            color: var(--color-text-on-bg);
+            color: var(--color-paper);
             white-space: pre;
             pointer-events: none;
             font-weight: inherit;

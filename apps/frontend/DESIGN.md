@@ -8,20 +8,20 @@ High-contrast, black-dominant aesthetic with raw, bold energy. The design langua
 
 **Static colors:**
 
-- `--color-bg: #000000` — all surfaces and containers
-- `--color-text-on-bg: #ffffff` — all text, icons, and UI elements on black
-- `--color-text: #000000` — text placed on top of accent fills
-- `--color-border: #ffffff` — all dividers and borders
+- `--color-ink: #000000` — black; used as page background and as text on light/accent fills
+- `--color-paper: #ffffff` — white; used as text/borders on black and as inverted surface fills
 
-**Accent palette (defined in `accents.ts` and mirrored in `global.css`):**
+The two static colors describe ink vs. paper, not foreground vs. background — either may serve as the surface or the mark depending on context (e.g. white CTA hover state uses `paper` as background and `ink` as text).
 
-| Token | Hex |
+**Accent palette (single source of truth in `accents.ts`):**
+
+| Hex | Name |
 |---|---|
-| `--color-accent-green` | `#00ff00` |
-| `--color-accent-red` | `#ff0000` |
-| `--color-accent-blue` | `#0037ff` |
-| `--color-accent-yellow` | `#eeff00` |
-| `--color-accent-pink` | `#ff00d9` |
+| `#00ff00` | green |
+| `#ff0000` | red |
+| `#00ffff` | cyan |
+| `#eeff00` | yellow |
+| `#ff00d9` | pink |
 
 Accents are never mixed, blended, or used as gradients. They appear as solid, flat blocks at full saturation. No opacity variations, no tints, no shades.
 
@@ -119,7 +119,7 @@ Use CSS grid for page-level and multi-column layout. Use flexbox for one-dimensi
 
 Layout responsiveness follows a strict priority: intrinsic (auto-fit/wrap) first, container queries second, viewport media queries only for genuinely viewport-driven UI (hamburger, sticky nav). See `css-rules.md` for the full hierarchy.
 
-Dividers between grid cells use the gap-as-border technique: `gap: 1px` on the container with `background: var(--color-border)`, and `background: var(--color-bg)` on the cells. This ensures dividers are always between cells and never on the outside edges, regardless of whether the layout is 1-column or 2-column.
+Dividers between grid cells use the gap-as-border technique: `gap: 1px` on the container with `background: var(--color-paper)`, and `background: var(--color-ink)` on the cells. This ensures dividers are always between cells and never on the outside edges, regardless of whether the layout is 1-column or 2-column.
 
 ## 6. Components
 
@@ -130,8 +130,7 @@ Dividers between grid cells use the gap-as-border technique: `gap: 1px` on the c
 - Active page link: uppercase + bold weight.
 
 **Borders & dividers**
-- `--border-default: 1px solid var(--color-border)` — used for all section dividers and element borders.
-- `--color-border` is `#ffffff` — borders are always white.
+- `--border: 1px solid currentColor` — used for all section dividers and element borders. Inherits the element's text color, so a default page-context border is white (body color = `--color-paper`) while components that override `color` (e.g. CTA banner with `color: var(--color-ink)`) get a black border automatically.
 
 **Buttons**
 - Solid white rectangle, black text, no border-radius.
@@ -140,7 +139,7 @@ Dividers between grid cells use the gap-as-border technique: `gap: 1px` on the c
 
 **Do:**
 - Keep backgrounds black at all times.
-- Use `--color-text-on-bg` (white) for all foreground on black.
+- Use `--color-paper` (white) for all foreground on black, and `--color-ink` (black) for foreground on accent fills or inverted surfaces.
 - Use accent colors only as solid, flat blocks at full saturation via `--color-accent-1/2/3`.
 - Follow the 3-column section grid pattern for all content sections.
 - Use all-caps + `--letter-spacing-label` for section labels.

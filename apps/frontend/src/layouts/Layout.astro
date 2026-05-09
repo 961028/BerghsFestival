@@ -217,7 +217,7 @@ if (ogImageRef) {
     const selectionStyle = document.createElement("style");
     document.head.appendChild(selectionStyle);
     const selectionTextColor = getComputedStyle(document.documentElement)
-        .getPropertyValue("--color-text")
+        .getPropertyValue("--color-ink")
         .trim();
     const nextSelectionColor = makeColorPicker(2);
     if (!reducedMotion) {
@@ -259,8 +259,8 @@ if (ogImageRef) {
         left: var(--space-sm);
         z-index: 9999;
         padding: var(--space-xs) var(--space-sm);
-        background: var(--color-text-on-bg);
-        color: var(--color-bg);
+        background: var(--color-paper);
+        color: var(--color-ink);
         font-size: var(--font-size-xs);
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--letter-spacing-label);
@@ -289,12 +289,12 @@ if (ogImageRef) {
     }
 
     [data-region="header"] {
-        border-block-end: var(--border-default);
+        border-block-end: var(--border);
         position: sticky;
         top: -1px;
         padding-block-start: 1px;
         z-index: 100;
-        background: var(--color-bg);
+        background: var(--color-ink);
     }
 
     main {
@@ -302,7 +302,7 @@ if (ogImageRef) {
     }
 
     footer {
-        border-block-start: var(--border-default);
+        border-block-start: var(--border);
         font-size: var(--font-size-base);
     }
 
@@ -322,15 +322,15 @@ if (ogImageRef) {
     }
 
     .footer-row--contact {
-        border-block-start: var(--border-default);
+        border-block-start: var(--border);
     }
 
     .footer-row--info {
-        border-block-start: var(--border-default);
+        border-block-start: var(--border);
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
         gap: 1px;
-        background: var(--color-border);
+        background: var(--color-paper);
         padding-block: 0; /* cells carry their own padding */
         container-type: inline-size;
     }
@@ -339,7 +339,7 @@ if (ogImageRef) {
         display: grid;
         align-content: start;
         gap: var(--space-sm);
-        background: var(--color-bg);
+        background: var(--color-ink);
         padding-block: var(--space-lg);
     }
 

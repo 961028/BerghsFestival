@@ -112,11 +112,11 @@ To draw dividers between grid cells that are always correct regardless of layout
 .grid-container {
     display: grid;
     gap: 1px;
-    background: var(--color-border); /* exposed in the gap */
+    background: var(--color-paper); /* exposed in the gap */
 }
 
 .grid-item {
-    background: var(--color-bg); /* punches out the container color */
+    background: var(--color-ink); /* punches out the container color */
 }
 ```
 
@@ -173,7 +173,9 @@ Focus styles are defined globally in `global.css`. Do not override them without 
 
 Colours are static tokens defined in the `theme` layer of `global.css`. The design uses a fixed black/white palette — no derived or semi-transparent variants.
 
-`--color-border` is always `#ffffff`. It is never overridden per-region or computed from accent colours. All borders and dividers across the site are pure white.
+Two static tokens — `--color-ink` (`#000000`) and `--color-paper` (`#ffffff`) — name the paint, not a role. Either may serve as background or as text/border depending on context.
+
+Borders use `--border: 1px solid currentColor`. Borders inherit their colour from the element's `color` property, so the page-default border is white (body `color: var(--color-paper)`) and components that override `color` (e.g. CTA banner with `color: var(--color-ink)`) get a black border without a separate token.
 
 ---
 

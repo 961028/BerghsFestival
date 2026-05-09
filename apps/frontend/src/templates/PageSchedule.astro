@@ -181,8 +181,8 @@ const { schedule } = data;
         position: sticky;
         top: var(--header-height);
         z-index: 50;
-        background: var(--color-bg);
-        border-block-end: var(--border-default);
+        background: var(--color-ink);
+        border-block-end: var(--border);
     }
 
     .day-tab-cell {
@@ -201,7 +201,7 @@ const { schedule } = data;
         white-space: nowrap;
         font-family: inherit;
         line-height: var(--line-height-tight);
-        color: var(--color-text-muted);
+        color: var(--color-paper);
         text-align: center;
         text-transform: uppercase;
         background: transparent;
@@ -210,8 +210,8 @@ const { schedule } = data;
     }
 
     .day-toggle button[aria-selected="true"] {
-        background: var(--color-text-on-bg);
-        color: var(--color-text);
+        background: var(--color-paper);
+        color: var(--color-ink);
         font-weight: var(--font-weight-bold);
     }
 
@@ -230,7 +230,7 @@ const { schedule } = data;
     }
 
     .day-panel li {
-        border-block-start: var(--border-default);
+        border-block-start: var(--border);
     }
 
     .day-panel ul li:first-child {
@@ -238,7 +238,7 @@ const { schedule } = data;
     }
 
     .day-panel li:has(a.event-row):hover :global(.event-icon) {
-        color: var(--color-text);
+        color: var(--color-ink);
     }
 
     .event-row {
@@ -253,7 +253,7 @@ const { schedule } = data;
     .time {
         font-size: var(--font-size-base);
         font-weight: var(--font-weight-light);
-        color: var(--color-text-muted);
+        color: var(--color-paper);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
         font-variant-numeric: tabular-nums;
@@ -280,7 +280,7 @@ const { schedule } = data;
     }
 
     .event-icon {
-        color: var(--color-text-muted);
+        color: var(--color-paper);
         position: absolute;
         right: 0;
         top: 50%;
