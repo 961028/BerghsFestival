@@ -32,7 +32,7 @@ const scheduleDays = await getScheduleDays();
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
     <div class="page-section">
-        <MusicList items={data.items} scheduleDays={scheduleDays} />
+        <MusicList artists={data.artists} scheduleDays={scheduleDays} />
     </div>
 </Layout>
 

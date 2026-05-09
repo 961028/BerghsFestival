@@ -35,7 +35,7 @@ Same nav on every page. The "Experiences" entry in the nav is a parent label wit
 Each section is its own top-level route — there is no single `/experiences` page. Sections are surfaced through a submenu on the "Experiences" item in the site header. Each section is a regular WordPress page using a dedicated page template (`page-schedule.php`, `page-experience-music.php`, `page-experience-installations.php`, `page-experience-food.php`); the URL is the page's WP slug.
 
 1. **Schedule** (`/schedule`) — two-day timeline (Friday evening, Saturday daytime). Both days are always visible; the relevant day is preselected based on the current date. Before or after the festival, Friday is preselected. On Saturday, Saturday is preselected. Day toggle is sticky under the global header so day context stays put while the row list scrolls. Every row has the same shape: a muted bold tabular start time at `--font-size-lg`, a base-size bold title, and an optional muted description tucked underneath. The schedule has no images. An optional WYSIWYG description (`description` ACF field on the Schedule page template) renders above the day toggle, matching the intro pattern used by the other section pages.
-2. **Music** (`/music`) — horizontal lineup. Image left (square, 40% width on ≥30rem), text right (large bold name + muted description). 1px dividers between rows, no card outline. Items can carry an optional `day`, `start_time`, and `location`; when `day` is set, items are grouped by day in schedule order, with a leading day heading. The horizontal rhythm reads as a tour-poster lineup and visually distinguishes Music from Installations.
+2. **Music** (`/music`) — horizontal artist lineup. Image left (portrait 4:5, fixed width on ≥40rem), text right (large bold name, prose description, show schedule). 1px dividers between rows, no card outline. Each artist owns one or more shows (day, start_time, end_time, location); shows are grouped by day within the artist block, sorted by start time. Artists are listed in page-ACF order — no day-level heading above artist rows. Website and social links appear below the shows. The horizontal rhythm reads as a tour-poster lineup and visually distinguishes Music from Installations.
 3. **Installations** (`/installations`) — full-width gallery. One installation per row with a large landscape (2:1) image, large bold name, optional location, and muted description. Installations are art pieces and get visual presence accordingly. No card outlines — generous spacing does the separating.
 4. **Food & drink** (`/food-drink`) — responsive card grid (1 → 2 → 3 columns). Bordered cards with a square image, large bold vendor name, optional location, and muted description. Density signals "there are options" and the bordered cards read as discrete menu items rather than banners.
 
@@ -210,15 +210,16 @@ The single Experiences page (one ACF page with a schedule repeater + a groups re
 
 Per-section item fields, all optional:
 
-| Section       | name | image | description | day | start_time | location | url |
-| ------------- | :--: | :---: | :---------: | :-: | :--------: | :------: | :-: |
-| Music         | ✓    | ✓     | ✓           | ✓   | ✓          | ✓        | ✓   |
-| Installations | ✓    | ✓     | ✓           | —   | —          | ✓        | ✓   |
-| Food & drink  | ✓    | ✓     | ✓           | —   | —          | ✓        | ✓   |
+| Section       | name | image | description | url | social_url | shows (day / start / end / location) |
+| ------------- | :--: | :---: | :---------: | :-: | :--------: | :----------------------------------: |
+| Music         | ✓    | ✓     | ✓           | ✓   | ✓          | ✓ (nested repeater per artist)       |
+| Installations | ✓    | ✓     | ✓           | ✓   | —          | —                                    |
+| Food & drink  | ✓    | ✓     | ✓           | ✓   | —          | —                                    |
 
-- **`day`** (Music only) is an ACF Select. Choices are populated dynamically from the Schedule page's `schedule` repeater (`acf/load_field` filter), so the day choices stay in sync with the festival days — no parallel list to maintain. Music items with a known day are grouped under a day heading on the rendered page; items without a day, or with a day that no longer matches a schedule day, fall into a single trailing bucket.
-- **`start_time`** (Music only) is plain text, matching the format used by `schedule.events.start_time`. Renders alongside `location` in the row meta line.
-- **`location`** is an ACF Select with admin-managed choices (edit via Custom Fields → Field Groups). Used as a stage / venue / area label. Rendered on all three section pages.
+- **Music data model (May 2026 refactor):** Music items were originally a standalone `music_item` custom post type. They are now an `artists` ACF repeater on the Music page. Each artist owns a nested `shows` repeater with fields: `day` (select, from Schedule days), `start_time` (text), `end_time` (text), `location` (select, from Schedule locations). This eliminates the CPT and keeps all music content in one editorial place.
+- **Artist slug** is derived at build time via `sanitize_title($name)`. The Schedule page's `artist` field stores this slug (not a post ID). Consequence: renaming an artist in the Music page ACF breaks existing schedule references silently — editors must update the Schedule page too. Accepted tradeoff for simpler data model.
+- **Schedule `artist` select** is populated by `app_acf_load_music_page_artist_choices()`, which reads the Music page's `artists` repeater via raw `get_post_meta` (not `get_field()`) to avoid circular recursion through `acf/load_field` filters.
+- **`location`** on all sections (Music shows, Installations, Food & drink) is an ACF Select sourced from the Schedule page's `locations` repeater via `app_acf_load_schedule_location_choices` / `app_acf_get_schedule_location_choices`. This is the single source of truth for location choices — no parallel lists.
 
 ---
 

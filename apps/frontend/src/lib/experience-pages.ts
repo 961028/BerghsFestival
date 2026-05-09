@@ -3,26 +3,72 @@ import { z } from "astro/zod";
 
 import { nullableIntReference, repeater } from "./schema";
 
+const ShowsRepeater = repeater(
+    z
+        .object({
+            day: z.string().nullable().optional(),
+            start_time: z.string().optional(),
+            end_time: z.string().optional(),
+            location: z.string().nullable().optional(),
+        })
+        .transform((show) => ({
+            day: show.day || null,
+            startTime: show.start_time ?? "",
+            endTime: show.end_time ?? "",
+            location: show.location || null,
+        })),
+);
+
+const ArtistsRepeater = repeater(
+    z
+        .object({
+            name: z.string(),
+            slug: z.string().optional(),
+            image: nullableIntReference("media"),
+            description: z.string().optional(),
+            url: z.string().optional(),
+            social_url: z.string().optional(),
+            shows: ShowsRepeater,
+        })
+        .transform((item) => ({
+            slug: item.slug || z.string().slugify().parse(item.name),
+            name: item.name,
+            image: item.image,
+            description: { html: item.description ?? "" },
+            url: item.url || null,
+            socialUrl: item.social_url || null,
+            shows: item.shows,
+        })),
+);
+
+export type Show = z.infer<typeof ShowsRepeater>[number];
+export type Artist = z.infer<typeof ArtistsRepeater>[number];
+
+// Appends -2, -3, … to keep all slugs unique when two artists share a name.
+function deduplicateSlugs(artists: Artist[]): Artist[] {
+    const seen = new Map<string, number>();
+    return artists.map((artist) => {
+        const count = (seen.get(artist.slug) ?? 0) + 1;
+        seen.set(artist.slug, count);
+        if (count === 1) return artist;
+        const slug = `${artist.slug}-${count}`;
+        seen.set(slug, 0);
+        return { ...artist, slug };
+    });
+}
+
 const ScheduleRepeater = repeater(
     z.object({
         day: z.string(),
         events: repeater(
             z
                 .object({
-                    music_item: z
-                        .union([z.number(), z.string(), z.null(), z.literal(false)])
-                        .transform((v) => (v === false ? null : v))
-                        .optional(),
+                    artist: z.string().nullable().optional(),
                     start_time: z.string().optional(),
                     title: z.string().optional(),
                 })
                 .transform((item) => ({
-                    musicItemId:
-                        item.music_item !== null &&
-                        item.music_item !== undefined &&
-                        item.music_item !== ""
-                            ? String(item.music_item)
-                            : null,
+                    artistSlug: item.artist || null,
                     startTime: item.start_time ?? "",
                     title: item.title ?? "",
                 })),
@@ -66,8 +112,6 @@ const SimpleItems = repeater(
 
 export type SimpleItem = z.infer<typeof SimpleItems>[number];
 
-export type MusicItem = CollectionEntry<"musicItems">["data"];
-
 const FestivalDaysSchema = z
     .array(
         z.object({
@@ -103,9 +147,10 @@ async function findPageBySlug(
     return pages.find((page) => page.data.slug === slug) ?? null;
 }
 
-async function getMusicItems(): Promise<CollectionEntry<"musicItems">[]> {
-    const items = await getCollection("musicItems");
-    return [...items].sort((a, b) => a.data.order - b.data.order);
+async function getArtists(): Promise<Artist[]> {
+    const page = await findPageByTemplate("page-experience-music.php");
+    if (!page) return [];
+    return deduplicateSlugs(ArtistsRepeater.parse(page.data.acf.artists));
 }
 
 export async function getSchedulePage() {
@@ -116,23 +161,23 @@ export async function getSchedulePage() {
     }
 
     const raw = ScheduleRepeater.parse(page.data.acf.schedule);
-    const musicItems = await getMusicItems();
-    const musicById = new Map(musicItems.map((item) => [item.id, item]));
+    const artists = await getArtists();
+    const artistBySlug = new Map(artists.map((a) => [a.slug, a]));
     const festivalDates = await getFestivalDays();
 
     const schedule: Schedule = raw.map((dayRow, i) => ({
         day: dayRow.day,
         date: festivalDates[i] ?? null,
         events: dayRow.events.map((event) => {
-            const linked = event.musicItemId
-                ? musicById.get(event.musicItemId)
+            const linked = event.artistSlug
+                ? artistBySlug.get(event.artistSlug)
                 : undefined;
 
             if (linked) {
                 return {
-                    startTime: linked.data.startTime ?? event.startTime,
-                    title: linked.data.name,
-                    href: `/music#${linked.data.slug}`,
+                    startTime: event.startTime,
+                    title: linked.name,
+                    href: `/music#${linked.slug}`,
                 };
             }
 
@@ -162,12 +207,14 @@ export async function getMusicPage() {
         return null;
     }
 
-    const items = await getMusicItems();
+    const artists = deduplicateSlugs(
+        ArtistsRepeater.parse(page.data.acf.artists),
+    );
 
     return {
         page,
         description: page.data.content,
-        items: items.map((item) => item.data),
+        artists,
     };
 }
 

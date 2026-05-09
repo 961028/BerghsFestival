@@ -9,8 +9,7 @@ function _app_page_schedule_field_key( string ...$slugs ): string {
 }
 
 function _app_page_schedule_register_fields() {
-	$location              = app_acf_get_page_template_location( 'page-schedule' );
-	$music_item_field_key  = _app_page_schedule_field_key( 'schedule', 'events', 'music_item' );
+	$location = app_acf_get_page_template_location( 'page-schedule' );
 
 	acf_add_local_field_group(
 		array(
@@ -22,7 +21,7 @@ function _app_page_schedule_register_fields() {
 					'label'        => 'Locations',
 					'name'         => 'locations',
 					'type'         => 'repeater',
-					'instructions' => 'Locations available across the festival (e.g. Ljusgården, Aulan). Used as the choices for Location fields on Music Items, Installations, and Food & drink.',
+					'instructions' => 'Locations available across the festival (e.g. Ljusgården, Aulan). Used as the choices for Location fields on Music artists, Installations, and Food & drink.',
 					'layout'       => 'table',
 					'button_label' => 'Add Location',
 					'sub_fields'   => array(
@@ -56,41 +55,31 @@ function _app_page_schedule_register_fields() {
 							'button_label' => 'Add Event',
 							'sub_fields'   => array(
 								array(
-									'key'           => $music_item_field_key,
-									'label'         => 'Music item',
-									'name'          => 'music_item',
-									'type'          => 'post_object',
-									'instructions'  => 'Optional. Link this event to a music item — title, time, and link will be inherited. Leave empty for non-music events (talks, breaks, etc.).',
-									'post_type'     => array( 'music_item' ),
+									'key'           => _app_page_schedule_field_key( 'schedule', 'events', 'artist' ),
+									'label'         => 'Artist',
+									'name'          => 'artist',
+									'type'          => 'select',
+									'instructions'  => 'Optional. Choices come from the artists defined on the Music page. Leave empty for non-music events (talks, breaks, etc.).',
+									'choices'       => array(),
 									'allow_null'    => 1,
-									'return_format' => 'id',
-									'ui'            => 1,
+									'return_format' => 'value',
 								),
 								array(
-									'key'               => _app_page_schedule_field_key( 'schedule', 'events', 'start_time' ),
-									'label'             => 'Starts',
-									'name'              => 'start_time',
-									'type'              => 'text',
-									'instructions'      => 'Used only when no music item is linked.',
-									'conditional_logic' => array(
-										array(
-											array(
-												'field'    => $music_item_field_key,
-												'operator' => '==empty',
-											),
-										),
-									),
+									'key'   => _app_page_schedule_field_key( 'schedule', 'events', 'start_time' ),
+									'label' => 'Starts',
+									'name'  => 'start_time',
+									'type'  => 'text',
 								),
 								array(
 									'key'               => _app_page_schedule_field_key( 'schedule', 'events', 'title' ),
 									'label'             => 'Title',
 									'name'              => 'title',
 									'type'              => 'text',
-									'instructions'      => 'Used only when no music item is linked.',
+									'instructions'      => 'Used only when no artist is linked.',
 									'conditional_logic' => array(
 										array(
 											array(
-												'field'    => $music_item_field_key,
+												'field'    => _app_page_schedule_field_key( 'schedule', 'events', 'artist' ),
 												'operator' => '==empty',
 											),
 										),
@@ -107,6 +96,11 @@ function _app_page_schedule_register_fields() {
 	);
 }
 add_action( 'acf/init', '_app_page_schedule_register_fields' );
+
+add_filter(
+	'acf/load_field/key=' . _app_page_schedule_field_key( 'schedule', 'events', 'artist' ),
+	'app_acf_load_music_page_artist_choices'
+);
 
 function app_acf_get_schedule_page(): ?WP_Post {
 	$schedule_page = get_page_by_path( 'schedule' );
@@ -133,16 +127,12 @@ function app_acf_get_schedule_location_choices(): array {
 		return array();
 	}
 
-	$locations = get_field( 'locations', $schedule_page->ID );
-
-	if ( ! is_array( $locations ) ) {
-		return array();
-	}
+	$count = (int) get_post_meta( $schedule_page->ID, 'locations', true );
 
 	$choices = array();
 
-	foreach ( $locations as $row ) {
-		$name = isset( $row['name'] ) ? trim( (string) $row['name'] ) : '';
+	for ( $i = 0; $i < $count; $i++ ) {
+		$name = trim( (string) get_post_meta( $schedule_page->ID, "locations_{$i}_name", true ) );
 
 		if ( '' === $name ) {
 			continue;

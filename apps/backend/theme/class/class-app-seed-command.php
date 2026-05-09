@@ -42,7 +42,6 @@ final class App_Seed_Command {
 		$this->set_photo_notice_options();
 		$this->set_sponsor_options();
 
-		$this->insert_music_items();
 		$this->insert_projects();
 
 		WP_CLI::line( 'Done.' );
@@ -290,7 +289,7 @@ Saturday 23 May, 12:00–18:00'
 				'day'    => 'Friday',
 				'events' => array(
 					array(
-						'music_item' => '',
+						'artist'     => '',
 						'start_time' => '12:00',
 						'title'      => 'Doors open',
 					),
@@ -300,7 +299,7 @@ Saturday 23 May, 12:00–18:00'
 				'day'    => 'Saturday',
 				'events' => array(
 					array(
-						'music_item' => '',
+						'artist'     => '',
 						'start_time' => '12:00',
 						'title'      => 'Doors open',
 					),
@@ -331,7 +330,44 @@ Saturday 23 May, 12:00–18:00'
 			)
 		);
 
-		// Music items come from the music_item post type — none provided in the TSV ("Inget").
+		$days      = array( 'Friday', 'Saturday' );
+		$locations = array( 'Ljusgården', 'Aulan', 'Pink Room', 'Gränden', 'Receptionen' );
+
+		$artists = array();
+
+		for ( $i = 0; $i < 12; $i++ ) {
+			$name = ucwords( $this->faker->words( random_int( 1, 3 ), true ) );
+
+			$show_count = random_int( 1, 2 );
+			$shows      = array();
+
+			for ( $j = 0; $j < $show_count; $j++ ) {
+				$start_hour      = random_int( 12, 21 );
+				$start_minute    = $this->faker->randomElement( array( 0, 30 ) );
+				$duration_min    = $this->faker->randomElement( array( 30, 45, 60, 75, 90, 120 ) );
+				$end_total_min   = ( $start_hour * 60 ) + $start_minute + $duration_min;
+				$end_hour        = intdiv( $end_total_min, 60 );
+				$end_minute      = $end_total_min % 60;
+
+				$shows[] = array(
+					'day'        => $this->faker->randomElement( $days ),
+					'start_time' => sprintf( '%02d:%02d', $start_hour, $start_minute ),
+					'end_time'   => sprintf( '%02d:%02d', $end_hour, $end_minute ),
+					'location'   => $this->faker->randomElement( $locations ),
+				);
+			}
+
+			$artists[] = array(
+				'name'        => $name,
+				'image'       => $this->get_rand_generic_image(),
+				'description' => wpautop( esc_html( $this->faker->paragraph() ) ),
+				'url'         => 0 === $i % 3 ? sprintf( 'https://www.%s.com/', sanitize_title( $name ) ) : '',
+				'social_url'  => 0 === $i % 2 ? sprintf( 'https://www.instagram.com/%s/', sanitize_title( $name ) ) : '',
+				'shows'       => $shows,
+			);
+		}
+
+		update_field( _app_page_experience_music_field_key( 'artists' ), $artists, $page_id );
 
 		return $page_id;
 	}
@@ -673,40 +709,6 @@ Thank you for helping us share the experience.';
 		}
 
 		update_field( _app_sponsors_field_key( 'sponsors' ), $sponsors, 'options' );
-	}
-
-	private function insert_music_items(): void {
-		WP_CLI::line( 'Inserting music items' );
-
-		$days      = array( 'Friday', 'Saturday' );
-		$locations = array( 'Ljusgården', 'Aulan', 'Pink Room', 'Gränden', 'Receptionen' );
-
-		for ( $i = 0; $i < 12; $i++ ) {
-			$name = ucwords( $this->faker->words( random_int( 1, 3 ), true ) );
-
-			$post_id = $this->insert_post(
-				array(
-					'post_type'   => 'music_item',
-					'post_status' => 'publish',
-					'post_title'  => $name,
-					'menu_order'  => $i,
-				)
-			);
-
-			update_field( _app_music_item_field_key( 'day' ), $this->faker->randomElement( $days ), $post_id );
-			update_field( _app_music_item_field_key( 'start_time' ), sprintf( '%02d:%02d', random_int( 12, 23 ), $this->faker->randomElement( array( 0, 30 ) ) ), $post_id );
-			update_field( _app_music_item_field_key( 'location' ), $this->faker->randomElement( $locations ), $post_id );
-			update_field( _app_music_item_field_key( 'image' ), $this->get_rand_generic_image(), $post_id );
-			update_field( _app_music_item_field_key( 'description' ), wpautop( esc_html( $this->faker->paragraph() ) ), $post_id );
-
-			if ( 0 === $i % 3 ) {
-				update_field( _app_music_item_field_key( 'url' ), sprintf( 'https://www.%s.com/', sanitize_title( $name ) ), $post_id );
-			}
-
-			if ( 0 === $i % 2 ) {
-				update_field( _app_music_item_field_key( 'social_url' ), sprintf( 'https://www.instagram.com/%s/', sanitize_title( $name ) ), $post_id );
-			}
-		}
 	}
 
 	private function insert_projects(): void {

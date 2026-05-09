@@ -44,7 +44,7 @@ if (!data) {
                         {item.location && (
                             <p class="meta">{item.location}</p>
                         )}
-                        <div set:html={item.description.html} />
+                        <div class="section-body" set:html={item.description.html} />
                         {(item.url || item.socialUrl) && (
                             <div class="links">
                                 {item.url && (

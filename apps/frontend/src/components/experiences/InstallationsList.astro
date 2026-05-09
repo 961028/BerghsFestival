@@ -30,7 +30,7 @@ const { items } = Astro.props;
                 <div class="text">
                     <h2 class="name">{item.name}</h2>
                     {item.location && <p class="meta">{item.location}</p>}
-                    <div class="description" set:html={item.description.html} />
+                    <div class="description section-body" set:html={item.description.html} />
                     {item.url && (
                         <div class="links">
                             <a

@@ -1,134 +1,152 @@
 ---
 import WpImage from "../elements/WpImage.astro";
-import type { MusicItem } from "../../lib/experience-pages";
+import type { Artist, Show } from "../../lib/experience-pages";
 
 interface Props {
-    items: MusicItem[];
+    artists: Artist[];
     scheduleDays: string[];
 }
 
-const { items, scheduleDays } = Astro.props;
+const { artists, scheduleDays } = Astro.props;
 
-// Group items by day in schedule order. Items without a day, and items whose
-// day no longer matches a schedule day, fall into a single trailing bucket.
-const knownDays = new Set(scheduleDays);
+type DayGroup = { label: string | null; shows: Show[] };
 
-const buckets: { label: string | null; items: MusicItem[] }[] = [
-    ...scheduleDays.map((day) => ({
-        label: day,
-        items: items.filter((item) => item.day === day),
-    })),
-    {
-        label: null,
-        items: items.filter((item) => !item.day || !knownDays.has(item.day)),
-    },
-].filter((bucket) => bucket.items.length > 0);
+function groupShowsByDay(shows: Show[]): DayGroup[] {
+    const byDay = new Map<string, Show[]>();
+    const unscheduled: Show[] = [];
 
-function slugify(value: string): string {
-    return value
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
+    for (const show of shows) {
+        if (show.day) {
+            const list = byDay.get(show.day) ?? [];
+            list.push(show);
+            byDay.set(show.day, list);
+        } else {
+            unscheduled.push(show);
+        }
+    }
+
+    const sortByTime = (a: Show, b: Show) =>
+        (a.startTime || "").localeCompare(b.startTime || "");
+
+    const groups: DayGroup[] = [];
+
+    for (const day of scheduleDays) {
+        const list = byDay.get(day);
+        if (list) {
+            groups.push({ label: day, shows: [...list].sort(sortByTime) });
+            byDay.delete(day);
+        }
+    }
+
+    for (const [day, list] of byDay) {
+        groups.push({ label: day, shows: [...list].sort(sortByTime) });
+    }
+
+    if (unscheduled.length > 0) {
+        groups.push({ label: null, shows: [...unscheduled].sort(sortByTime) });
+    }
+
+    return groups;
+}
+
+function formatTimeRange(show: Show): string {
+    if (show.startTime && show.endTime) {
+        return `${show.startTime}—${show.endTime}`;
+    }
+    return show.startTime || show.endTime || "";
 }
 ---
 
 <div class="music">
-    {
-        buckets.map((bucket) => (
-            <div
-                class="day"
-                id={bucket.label ? slugify(bucket.label) : undefined}
-            >
-                {bucket.label && <h2 class="day-heading">{bucket.label}</h2>}
-                <ul role="list">
-                    {bucket.items.map((item) => (
-                        <li id={item.slug}>
-                            {item.image ? (
-                                <WpImage
-                                    image={item.image}
-                                    width={600}
-                                    height={750}
-                                    alt=""
-                                />
-                            ) : (
-                                <div
-                                    class="thumb-placeholder"
-                                    aria-hidden="true"
-                                />
-                            )}
-                            <div class="text">
-                                {bucket.label
-                                    ? <h3 class="name">{item.name}</h3>
-                                    : <h2 class="name">{item.name}</h2>
-                                }
-                                {(item.startTime || item.location) && (
-                                    <p class="meta">
-                                        {item.startTime && (
-                                            <span class="time">
-                                                {item.startTime}
-                                            </span>
+    <ul role="list">
+        {
+            artists.map((artist) => (
+                <li id={artist.slug}>
+                    {artist.image ? (
+                        <WpImage
+                            image={artist.image}
+                            width={600}
+                            height={750}
+                            alt=""
+                        />
+                    ) : (
+                        <div
+                            class="thumb-placeholder"
+                            aria-hidden="true"
+                        />
+                    )}
+                    <div class="text">
+                        <h2 class="name">{artist.name}</h2>
+                        <div
+                            class="description section-body"
+                            set:html={artist.description.html}
+                        />
+                        {artist.shows.length > 0 && (
+                            <div class="show-days">
+                                {groupShowsByDay(artist.shows).map((group) => (
+                                    <div class="show-day">
+                                        {group.label && (
+                                            <h3 class="day">{group.label}</h3>
                                         )}
-                                        {item.location && (
-                                            <span class="location">
-                                                {item.location}
-                                            </span>
-                                        )}
-                                    </p>
-                                )}
-                                <div
-                                    class="description"
-                                    set:html={item.description.html}
-                                />
-                                {(item.url || item.socialUrl) && (
-                                    <div class="links">
-                                        {item.url && (
-                                            <a
-                                                class="btn"
-                                                data-color-hover
-                                                href={item.url}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                aria-label={`${item.name} website`}
-                                            >
-                                                Website
-                                            </a>
-                                        )}
-                                        {item.socialUrl && (
-                                            <a
-                                                class="btn"
-                                                data-color-hover
-                                                href={item.socialUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                aria-label={`${item.name} social media`}
-                                            >
-                                                Social
-                                            </a>
-                                        )}
+                                        <ul class="shows" role="list">
+                                            {group.shows.map((show) => {
+                                                const range = formatTimeRange(show);
+                                                return (
+                                                    <li class="show">
+                                                        {range && (
+                                                            <span class="time">
+                                                                {range}
+                                                            </span>
+                                                        )}
+                                                        {show.location && (
+                                                            <span class="location">
+                                                                {show.location}
+                                                            </span>
+                                                        )}
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
                                     </div>
+                                ))}
+                            </div>
+                        )}
+                        {(artist.url || artist.socialUrl) && (
+                            <div class="links">
+                                {artist.url && (
+                                    <a
+                                        class="btn"
+                                        data-color-hover
+                                        href={artist.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={`${artist.name} website`}
+                                    >
+                                        Website
+                                    </a>
+                                )}
+                                {artist.socialUrl && (
+                                    <a
+                                        class="btn"
+                                        data-color-hover
+                                        href={artist.socialUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={`${artist.name} social media`}
+                                    >
+                                        Social
+                                    </a>
                                 )}
                             </div>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        ))
-    }
+                        )}
+                    </div>
+                </li>
+            ))
+        }
+    </ul>
 </div>
 
 <style>
-    .day + .day:has(> .day-heading) {
-        margin-block-start: var(--space-xl);
-    }
-
-    .day-heading {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        line-height: var(--line-height-tight);
-        letter-spacing: var(--letter-spacing-tight);
-        margin: 0 0 var(--space-sm);
-    }
-
     /* ── Music rows ──────────────────────────────────────────────────
        Mobile: image full-width on top, text below.
        ≥40rem: thumb left fixed, text right. Border + padding rhythm
@@ -152,11 +170,6 @@ function slugify(value: string): string {
             grid-template-columns: var(--music-thumb-w) 1fr;
             align-items: start;
         }
-
-        .text {
-            height: var(--music-thumb-h);
-            overflow: hidden;
-        }
     }
 
     @media (min-width: 64rem) {
@@ -169,6 +182,7 @@ function slugify(value: string): string {
     .thumb-placeholder {
         display: block;
         width: 100%;
+        height: auto;
         aspect-ratio: 4 / 5;
         object-fit: cover;
     }
@@ -193,43 +207,70 @@ function slugify(value: string): string {
     }
 
     .name {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
         margin: 0;
     }
 
-    .meta {
+    .show-days {
         display: flex;
-        flex-wrap: wrap;
-        align-items: baseline;
-        gap: var(--space-xs);
+        flex-direction: column;
+        gap: var(--space-sm);
+        margin-block-start: var(--space-md);
+    }
+
+    .show-day {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xxs);
+    }
+
+    .day {
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-normal);
+        text-transform: uppercase;
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
         margin: 0;
     }
 
-    .time {
+    .shows {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xxs);
+        margin: 0;
+        padding: 0;
+    }
+
+    .shows li {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+        padding: 0;
+        border: 0;
+    }
+
+    .time,
+    .location {
         font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
         color: var(--color-text-muted);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
+    }
+
+    .time {
+        font-weight: var(--font-weight-bold);
         font-variant-numeric: tabular-nums;
     }
 
     .location {
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
-        color: var(--color-text-muted);
-        line-height: var(--line-height-tight);
-        letter-spacing: var(--letter-spacing-tight);
+        font-weight: var(--font-weight-normal);
     }
 
     @media (min-width: 40rem) {
-        .name {
-            font-size: var(--font-size-lg);
-        }
-
+        .day,
         .time,
         .location {
             font-size: var(--font-size-base);

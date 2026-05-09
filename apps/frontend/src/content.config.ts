@@ -186,39 +186,6 @@ const pages = definePaginatedCollection(
         })),
 );
 
-const musicItems = definePaginatedCollection(
-    "wp/v2/music_item",
-    z
-        .object({
-            id: intId(),
-            slug: z.string().nonempty(),
-            title: z.object({ rendered: z.string() }),
-            menu_order: z.number(),
-            acf: z.object({
-                day: z.string().nullable().optional(),
-                start_time: z.string().nullable().optional(),
-                location: z.string().nullable().optional(),
-                image: nullableIntReference("media"),
-                description: z.string().optional(),
-                url: z.string().optional(),
-                social_url: z.string().optional(),
-            }),
-        })
-        .transform((item) => ({
-            id: item.id,
-            slug: item.slug,
-            order: item.menu_order,
-            name: stripHtml(item.title.rendered),
-            day: item.acf.day || null,
-            startTime: item.acf.start_time || null,
-            location: item.acf.location || null,
-            image: item.acf.image,
-            description: { html: item.acf.description ?? "" },
-            url: item.acf.url || null,
-            socialUrl: item.acf.social_url || null,
-        })),
-);
-
 const projects = definePaginatedCollection(
     "wp/v2/projects",
     z
@@ -339,7 +306,6 @@ export const collections = {
     menuItems,
     media,
     pages,
-    musicItems,
     projects,
     seo,
     sponsors,
