@@ -34,13 +34,19 @@ export function makeColorPicker(gap = 2): () => string {
 }
 
 // Attach hover-cycle accent effect to an element. `apply` receives the next
-// color on enter and an empty string on leave (use to reset the property).
+// color on enter. On leave, `reset` runs (defaults to `apply("")`) — override
+// when the property needs `removeProperty` rather than an empty string.
 // Respects prefers-reduced-motion: only applies a single color, no interval.
 export function attachAccentCycle(
     el: HTMLElement,
     apply: (color: string) => void,
-    pick: () => string = makeColorPicker(2),
+    options: {
+        pick?: () => string;
+        reset?: () => void;
+    } = {},
 ): void {
+    const pick = options.pick ?? makeColorPicker(2);
+    const reset = options.reset ?? (() => apply(""));
     const reducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -53,6 +59,6 @@ export function attachAccentCycle(
     });
     el.addEventListener("mouseleave", () => {
         if (timer) clearInterval(timer);
-        apply("");
+        reset();
     });
 }

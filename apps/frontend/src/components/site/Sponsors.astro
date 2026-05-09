@@ -116,33 +116,20 @@ const sponsorLogos = (
 </style>
 
 <script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../../scripts/accents";
+    import { attachAccentCycle, makeColorPicker } from "../../scripts/accents";
 
-    const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
-    ).matches;
     const nextAccent = makeColorPicker(2);
 
     document
         .querySelectorAll<HTMLElement>("[data-sponsors] a")
         .forEach((link) => {
-            let timer: ReturnType<typeof setInterval> | undefined;
-
-            link.addEventListener("mouseenter", () => {
-                link.style.setProperty("--color-accent-1", nextAccent());
-                if (!reducedMotion) {
-                    timer = setInterval(() => {
-                        link.style.setProperty(
-                            "--color-accent-1",
-                            nextAccent(),
-                        );
-                    }, CYCLE_INTERVAL_MS);
-                }
-            });
-
-            link.addEventListener("mouseleave", () => {
-                clearInterval(timer);
-                link.style.removeProperty("--color-accent-1");
-            });
+            attachAccentCycle(
+                link,
+                (c) => link.style.setProperty("--color-accent-1", c),
+                {
+                    pick: nextAccent,
+                    reset: () => link.style.removeProperty("--color-accent-1"),
+                },
+            );
         });
 </script>

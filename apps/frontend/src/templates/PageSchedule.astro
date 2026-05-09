@@ -119,7 +119,7 @@ const { schedule } = data;
     }
 
     dayTabs.forEach((tab, index) => {
-        attachAccentCycle(tab, (c) => (tab.style.color = c), nextAccent);
+        attachAccentCycle(tab, (c) => (tab.style.color = c), { pick: nextAccent });
         tab.addEventListener("click", () => selectDay(index));
         tab.addEventListener("keydown", (e) => {
             const last = dayTabs.length - 1;

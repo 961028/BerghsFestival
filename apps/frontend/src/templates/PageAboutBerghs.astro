@@ -103,28 +103,10 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
 </style>
 
 <script>
-    import { makeColorPicker, CYCLE_INTERVAL_MS } from "../scripts/accents";
+    import { attachAccentCycle } from "../scripts/accents";
 
     const btn = document.querySelector<HTMLElement>("[data-color-hover]");
     if (btn) {
-        const nextAccent = makeColorPicker(2);
-        const reducedMotion = window.matchMedia(
-            "(prefers-reduced-motion: reduce)",
-        ).matches;
-
-        btn.addEventListener("mouseenter", () => {
-            btn.style.backgroundColor = nextAccent();
-            if (!reducedMotion) {
-                const interval = setInterval(() => {
-                    btn.style.backgroundColor = nextAccent();
-                }, CYCLE_INTERVAL_MS);
-                btn.dataset.colorInterval = String(interval);
-            }
-        });
-
-        btn.addEventListener("mouseleave", () => {
-            clearInterval(Number(btn.dataset.colorInterval));
-            btn.style.backgroundColor = "";
-        });
+        attachAccentCycle(btn, (c) => (btn.style.backgroundColor = c));
     }
 </script>

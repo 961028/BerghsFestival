@@ -1,0 +1,162 @@
+---
+import WpImage from "../elements/WpImage.astro";
+import type { ReferenceDataEntry } from "astro:content";
+
+interface Props {
+    items: {
+        name: string;
+        location: string | null;
+        image: ReferenceDataEntry<"media"> | null;
+        description: { html: string };
+        url: string | null;
+        socialUrl: string | null;
+    }[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="food-list" role="list">
+    {
+        items.map((item) => (
+            <li>
+                {item.image && (
+                    <WpImage
+                        image={item.image}
+                        width={600}
+                        height={600}
+                        alt=""
+                    />
+                )}
+                <div>
+                    <h2>{item.name}</h2>
+                    {item.location && <p class="meta">{item.location}</p>}
+                    <div
+                        class="section-body"
+                        set:html={item.description.html}
+                    />
+                    {(item.url || item.socialUrl) && (
+                        <div class="links">
+                            {item.url && (
+                                <a
+                                    class="btn"
+                                    data-color-hover
+                                    href={item.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`${item.name} website`}
+                                >
+                                    Website
+                                </a>
+                            )}
+                            {item.socialUrl && (
+                                <a
+                                    class="btn"
+                                    data-color-hover
+                                    href={item.socialUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`${item.name} social media`}
+                                >
+                                    Social
+                                </a>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </li>
+        ))
+    }
+</ul>
+
+<style>
+    .food-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: var(--space-md);
+    }
+
+    @media (min-width: 30rem) {
+        .food-list {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (min-width: 48rem) {
+        .food-list {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .food-list li {
+        border: var(--border);
+        overflow: hidden;
+    }
+
+    .food-list li :global(img) {
+        display: block;
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+    }
+
+    .food-list li > div {
+        padding: var(--space-sm);
+    }
+
+    .food-list li h2 {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        margin: 0 0 var(--space-xs);
+    }
+
+    .food-list li .meta {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-normal);
+        color: var(--color-paper);
+        text-transform: lowercase;
+    }
+
+    .food-list li div > div {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+        color: var(--color-paper);
+        margin: 0;
+    }
+
+    .links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--color-paper);
+        color: var(--color-ink);
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        padding: var(--space-sm) var(--space-md);
+        text-decoration: none;
+        min-block-size: max(44px, 2em);
+        line-height: 1;
+        transition: background-color 0.08s;
+    }
+</style>
+
+<script>
+    import { attachAccentCycle } from "../../scripts/accents";
+
+    document
+        .querySelectorAll<HTMLElement>("[data-color-hover]")
+        .forEach((btn) => {
+            attachAccentCycle(btn, (c) => (btn.style.backgroundColor = c));
+        });
+</script>
