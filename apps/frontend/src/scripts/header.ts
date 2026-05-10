@@ -1,4 +1,4 @@
-import { makeColorPicker, CYCLE_INTERVAL_MS } from "./accents";
+import { makeColorPicker, CYCLE_INTERVAL_MS, attachRgbSplit } from "./accents";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -67,17 +67,6 @@ function strobeAccentFill(
     return timer;
 }
 
-function startCycling(span: HTMLElement): ReturnType<typeof setInterval> {
-    return setInterval(() => {
-        span.style.color = nextAccent();
-    }, CYCLE_INTERVAL_MS);
-}
-
-function stopCycling(span: HTMLElement, timer: ReturnType<typeof setInterval>) {
-    clearInterval(timer);
-    span.style.color = "";
-}
-
 // ── Logo fill cycling ──
 
 const logoLink = document.querySelector<HTMLElement>("nav > a");
@@ -107,17 +96,7 @@ if (logoLink && logoSvg) {
 
 document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {
     const span = link.querySelector<HTMLElement>(".nav-link-text")!;
-    let timer: ReturnType<typeof setInterval>;
-
-    link.addEventListener("mouseenter", () => {
-        span.style.color = nextAccent();
-        if (!reducedMotion) {
-            timer = startCycling(span);
-        }
-    });
-    link.addEventListener("mouseleave", () => {
-        stopCycling(span, timer);
-    });
+    attachRgbSplit(span);
 });
 
 // ── Submenu toggles (one per `.has-submenu` parent) ──

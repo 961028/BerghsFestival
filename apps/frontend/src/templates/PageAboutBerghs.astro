@@ -103,10 +103,10 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
 </style>
 
 <script>
-    import { attachAccentCycle } from "../scripts/accents";
+    import { attachRgbSplit } from "../scripts/accents";
 
     const btn = document.querySelector<HTMLElement>("[data-color-hover]");
     if (btn) {
-        attachAccentCycle(btn, (c) => (btn.style.backgroundColor = c));
+        attachRgbSplit(btn);
     }
 </script>
