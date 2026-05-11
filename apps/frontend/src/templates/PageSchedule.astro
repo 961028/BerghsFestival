@@ -49,7 +49,7 @@ const { schedule } = data;
                         aria-selected={i === 0 ? "true" : "false"}
                         tabindex={i === 0 ? 0 : -1}
                     >
-                        {d.day}
+                        <span data-scramble data-scramble-group="day-tabs">{d.day}</span>
                     </button>
                 </div>
             ))}
@@ -201,6 +201,10 @@ const { schedule } = data;
         background: var(--color-paper);
         color: var(--color-ink);
         font-weight: var(--font-weight-bold);
+    }
+
+    .day-toggle button[aria-selected="true"] [data-scramble]::before {
+        color: var(--color-ink);
     }
 
     .day-panel {

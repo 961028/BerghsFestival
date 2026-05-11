@@ -101,9 +101,17 @@ function scrambleReveal() {
         elStates.push({ el, buf, final, words });
     }
 
-    // Animate: stagger each non-space character, scramble then snap
+    // Animate: stagger each non-space character, scramble then snap.
+    // Elements sharing a data-scramble-group value reset the stagger counter,
+    // so they animate in parallel with their group rather than after all prior elements.
     let globalIndex = 0;
+    let currentGroup: string | null = null;
     for (const { el, buf, final } of elStates) {
+        const group = el.dataset.scrambleGroup ?? null;
+        if (group !== null && group !== currentGroup) {
+            globalIndex = 0;
+            currentGroup = group;
+        }
         let remaining = final.filter((ch) => ch.trim() !== "").length;
 
         for (let i = 0; i < final.length; i++) {
