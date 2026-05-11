@@ -112,6 +112,45 @@ const SimpleItems = repeater(
 
 export type SimpleItem = z.infer<typeof SimpleItems>[number];
 
+const OpeningHoursRepeater = repeater(
+    z
+        .object({
+            day: z.string().nullable().optional(),
+            start_time: z.string().optional(),
+            end_time: z.string().optional(),
+        })
+        .transform((row) => ({
+            day: row.day || null,
+            startTime: row.start_time ?? "",
+            endTime: row.end_time ?? "",
+        })),
+);
+
+const FoodItems = repeater(
+    z
+        .object({
+            name: z.string(),
+            location: z.string().nullable().optional(),
+            image: nullableIntReference("media"),
+            description: z.string().transform((val) => ({ html: val })),
+            hours: OpeningHoursRepeater.optional(),
+            url: z.string().optional(),
+            social_url: z.string().optional(),
+        })
+        .transform((item) => ({
+            name: item.name,
+            location: item.location || null,
+            image: item.image,
+            description: item.description,
+            hours: item.hours ?? [],
+            url: item.url || null,
+            socialUrl: item.social_url || null,
+        })),
+);
+
+export type OpeningHours = z.infer<typeof OpeningHoursRepeater>[number];
+export type FoodItem = z.infer<typeof FoodItems>[number];
+
 const FestivalDaysSchema = z
     .array(
         z.object({
@@ -242,7 +281,8 @@ export async function getFoodPage() {
     return {
         page,
         description: page.data.content,
-        items: SimpleItems.parse(page.data.acf.items),
+        items: FoodItems.parse(page.data.acf.items),
+        scheduleDays: await getScheduleDays(),
     };
 }
 

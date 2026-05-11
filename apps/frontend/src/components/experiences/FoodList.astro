@@ -1,139 +1,308 @@
 ---
 import WpImage from "../elements/WpImage.astro";
-import type { ReferenceDataEntry } from "astro:content";
+import type { FoodItem, OpeningHours } from "../../lib/experience-pages";
 
 interface Props {
-    items: {
-        name: string;
-        location: string | null;
-        image: ReferenceDataEntry<"media"> | null;
-        description: { html: string };
-        url: string | null;
-        socialUrl: string | null;
-    }[];
+    items: FoodItem[];
+    scheduleDays: string[];
 }
 
-const { items } = Astro.props;
+const { items, scheduleDays } = Astro.props;
+
+type DayGroup = { label: string | null; rows: OpeningHours[] };
+
+function groupHoursByDay(hours: OpeningHours[]): DayGroup[] {
+    const byDay = new Map<string, OpeningHours[]>();
+    const unscheduled: OpeningHours[] = [];
+
+    for (const row of hours) {
+        if (row.day) {
+            const list = byDay.get(row.day) ?? [];
+            list.push(row);
+            byDay.set(row.day, list);
+        } else {
+            unscheduled.push(row);
+        }
+    }
+
+    const sortByTime = (a: OpeningHours, b: OpeningHours) =>
+        (a.startTime || "").localeCompare(b.startTime || "");
+
+    const groups: DayGroup[] = [];
+
+    for (const day of scheduleDays) {
+        const list = byDay.get(day);
+        if (list) {
+            groups.push({ label: day, rows: [...list].sort(sortByTime) });
+            byDay.delete(day);
+        }
+    }
+
+    for (const [day, list] of byDay) {
+        groups.push({ label: day, rows: [...list].sort(sortByTime) });
+    }
+
+    if (unscheduled.length > 0) {
+        groups.push({ label: null, rows: [...unscheduled].sort(sortByTime) });
+    }
+
+    return groups;
+}
+
+function formatTimeRange(row: OpeningHours): string {
+    if (row.startTime && row.endTime) {
+        return `${row.startTime}—${row.endTime}`;
+    }
+    return row.startTime || row.endTime || "";
+}
 ---
 
-<ul class="food-list" role="list">
-    {
-        items.map((item) => (
-            <li>
-                {item.image && (
-                    <WpImage
-                        image={item.image}
-                        width={600}
-                        height={600}
-                        alt=""
-                    />
-                )}
-                <div>
-                    <h2>{item.name}</h2>
-                    {item.location && <p class="meta">{item.location}</p>}
-                    <div
-                        class="section-body"
-                        set:html={item.description.html}
-                    />
-                    {(item.url || item.socialUrl) && (
-                        <div class="links">
-                            {item.url && (
-                                <a
-                                    class="btn"
-                                    data-color-hover
-                                    href={item.url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={`${item.name} website`}
-                                >
-                                    Website
-                                </a>
-                            )}
-                            {item.socialUrl && (
-                                <a
-                                    class="btn"
-                                    data-color-hover
-                                    href={item.socialUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={`${item.name} social media`}
-                                >
-                                    Social
-                                </a>
-                            )}
-                        </div>
+<div class="food">
+    <ul role="list">
+        {
+            items.map((item) => (
+                <li>
+                    {item.image ? (
+                        <WpImage
+                            image={item.image}
+                            width={600}
+                            height={750}
+                            alt=""
+                        />
+                    ) : (
+                        <div
+                            class="thumb-placeholder"
+                            aria-hidden="true"
+                        />
                     )}
-                </div>
-            </li>
-        ))
-    }
-</ul>
+                    <div class="text">
+                        <h2 class="name">{item.name}</h2>
+                        <div
+                            class="description section-body"
+                            set:html={item.description.html}
+                        />
+                        {item.hours.length > 0 && (
+                            <div class="show-days">
+                                {groupHoursByDay(item.hours).map((group) => (
+                                    <div class="show-day">
+                                        {group.label && (
+                                            <h3 class="day">{group.label}</h3>
+                                        )}
+                                        <ul class="shows" role="list">
+                                            {group.rows.map((row) => {
+                                                const range = formatTimeRange(row);
+                                                return (
+                                                    <li class="show">
+                                                        {range && (
+                                                            <span class="time">
+                                                                {range}
+                                                            </span>
+                                                        )}
+                                                        {item.location && (
+                                                            <span class="location">
+                                                                {item.location}
+                                                            </span>
+                                                        )}
+                                                    </li>
+                                                );
+                                            })}
+                                        </ul>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        {item.hours.length === 0 && item.location && (
+                            <div class="meta-row">
+                                <span class="location">{item.location}</span>
+                            </div>
+                        )}
+                        {(item.url || item.socialUrl) && (
+                            <div class="links">
+                                {item.url && (
+                                    <a
+                                        class="btn"
+                                        data-color-hover
+                                        href={item.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={`${item.name} website`}
+                                    >
+                                        Website
+                                    </a>
+                                )}
+                                {item.socialUrl && (
+                                    <a
+                                        class="btn"
+                                        data-color-hover
+                                        href={item.socialUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={`${item.name} social media`}
+                                    >
+                                        Social
+                                    </a>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </li>
+            ))
+        }
+    </ul>
+</div>
 
 <style>
-    .food-list {
+    /* ── Food rows ───────────────────────────────────────────────────
+       Mirrors Music layout. Mobile: image full-width on top, text
+       below. ≥40rem: thumb left fixed, text right. Border + padding
+       rhythm matches Music and schedule rows. */
+    ul {
         list-style: none;
         margin: 0;
         padding: 0;
+    }
+
+    li {
         display: grid;
-        grid-template-columns: 1fr;
         gap: var(--space-md);
+        padding-block: var(--space-md);
+        border-block-start: var(--border);
+        align-items: start;
     }
 
-    @media (min-width: 30rem) {
-        .food-list {
-            grid-template-columns: repeat(2, 1fr);
+    @media (min-width: 40rem) {
+        li {
+            grid-template-columns: var(--music-thumb-w) 1fr;
+            align-items: start;
         }
     }
 
-    @media (min-width: 48rem) {
-        .food-list {
-            grid-template-columns: repeat(3, 1fr);
+    @media (min-width: 64rem) {
+        li {
+            padding-block: var(--space-lg);
         }
     }
 
-    .food-list li {
-        border: var(--border);
-        overflow: hidden;
-    }
-
-    .food-list li :global(img) {
+    li :global(img),
+    .thumb-placeholder {
         display: block;
         width: 100%;
         height: auto;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 4 / 5;
         object-fit: cover;
     }
 
-    .food-list li > div {
-        padding: var(--space-sm);
+    @media (min-width: 40rem) {
+        li :global(img),
+        .thumb-placeholder {
+            width: var(--music-thumb-w);
+            height: var(--music-thumb-h);
+        }
     }
 
-    .food-list li h2 {
+    .thumb-placeholder {
+        border: var(--border);
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xxs);
+        min-width: 0;
+    }
+
+    .name {
         font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
         letter-spacing: var(--letter-spacing-tight);
-        margin: 0 0 var(--space-xs);
+        margin: 0;
     }
 
-    .food-list li .meta {
-        font-size: var(--font-size-base);
+    .show-days {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+        margin-block-start: var(--space-md);
+    }
+
+    .show-day {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xxs);
+    }
+
+    .day {
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-normal);
-        color: var(--color-paper);
-        text-transform: lowercase;
+        text-transform: uppercase;
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        margin: 0;
     }
 
-    .food-list li div > div {
+    .shows {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xxs);
+        margin: 0;
+        padding: 0;
+    }
+
+    .shows li {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+        padding: 0;
+        border: 0;
+    }
+
+    .meta-row {
+        margin-block-start: var(--space-md);
+    }
+
+    .time,
+    .location {
+        font-size: var(--font-size-sm);
+        color: var(--color-paper);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+    }
+
+    .time {
+        font-weight: var(--font-weight-bold);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .location {
+        font-weight: var(--font-weight-normal);
+    }
+
+    @media (min-width: 40rem) {
+        .day,
+        .time,
+        .location {
+            font-size: var(--font-size-base);
+        }
+    }
+
+    .description {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         color: var(--color-paper);
-        margin: 0;
+        margin-block-start: var(--space-xs);
+    }
+
+    .description :global(p:last-child) {
+        margin-block-end: 0;
     }
 
     .links {
         display: flex;
         flex-wrap: wrap;
         gap: var(--space-xs);
+        margin-block-start: auto;
+        padding-block-start: var(--space-sm);
     }
 
     .btn {

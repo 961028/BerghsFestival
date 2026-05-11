@@ -27,7 +27,7 @@ if (!data) {
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
     <div class="page-section">
-        <FoodList items={data.items} />
+        <FoodList items={data.items} scheduleDays={data.scheduleDays} />
     </div>
 </Layout>
 
