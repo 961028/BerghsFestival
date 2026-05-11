@@ -328,11 +328,10 @@ if (ogImageRef) {
     .footer-row--info {
         border-block-start: var(--border);
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
         gap: 1px;
         background: var(--color-paper);
         padding-block: 0; /* cells carry their own padding */
-        container-type: inline-size;
     }
 
     .footer-col {
@@ -344,9 +343,8 @@ if (ogImageRef) {
     }
 
     /* Add inner padding when footer cols are side by side.
-       Container query matches the grid auto-fit flip (2 × 16rem minmax floor),
-       so padding kicks in exactly when the divider goes vertical. */
-    @container (min-width: 32rem) {
+       34.5625rem = 2 × 16rem + 1px gap + 2 × 1.25rem site padding (mobile). */
+    @media (min-width: 34.5625rem) {
         .footer-col:first-child {
             padding-inline-end: var(--space-lg);
         }
