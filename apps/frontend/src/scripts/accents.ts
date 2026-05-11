@@ -61,4 +61,10 @@ export function attachAccentCycle(
         if (timer) clearInterval(timer);
         reset();
     });
+    window.addEventListener("pageshow", (e) => {
+        if (e.persisted) {
+            if (timer) clearInterval(timer);
+            reset();
+        }
+    });
 }
