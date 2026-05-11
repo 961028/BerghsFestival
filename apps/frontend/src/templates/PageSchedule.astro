@@ -95,9 +95,7 @@ const { schedule } = data;
 </Layout>
 
 <script>
-    import { attachAccentCycle, makeColorPicker } from "../scripts/accents";
-
-    const nextAccent = makeColorPicker(2);
+    import { attachRgbSplit } from "../scripts/accents";
 
     const dayTabs = Array.from(
         document.querySelectorAll<HTMLButtonElement>('[role="tab"]'),
@@ -119,7 +117,7 @@ const { schedule } = data;
     }
 
     dayTabs.forEach((tab, index) => {
-        attachAccentCycle(tab, (c) => (tab.style.color = c), { pick: nextAccent });
+        attachRgbSplit(tab);
         tab.addEventListener("click", () => selectDay(index));
         tab.addEventListener("keydown", (e) => {
             const last = dayTabs.length - 1;
@@ -148,18 +146,7 @@ const { schedule } = data;
     document
         .querySelectorAll<HTMLElement>(".day-panel li:has(a.event-row)")
         .forEach((li) => {
-            const title = li.querySelector<HTMLElement>(".title");
-            const time = li.querySelector<HTMLElement>(".time");
-            const icon = li.querySelector<HTMLElement>(".event-icon");
-            attachAccentCycle(
-                li,
-                (c) => {
-                    if (title) title.style.color = c;
-                    if (time) time.style.color = c;
-                    if (icon) icon.style.background = c;
-                },
-                nextAccent,
-            );
+            attachRgbSplit(li);
         });
 
     if (

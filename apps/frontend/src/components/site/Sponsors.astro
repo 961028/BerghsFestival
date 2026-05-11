@@ -116,20 +116,11 @@ const sponsorLogos = (
 </style>
 
 <script>
-    import { attachAccentCycle, makeColorPicker } from "../../scripts/accents";
-
-    const nextAccent = makeColorPicker(2);
+    import { attachRgbSplit } from "../../scripts/accents";
 
     document
         .querySelectorAll<HTMLElement>("[data-sponsors] a")
         .forEach((link) => {
-            attachAccentCycle(
-                link,
-                (c) => link.style.setProperty("--color-accent-1", c),
-                {
-                    pick: nextAccent,
-                    reset: () => link.style.removeProperty("--color-accent-1"),
-                },
-            );
+            attachRgbSplit(link);
         });
 </script>

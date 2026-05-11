@@ -141,11 +141,11 @@ const { items } = Astro.props;
 </style>
 
 <script>
-    import { attachAccentCycle } from "../../scripts/accents";
+    import { attachRgbSplit } from "../../scripts/accents";
 
     document
         .querySelectorAll<HTMLElement>("[data-color-hover]")
         .forEach((btn) => {
-            attachAccentCycle(btn, (c) => (btn.style.backgroundColor = c));
+            attachRgbSplit(btn);
         });
 </script>
