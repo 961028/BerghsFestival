@@ -114,7 +114,7 @@ const projectCount = acf.project_count as number | undefined;
                 </p>
                 {
                     (studentCount || projectCount) && (
-                        <span class="hero-stats">
+                        <span class="hero-stats" data-scramble>
                             {studentCount && `${studentCount} students`}
                             {studentCount && projectCount && " — "}
                             {projectCount && `${projectCount} projects`}
@@ -145,19 +145,15 @@ const projectCount = acf.project_count as number | undefined;
 
     const target = new Date(openingDateStr);
     const el = document.getElementById("js-countdown");
+    if (!el) return;
 
     function pad(n) {
         return String(n).padStart(2, "0");
     }
 
-    function tick() {
-        if (!el) return;
+    function compute() {
         const diff = target - Date.now();
-
-        if (diff <= 0) {
-            el.closest(".countdown").textContent = "OPEN NOW";
-            return;
-        }
+        if (diff <= 0) return null;
 
         const totalSeconds = Math.floor(diff / 1000);
         const days = Math.floor(totalSeconds / 86400);
@@ -165,18 +161,44 @@ const projectCount = acf.project_count as number | undefined;
         const minutes = Math.floor((totalSeconds % 3600) / 60);
         const seconds = totalSeconds % 60;
 
-        let text;
         if (days > 0) {
-            text = `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        } else {
-            text = `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+            return `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
         }
-
-        el.textContent = text;
+        return `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
     }
 
-    tick();
-    setInterval(tick, 1000);
+    // Seed initial text + opt into the scramble reveal alongside other
+    // [data-scramble] elements. This inline script runs before scramble.ts
+    // (a bundled module), so the countdown is in the DOM with its attribute
+    // by the time scramble.ts queries for "[data-scramble]".
+    const initial = compute();
+    if (initial === null) {
+        el.closest(".countdown").textContent = "OPEN NOW";
+        return;
+    }
+    el.textContent = initial;
+    el.setAttribute("data-scramble", "");
+
+    // scramble.ts sets `color: transparent` during the reveal and clears it
+    // when done. Poll once per frame until cleared, then start ticking.
+    function waitForReveal() {
+        if (el.style.color === "transparent") {
+            requestAnimationFrame(waitForReveal);
+            return;
+        }
+        setInterval(() => {
+            const text = compute();
+            if (text === null) {
+                el.closest(".countdown").textContent = "OPEN NOW";
+                return;
+            }
+            el.textContent = text;
+        }, 1000);
+    }
+
+    // Wait two frames so scramble.ts (which runs after this inline script)
+    // has time to apply `color: transparent` before we start polling.
+    requestAnimationFrame(() => requestAnimationFrame(waitForReveal));
 </script>
 
 <style>

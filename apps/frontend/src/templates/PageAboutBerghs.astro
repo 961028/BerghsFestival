@@ -38,7 +38,7 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
     {
         sections.map((section) => (
             <section>
-                <h2 data-scramble>{section.title}</h2>
+                <h2>{section.title}</h2>
 
                 <div class="page-content" set:html={section.content.html} />
             </section>
