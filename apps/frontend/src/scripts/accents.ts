@@ -96,7 +96,7 @@ export const rgbSplitConfig = {
     // Burst overall multiplier applied on top of amount.
     burstStrength: 8,
     // Extra burst intensity multiplier (chained: amount × burstStrength × glitchiness).
-    glitchiness: 0.4,
+    glitchiness: 0.3,
 
     // ── Per-channel jitter scales ─────────────────────────────────────────────
     // Random per-tick noise added on top of base offsets in pixels. Each value
@@ -180,5 +180,82 @@ export function attachRgbSplit(el: HTMLElement): void {
         if (raf) cancelAnimationFrame(raf);
         raf = 0;
         el.style.textShadow = "";
+    });
+}
+
+export function buildDropShadow(
+    amount: number,
+    burst: number,
+    jitter: number,
+): string {
+    const c = rgbSplitConfig;
+    const a = amount * burst;
+    const j = (scale: number) => (Math.random() - 0.5) * jitter * scale;
+    const rX = a + j(c.rJitterX);
+    const bX = -a + j(c.bJitterX);
+    const rY = j(c.rJitterY);
+    const bY = j(c.bJitterY);
+    const gX = j(c.gJitterX);
+    const gY = c.gBaseY + j(c.gJitterY);
+    const r = `drop-shadow(${rX.toFixed(3)}px ${rY.toFixed(3)}px 0 ${c.colorR})`;
+    const g = `drop-shadow(${gX.toFixed(3)}px ${gY.toFixed(3)}px 0 ${c.colorG})`;
+    const b = `drop-shadow(${bX.toFixed(3)}px ${bY.toFixed(3)}px 0 ${c.colorB})`;
+    return `${r} ${g} ${b}`;
+}
+
+// RGB split via `filter: drop-shadow(...)` — works for SVG/img where
+// `text-shadow` does not. Same jitter logic as `attachRgbSplit`.
+// Optional `trigger` element fires hover events instead of `el` itself
+// (useful when the visual is a small icon inside a larger hit area).
+export function attachRgbSplitFilter(
+    el: HTMLElement | SVGElement,
+    trigger: HTMLElement | SVGElement = el,
+): void {
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const c = rgbSplitConfig;
+    let raf = 0;
+    let lastTick = 0;
+
+    function tick(now: number) {
+        const tickInterval = 1000 / c.jitterSpeed;
+        if (now - lastTick >= tickInterval) {
+            lastTick = now;
+            const burst =
+                Math.random() < c.burstChance
+                    ? c.burstStrength * c.glitchiness
+                    : 1;
+            const jitter = c.amount * 0.3;
+            (el as HTMLElement).style.filter = buildDropShadow(
+                c.amount,
+                burst,
+                jitter,
+            );
+        }
+        raf = requestAnimationFrame(tick);
+    }
+
+    trigger.addEventListener("mouseenter", () => {
+        if (reducedMotion) {
+            (el as HTMLElement).style.filter = buildDropShadow(c.amount, 1, 0);
+            return;
+        }
+        lastTick = 0;
+        raf = requestAnimationFrame(tick);
+    });
+
+    trigger.addEventListener("mouseleave", () => {
+        if (raf) cancelAnimationFrame(raf);
+        raf = 0;
+        (el as HTMLElement).style.filter = "";
+    });
+
+    window.addEventListener("pageshow", (e) => {
+        if (e.persisted) {
+            if (raf) cancelAnimationFrame(raf);
+            raf = 0;
+            (el as HTMLElement).style.filter = "";
+        }
     });
 }

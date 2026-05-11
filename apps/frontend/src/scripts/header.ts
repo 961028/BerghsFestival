@@ -1,4 +1,9 @@
-import { makeColorPicker, CYCLE_INTERVAL_MS, attachRgbSplit } from "./accents";
+import {
+    attachRgbSplit,
+    attachRgbSplitFilter,
+    buildDropShadow,
+    rgbSplitConfig,
+} from "./accents";
 
 // ── Config ────────────────────────────────────────────────────────────────────
 
@@ -44,54 +49,36 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-// ── Font cycling ──
+// ── Logo RGB strobe on load + hover ──
 
 const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
 ).matches;
-const nextAccent = makeColorPicker(2);
-
-function strobeAccentFill(
-    el: SVGSVGElement,
-    resetTo: string,
-    duration = LOGO_STROBE_DURATION_MS,
-    interval = LOGO_STROBE_INTERVAL_MS,
-): ReturnType<typeof setInterval> {
-    const timer = setInterval(() => {
-        el.style.fill = nextAccent();
-    }, interval);
-    setTimeout(() => {
-        clearInterval(timer);
-        el.style.fill = resetTo;
-    }, duration);
-    return timer;
-}
-
-// ── Logo fill cycling ──
 
 const logoLink = document.querySelector<HTMLElement>("nav > a");
 const logoSvg = logoLink?.querySelector<SVGSVGElement>("svg");
 
 if (logoLink && logoSvg) {
     if (!reducedMotion) {
-        strobeAccentFill(logoSvg, "white");
+        const c = rgbSplitConfig;
+        const timer = setInterval(() => {
+            const burst =
+                Math.random() < c.burstChance
+                    ? c.burstStrength * c.glitchiness
+                    : 1;
+            logoSvg.style.filter = buildDropShadow(
+                c.amount,
+                burst,
+                c.amount * 0.3,
+            );
+        }, LOGO_STROBE_INTERVAL_MS);
+        setTimeout(() => {
+            clearInterval(timer);
+            logoSvg.style.filter = "";
+        }, LOGO_STROBE_DURATION_MS);
     }
 
-    let logoTimer: ReturnType<typeof setInterval> | undefined;
-
-    logoLink.addEventListener("mouseenter", () => {
-        logoSvg.style.fill = nextAccent();
-        if (!reducedMotion) {
-            logoTimer = setInterval(() => {
-                logoSvg.style.fill = nextAccent();
-            }, CYCLE_INTERVAL_MS);
-        }
-    });
-
-    logoLink.addEventListener("mouseleave", () => {
-        clearInterval(logoTimer);
-        logoSvg.style.fill = "white";
-    });
+    attachRgbSplitFilter(logoSvg);
 }
 
 document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {

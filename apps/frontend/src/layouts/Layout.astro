@@ -116,8 +116,36 @@ if (ogImageRef) {
         ACCENTS,
         pickTriple,
         makeColorPicker,
+        attachRgbSplit,
+        attachRgbSplitFilter,
         type Triple,
     } from "../scripts/accents";
+
+    // ── Global link RGB split ─────────────────────────────────────────────────
+    // Attach hover effects to all links not already handled by component scripts.
+    // nav-link spans → header.ts; sponsor logos → Sponsors.astro; logo → header.ts.
+    // Text links get text-shadow split; icon-only links (containing SVG, no text)
+    // get drop-shadow filter split applied to the <svg>.
+    const EXCLUDED = [
+        ".nav-link",        // handled in header.ts
+        "nav > a",          // logo link — handled in header.ts
+        "[data-sponsors] a",// sponsor links — logos handled separately
+    ].join(", ");
+
+    document.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {
+        if (a.matches(EXCLUDED) || a.closest("[data-sponsors]")) return;
+
+        const svg = a.querySelector("svg");
+        const hasText = a.textContent?.trim().length ?? 0 > 0;
+
+        if (svg && !hasText) {
+            // Icon-only link: apply filter split to the SVG element
+            attachRgbSplitFilter(svg);
+        } else {
+            // Text link (may also contain SVG alongside text)
+            attachRgbSplit(a);
+        }
+    });
 
     // ── Effect A: per-region accent colors ────────────────────────────────────
     // The page is split into three independent regions (header, main, footer).

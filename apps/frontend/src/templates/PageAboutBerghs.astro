@@ -101,12 +101,3 @@ const { learnMoreCta, learnMoreUrl } = LearnMoreSchema.parse(acf);
         transition: background-color 0.08s;
     }
 </style>
-
-<script>
-    import { attachRgbSplit } from "../scripts/accents";
-
-    const btn = document.querySelector<HTMLElement>("[data-color-hover]");
-    if (btn) {
-        attachRgbSplit(btn);
-    }
-</script>

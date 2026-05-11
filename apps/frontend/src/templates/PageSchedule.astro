@@ -95,7 +95,7 @@ const { schedule } = data;
 </Layout>
 
 <script>
-    import { attachRgbSplit } from "../scripts/accents";
+    import { attachRgbSplit, attachRgbSplitFilter } from "../scripts/accents";
 
     const dayTabs = Array.from(
         document.querySelectorAll<HTMLButtonElement>('[role="tab"]'),
@@ -144,9 +144,10 @@ const { schedule } = data;
     });
 
     document
-        .querySelectorAll<HTMLElement>(".day-panel li:has(a.event-row)")
-        .forEach((li) => {
-            attachRgbSplit(li);
+        .querySelectorAll<SVGElement>("a.event-row .event-icon svg")
+        .forEach((svg) => {
+            const row = svg.closest<HTMLElement>("a.event-row")!;
+            attachRgbSplitFilter(svg, row);
         });
 
     if (
@@ -225,6 +226,7 @@ const { schedule } = data;
     }
 
     .day-panel li:has(a.event-row):hover :global(.event-icon) {
+        background: var(--color-paper);
         color: var(--color-ink);
     }
 

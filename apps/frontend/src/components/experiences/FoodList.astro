@@ -319,13 +319,3 @@ function formatTimeRange(row: OpeningHours): string {
         transition: background-color 0.08s;
     }
 </style>
-
-<script>
-    import { attachRgbSplit } from "../../scripts/accents";
-
-    document
-        .querySelectorAll<HTMLElement>("[data-color-hover]")
-        .forEach((btn) => {
-            attachRgbSplit(btn);
-        });
-</script>

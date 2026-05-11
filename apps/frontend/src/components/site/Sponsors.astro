@@ -55,7 +55,7 @@ const sponsorLogos = (
                     href={url}
                     aria-label={name}
                     title={name}
-                    style={`max-width: ${widthStyle}; --logo-url: url(${src});`}
+                    style={`max-width: ${widthStyle};`}
                 >
                     <img
                         data-logo
@@ -83,7 +83,6 @@ const sponsorLogos = (
 
     a {
         display: block;
-        position: relative;
         max-width: 100%;
     }
 
@@ -92,35 +91,14 @@ const sponsorLogos = (
         width: 100%;
         height: auto;
     }
-
-    @media (any-hover: hover) and (any-pointer: fine) {
-        a::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: var(--color-accent-1);
-            mask-image: var(--logo-url);
-            mask-size: contain;
-            mask-repeat: no-repeat;
-            mask-position: center;
-            mix-blend-mode: multiply;
-            opacity: 0;
-            transition: opacity 120ms;
-            pointer-events: none;
-        }
-
-        a:hover::after {
-            opacity: 1;
-        }
-    }
 </style>
 
 <script>
-    import { attachRgbSplit } from "../../scripts/accents";
+    import { attachRgbSplitFilter } from "../../scripts/accents";
 
     document
-        .querySelectorAll<HTMLElement>("[data-sponsors] a")
-        .forEach((link) => {
-            attachRgbSplit(link);
+        .querySelectorAll<HTMLImageElement>("[data-sponsors] [data-logo]")
+        .forEach((img) => {
+            attachRgbSplitFilter(img);
         });
 </script>
