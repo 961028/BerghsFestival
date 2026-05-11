@@ -1,6 +1,6 @@
 ---
 import WpImage from "../elements/WpImage.astro";
-import type { FoodItem, OpeningHours } from "../../lib/experience-pages";
+import type { FoodItem, Slot } from "../../lib/experience-pages";
 
 interface Props {
     items: FoodItem[];
@@ -9,23 +9,23 @@ interface Props {
 
 const { items, scheduleDays } = Astro.props;
 
-type DayGroup = { label: string | null; rows: OpeningHours[] };
+type DayGroup = { label: string | null; slots: Slot[] };
 
-function groupHoursByDay(hours: OpeningHours[]): DayGroup[] {
-    const byDay = new Map<string, OpeningHours[]>();
-    const unscheduled: OpeningHours[] = [];
+function groupSlotsByDay(slots: Slot[]): DayGroup[] {
+    const byDay = new Map<string, Slot[]>();
+    const unscheduled: Slot[] = [];
 
-    for (const row of hours) {
-        if (row.day) {
-            const list = byDay.get(row.day) ?? [];
-            list.push(row);
-            byDay.set(row.day, list);
+    for (const slot of slots) {
+        if (slot.day) {
+            const list = byDay.get(slot.day) ?? [];
+            list.push(slot);
+            byDay.set(slot.day, list);
         } else {
-            unscheduled.push(row);
+            unscheduled.push(slot);
         }
     }
 
-    const sortByTime = (a: OpeningHours, b: OpeningHours) =>
+    const sortByTime = (a: Slot, b: Slot) =>
         (a.startTime || "").localeCompare(b.startTime || "");
 
     const groups: DayGroup[] = [];
@@ -33,27 +33,27 @@ function groupHoursByDay(hours: OpeningHours[]): DayGroup[] {
     for (const day of scheduleDays) {
         const list = byDay.get(day);
         if (list) {
-            groups.push({ label: day, rows: [...list].sort(sortByTime) });
+            groups.push({ label: day, slots: [...list].sort(sortByTime) });
             byDay.delete(day);
         }
     }
 
     for (const [day, list] of byDay) {
-        groups.push({ label: day, rows: [...list].sort(sortByTime) });
+        groups.push({ label: day, slots: [...list].sort(sortByTime) });
     }
 
     if (unscheduled.length > 0) {
-        groups.push({ label: null, rows: [...unscheduled].sort(sortByTime) });
+        groups.push({ label: null, slots: [...unscheduled].sort(sortByTime) });
     }
 
     return groups;
 }
 
-function formatTimeRange(row: OpeningHours): string {
-    if (row.startTime && row.endTime) {
-        return `${row.startTime}—${row.endTime}`;
+function formatTimeRange(slot: Slot): string {
+    if (slot.startTime && slot.endTime) {
+        return `${slot.startTime}—${slot.endTime}`;
     }
-    return row.startTime || row.endTime || "";
+    return slot.startTime || slot.endTime || "";
 }
 ---
 
@@ -81,26 +81,26 @@ function formatTimeRange(row: OpeningHours): string {
                             class="description section-body"
                             set:html={item.description.html}
                         />
-                        {item.hours.length > 0 && (
-                            <div class="show-days">
-                                {groupHoursByDay(item.hours).map((group) => (
-                                    <div class="show-day">
+                        {item.slots.length > 0 && (
+                            <div class="slot-days">
+                                {groupSlotsByDay(item.slots).map((group) => (
+                                    <div class="slot-day">
                                         {group.label && (
                                             <h3 class="day">{group.label}</h3>
                                         )}
-                                        <ul class="shows" role="list">
-                                            {group.rows.map((row) => {
-                                                const range = formatTimeRange(row);
+                                        <ul class="slots" role="list">
+                                            {group.slots.map((slot) => {
+                                                const range = formatTimeRange(slot);
                                                 return (
-                                                    <li class="show">
+                                                    <li class="slot">
                                                         {range && (
                                                             <span class="time">
                                                                 {range}
                                                             </span>
                                                         )}
-                                                        {item.location && (
+                                                        {slot.location && (
                                                             <span class="location">
-                                                                {item.location}
+                                                                {slot.location}
                                                             </span>
                                                         )}
                                                     </li>
@@ -109,11 +109,6 @@ function formatTimeRange(row: OpeningHours): string {
                                         </ul>
                                     </div>
                                 ))}
-                            </div>
-                        )}
-                        {item.hours.length === 0 && item.location && (
-                            <div class="meta-row">
-                                <span class="location">{item.location}</span>
                             </div>
                         )}
                         {(item.url || item.socialUrl) && (
@@ -154,8 +149,7 @@ function formatTimeRange(row: OpeningHours): string {
 <style>
     /* ── Food rows ───────────────────────────────────────────────────
        Mirrors Music layout. Mobile: image full-width on top, text
-       below. ≥40rem: thumb left fixed, text right. Border + padding
-       rhythm matches Music and schedule rows. */
+       below. ≥40rem: thumb left fixed, text right. */
     ul {
         list-style: none;
         margin: 0;
@@ -219,14 +213,14 @@ function formatTimeRange(row: OpeningHours): string {
         margin: 0;
     }
 
-    .show-days {
+    .slot-days {
         display: flex;
         flex-direction: column;
         gap: var(--space-sm);
         margin-block-start: var(--space-md);
     }
 
-    .show-day {
+    .slot-day {
         display: flex;
         flex-direction: column;
         gap: var(--space-xxs);
@@ -241,7 +235,7 @@ function formatTimeRange(row: OpeningHours): string {
         margin: 0;
     }
 
-    .shows {
+    .slots {
         display: flex;
         flex-direction: column;
         gap: var(--space-xxs);
@@ -249,16 +243,12 @@ function formatTimeRange(row: OpeningHours): string {
         padding: 0;
     }
 
-    .shows li {
+    .slots li {
         display: flex;
         flex-wrap: wrap;
         gap: var(--space-xs);
         padding: 0;
         border: 0;
-    }
-
-    .meta-row {
-        margin-block-start: var(--space-md);
     }
 
     .time,

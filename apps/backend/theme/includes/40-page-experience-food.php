@@ -31,16 +31,6 @@ function _app_page_experience_food_register_fields() {
 							'type'  => 'text',
 						),
 						array(
-							'key'           => _app_page_experience_food_field_key( 'items', 'location' ),
-							'label'         => 'Location',
-							'name'          => 'location',
-							'type'          => 'select',
-							'instructions'  => 'Optional. Choices are pulled from the locations defined on the Schedule page.',
-							'choices'       => array(),
-							'allow_null'    => 1,
-							'return_format' => 'value',
-						),
-						array(
 							'key'           => _app_page_experience_food_field_key( 'items', 'image' ),
 							'label'         => 'Image',
 							'name'          => 'image',
@@ -56,40 +46,6 @@ function _app_page_experience_food_register_fields() {
 							'media_upload' => 0,
 						),
 						array(
-							'key'          => _app_page_experience_food_field_key( 'items', 'hours' ),
-							'label'        => 'Opening hours',
-							'name'         => 'hours',
-							'type'         => 'repeater',
-							'instructions' => 'Optional. One row per day with start/end time.',
-							'layout'       => 'table',
-							'button_label' => 'Add Opening Hours',
-							'min'          => 0,
-							'sub_fields'   => array(
-								array(
-									'key'           => _app_page_experience_food_field_key( 'items', 'hours', 'day' ),
-									'label'         => 'Day',
-									'name'          => 'day',
-									'type'          => 'select',
-									'instructions'  => 'Pulled from the festival days defined on the Schedule page.',
-									'choices'       => array(),
-									'allow_null'    => 1,
-									'return_format' => 'value',
-								),
-								array(
-									'key'   => _app_page_experience_food_field_key( 'items', 'hours', 'start_time' ),
-									'label' => 'Start',
-									'name'  => 'start_time',
-									'type'  => 'text',
-								),
-								array(
-									'key'   => _app_page_experience_food_field_key( 'items', 'hours', 'end_time' ),
-									'label' => 'End',
-									'name'  => 'end_time',
-									'type'  => 'text',
-								),
-							),
-						),
-						array(
 							'key'   => _app_page_experience_food_field_key( 'items', 'url' ),
 							'label' => 'Website URL',
 							'name'  => 'url',
@@ -101,6 +57,50 @@ function _app_page_experience_food_register_fields() {
 							'name'  => 'social_url',
 							'type'  => 'url',
 						),
+						array(
+							'key'          => _app_page_experience_food_field_key( 'items', 'slots' ),
+							'label'        => 'Slots',
+							'name'         => 'slots',
+							'type'         => 'repeater',
+							'instructions' => 'One row per slot. Each slot has a day, start/end time, and location. A vendor can have multiple slots at the same day and time in different locations.',
+							'layout'       => 'table',
+							'button_label' => 'Add Slot',
+							'min'          => 0,
+							'sub_fields'   => array(
+								array(
+									'key'           => _app_page_experience_food_field_key( 'items', 'slots', 'day' ),
+									'label'         => 'Day',
+									'name'          => 'day',
+									'type'          => 'select',
+									'instructions'  => 'Pulled from the festival days defined on the Schedule page.',
+									'choices'       => array(),
+									'allow_null'    => 1,
+									'return_format' => 'value',
+								),
+								array(
+									'key'   => _app_page_experience_food_field_key( 'items', 'slots', 'start_time' ),
+									'label' => 'Start',
+									'name'  => 'start_time',
+									'type'  => 'text',
+								),
+								array(
+									'key'   => _app_page_experience_food_field_key( 'items', 'slots', 'end_time' ),
+									'label' => 'End',
+									'name'  => 'end_time',
+									'type'  => 'text',
+								),
+								array(
+									'key'           => _app_page_experience_food_field_key( 'items', 'slots', 'location' ),
+									'label'         => 'Location',
+									'name'          => 'location',
+									'type'          => 'select',
+									'instructions'  => 'Pulled from the locations defined on the Schedule page.',
+									'choices'       => array(),
+									'allow_null'    => 1,
+									'return_format' => 'value',
+								),
+							),
+						),
 					),
 				),
 			),
@@ -111,17 +111,7 @@ function _app_page_experience_food_register_fields() {
 }
 add_action( 'acf/init', '_app_page_experience_food_register_fields' );
 
-add_filter(
-	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'location' ),
-	'app_acf_load_schedule_location_choices'
-);
-
-/**
- * Load schedule day choices for the food opening-hours `day` select.
- *
- * Mirrors `_app_page_experience_music_load_show_day_choices` but for food.
- */
-function _app_page_experience_food_load_hours_day_choices( $field ) {
+function _app_page_experience_food_load_slot_day_choices( $field ) {
 	$schedule_page = app_acf_get_schedule_page();
 
 	if ( ! $schedule_page ) {
@@ -147,6 +137,11 @@ function _app_page_experience_food_load_hours_day_choices( $field ) {
 	return $field;
 }
 add_filter(
-	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'hours', 'day' ),
-	'_app_page_experience_food_load_hours_day_choices'
+	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'slots', 'day' ),
+	'_app_page_experience_food_load_slot_day_choices'
+);
+
+add_filter(
+	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'slots', 'location' ),
+	'app_acf_load_schedule_location_choices'
 );

@@ -65,17 +65,17 @@ function _app_page_experience_music_register_fields() {
 							'type'  => 'url',
 						),
 						array(
-							'key'          => _app_page_experience_music_field_key( 'artists', 'shows' ),
-							'label'        => 'Shows',
-							'name'         => 'shows',
+							'key'          => _app_page_experience_music_field_key( 'artists', 'slots' ),
+							'label'        => 'Slots',
+							'name'         => 'slots',
 							'type'         => 'repeater',
-							'instructions' => 'One row per show. Each show has a day, start/end time, and location.',
+							'instructions' => 'One row per slot. Each slot has a day, start/end time, and location.',
 							'layout'       => 'table',
-							'button_label' => 'Add Show',
+							'button_label' => 'Add Slot',
 							'min'          => 1,
 							'sub_fields'   => array(
 								array(
-									'key'           => _app_page_experience_music_field_key( 'artists', 'shows', 'day' ),
+									'key'           => _app_page_experience_music_field_key( 'artists', 'slots', 'day' ),
 									'label'         => 'Day',
 									'name'          => 'day',
 									'type'          => 'select',
@@ -85,19 +85,19 @@ function _app_page_experience_music_register_fields() {
 									'return_format' => 'value',
 								),
 								array(
-									'key'   => _app_page_experience_music_field_key( 'artists', 'shows', 'start_time' ),
+									'key'   => _app_page_experience_music_field_key( 'artists', 'slots', 'start_time' ),
 									'label' => 'Start',
 									'name'  => 'start_time',
 									'type'  => 'text',
 								),
 								array(
-									'key'   => _app_page_experience_music_field_key( 'artists', 'shows', 'end_time' ),
+									'key'   => _app_page_experience_music_field_key( 'artists', 'slots', 'end_time' ),
 									'label' => 'End',
 									'name'  => 'end_time',
 									'type'  => 'text',
 								),
 								array(
-									'key'           => _app_page_experience_music_field_key( 'artists', 'shows', 'location' ),
+									'key'           => _app_page_experience_music_field_key( 'artists', 'slots', 'location' ),
 									'label'         => 'Location',
 									'name'          => 'location',
 									'type'          => 'select',
@@ -118,7 +118,7 @@ function _app_page_experience_music_register_fields() {
 }
 add_action( 'acf/init', '_app_page_experience_music_register_fields' );
 
-function _app_page_experience_music_load_show_day_choices( $field ) {
+function _app_page_experience_music_load_slot_day_choices( $field ) {
 	$schedule_page = app_acf_get_schedule_page();
 
 	if ( ! $schedule_page ) {
@@ -144,12 +144,12 @@ function _app_page_experience_music_load_show_day_choices( $field ) {
 	return $field;
 }
 add_filter(
-	'acf/load_field/key=' . _app_page_experience_music_field_key( 'artists', 'shows', 'day' ),
-	'_app_page_experience_music_load_show_day_choices'
+	'acf/load_field/key=' . _app_page_experience_music_field_key( 'artists', 'slots', 'day' ),
+	'_app_page_experience_music_load_slot_day_choices'
 );
 
 add_filter(
-	'acf/load_field/key=' . _app_page_experience_music_field_key( 'artists', 'shows', 'location' ),
+	'acf/load_field/key=' . _app_page_experience_music_field_key( 'artists', 'slots', 'location' ),
 	'app_acf_load_schedule_location_choices'
 );
 

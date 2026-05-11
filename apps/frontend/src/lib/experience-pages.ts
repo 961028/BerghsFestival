@@ -3,7 +3,7 @@ import { z } from "astro/zod";
 
 import { nullableIntReference, repeater } from "./schema";
 
-const ShowsRepeater = repeater(
+const SlotsRepeater = repeater(
     z
         .object({
             day: z.string().nullable().optional(),
@@ -11,11 +11,11 @@ const ShowsRepeater = repeater(
             end_time: z.string().optional(),
             location: z.string().nullable().optional(),
         })
-        .transform((show) => ({
-            day: show.day || null,
-            startTime: show.start_time ?? "",
-            endTime: show.end_time ?? "",
-            location: show.location || null,
+        .transform((slot) => ({
+            day: slot.day || null,
+            startTime: slot.start_time ?? "",
+            endTime: slot.end_time ?? "",
+            location: slot.location || null,
         })),
 );
 
@@ -28,7 +28,7 @@ const ArtistsRepeater = repeater(
             description: z.string().optional(),
             url: z.string().optional(),
             social_url: z.string().optional(),
-            shows: ShowsRepeater,
+            slots: SlotsRepeater,
         })
         .transform((item) => ({
             slug: item.slug || z.string().slugify().parse(item.name),
@@ -37,11 +37,11 @@ const ArtistsRepeater = repeater(
             description: { html: item.description ?? "" },
             url: item.url || null,
             socialUrl: item.social_url || null,
-            shows: item.shows,
+            slots: item.slots,
         })),
 );
 
-export type Show = z.infer<typeof ShowsRepeater>[number];
+export type Slot = z.infer<typeof SlotsRepeater>[number];
 export type Artist = z.infer<typeof ArtistsRepeater>[number];
 
 // Appends -2, -3, … to keep all slugs unique when two artists share a name.
@@ -112,43 +112,26 @@ const SimpleItems = repeater(
 
 export type SimpleItem = z.infer<typeof SimpleItems>[number];
 
-const OpeningHoursRepeater = repeater(
-    z
-        .object({
-            day: z.string().nullable().optional(),
-            start_time: z.string().optional(),
-            end_time: z.string().optional(),
-        })
-        .transform((row) => ({
-            day: row.day || null,
-            startTime: row.start_time ?? "",
-            endTime: row.end_time ?? "",
-        })),
-);
-
 const FoodItems = repeater(
     z
         .object({
             name: z.string(),
-            location: z.string().nullable().optional(),
             image: nullableIntReference("media"),
             description: z.string().transform((val) => ({ html: val })),
-            hours: OpeningHoursRepeater.optional(),
             url: z.string().optional(),
             social_url: z.string().optional(),
+            slots: SlotsRepeater.optional(),
         })
         .transform((item) => ({
             name: item.name,
-            location: item.location || null,
             image: item.image,
             description: item.description,
-            hours: item.hours ?? [],
             url: item.url || null,
             socialUrl: item.social_url || null,
+            slots: item.slots ?? [],
         })),
 );
 
-export type OpeningHours = z.infer<typeof OpeningHoursRepeater>[number];
 export type FoodItem = z.infer<typeof FoodItems>[number];
 
 const FestivalDaysSchema = z

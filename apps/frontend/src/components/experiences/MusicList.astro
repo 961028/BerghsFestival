@@ -1,6 +1,6 @@
 ---
 import WpImage from "../elements/WpImage.astro";
-import type { Artist, Show } from "../../lib/experience-pages";
+import type { Artist, Slot } from "../../lib/experience-pages";
 
 interface Props {
     artists: Artist[];
@@ -9,23 +9,23 @@ interface Props {
 
 const { artists, scheduleDays } = Astro.props;
 
-type DayGroup = { label: string | null; shows: Show[] };
+type DayGroup = { label: string | null; slots: Slot[] };
 
-function groupShowsByDay(shows: Show[]): DayGroup[] {
-    const byDay = new Map<string, Show[]>();
-    const unscheduled: Show[] = [];
+function groupSlotsByDay(slots: Slot[]): DayGroup[] {
+    const byDay = new Map<string, Slot[]>();
+    const unscheduled: Slot[] = [];
 
-    for (const show of shows) {
-        if (show.day) {
-            const list = byDay.get(show.day) ?? [];
-            list.push(show);
-            byDay.set(show.day, list);
+    for (const slot of slots) {
+        if (slot.day) {
+            const list = byDay.get(slot.day) ?? [];
+            list.push(slot);
+            byDay.set(slot.day, list);
         } else {
-            unscheduled.push(show);
+            unscheduled.push(slot);
         }
     }
 
-    const sortByTime = (a: Show, b: Show) =>
+    const sortByTime = (a: Slot, b: Slot) =>
         (a.startTime || "").localeCompare(b.startTime || "");
 
     const groups: DayGroup[] = [];
@@ -33,27 +33,27 @@ function groupShowsByDay(shows: Show[]): DayGroup[] {
     for (const day of scheduleDays) {
         const list = byDay.get(day);
         if (list) {
-            groups.push({ label: day, shows: [...list].sort(sortByTime) });
+            groups.push({ label: day, slots: [...list].sort(sortByTime) });
             byDay.delete(day);
         }
     }
 
     for (const [day, list] of byDay) {
-        groups.push({ label: day, shows: [...list].sort(sortByTime) });
+        groups.push({ label: day, slots: [...list].sort(sortByTime) });
     }
 
     if (unscheduled.length > 0) {
-        groups.push({ label: null, shows: [...unscheduled].sort(sortByTime) });
+        groups.push({ label: null, slots: [...unscheduled].sort(sortByTime) });
     }
 
     return groups;
 }
 
-function formatTimeRange(show: Show): string {
-    if (show.startTime && show.endTime) {
-        return `${show.startTime}—${show.endTime}`;
+function formatTimeRange(slot: Slot): string {
+    if (slot.startTime && slot.endTime) {
+        return `${slot.startTime}—${slot.endTime}`;
     }
-    return show.startTime || show.endTime || "";
+    return slot.startTime || slot.endTime || "";
 }
 ---
 
@@ -81,26 +81,26 @@ function formatTimeRange(show: Show): string {
                             class="description section-body"
                             set:html={artist.description.html}
                         />
-                        {artist.shows.length > 0 && (
-                            <div class="show-days">
-                                {groupShowsByDay(artist.shows).map((group) => (
-                                    <div class="show-day">
+                        {artist.slots.length > 0 && (
+                            <div class="slot-days">
+                                {groupSlotsByDay(artist.slots).map((group) => (
+                                    <div class="slot-day">
                                         {group.label && (
                                             <h3 class="day">{group.label}</h3>
                                         )}
-                                        <ul class="shows" role="list">
-                                            {group.shows.map((show) => {
-                                                const range = formatTimeRange(show);
+                                        <ul class="slots" role="list">
+                                            {group.slots.map((slot) => {
+                                                const range = formatTimeRange(slot);
                                                 return (
-                                                    <li class="show">
+                                                    <li class="slot">
                                                         {range && (
                                                             <span class="time">
                                                                 {range}
                                                             </span>
                                                         )}
-                                                        {show.location && (
+                                                        {slot.location && (
                                                             <span class="location">
-                                                                {show.location}
+                                                                {slot.location}
                                                             </span>
                                                         )}
                                                     </li>
@@ -215,14 +215,14 @@ function formatTimeRange(show: Show): string {
         margin: 0;
     }
 
-    .show-days {
+    .slot-days {
         display: flex;
         flex-direction: column;
         gap: var(--space-sm);
         margin-block-start: var(--space-md);
     }
 
-    .show-day {
+    .slot-day {
         display: flex;
         flex-direction: column;
         gap: var(--space-xxs);
@@ -237,7 +237,7 @@ function formatTimeRange(show: Show): string {
         margin: 0;
     }
 
-    .shows {
+    .slots {
         display: flex;
         flex-direction: column;
         gap: var(--space-xxs);
@@ -245,7 +245,7 @@ function formatTimeRange(show: Show): string {
         padding: 0;
     }
 
-    .shows li {
+    .slots li {
         display: flex;
         flex-wrap: wrap;
         gap: var(--space-xs);
