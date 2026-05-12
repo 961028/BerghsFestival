@@ -198,7 +198,11 @@ function app_acf_get_music_page_artist_choices(): array {
 	return $choices;
 }
 
-function _app_page_experience_music_autofill_slugs( int $post_id ): void {
+function _app_page_experience_music_autofill_slugs( mixed $post_id ): void {
+	if (!is_int($post_id) || $post_id <= 0) {
+		return;
+	}
+
 	$template = get_post_meta( $post_id, '_wp_page_template', true );
 
 	if ( 'page-experience-music.php' !== $template ) {
