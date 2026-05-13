@@ -162,13 +162,6 @@ async function findPageByTemplate(
     return pages.find((page) => page.data.template === template) ?? null;
 }
 
-async function findPageBySlug(
-    slug: string,
-): Promise<CollectionEntry<"pages"> | null> {
-    const pages = await getCollection("pages");
-    return pages.find((page) => page.data.slug === slug) ?? null;
-}
-
 async function getArtists(): Promise<Artist[]> {
     const page = await findPageByTemplate("page-experience-music.php");
     if (!page) return [];
@@ -270,5 +263,19 @@ export async function getFoodPage() {
 }
 
 export async function getProjectsPage() {
-    return findPageBySlug("projects");
+    const page = await findPageByTemplate("page-projects.php");
+
+    if (!page) {
+        return null;
+    }
+
+    const projects = (await getCollection("projects")).map(
+        (entry) => entry.data,
+    );
+
+    return {
+        page,
+        description: page.data.content,
+        projects,
+    };
 }

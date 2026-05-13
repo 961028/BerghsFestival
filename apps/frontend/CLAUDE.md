@@ -26,16 +26,17 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
     - `page-experience-music.php` — Music page
     - `page-experience-installations.php` — Installations page
     - `page-experience-food.php` — Food & drink page
+    - `page-projects.php` — Projects listing page (no ACF fields; the standard WP editor content is used as the page description above the grid)
 - When adding or modifying content collection schemas in `src/content.config.ts`, read the corresponding ACF file to verify field names and types.
 
 ## Frontend (Astro)
 
 - **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), collection utilities (`content.ts`), and the per-experience-page schemas + page-load helpers (`experience-pages.ts`).
 - **Layouts** (`src/layouts/`) — `Layout.astro` is the main shell (header, main, footer).
-- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageAboutBerghs.astro` handles the About page (hardcoded institutional content); `PageSchedule.astro`, `PageExperienceMusic.astro`, `PageExperienceInstallations.astro`, and `PageExperienceFood.astro` render the four experience-section pages, each backed by its own WP page template.
+- **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageAboutBerghs.astro` handles the About page (hardcoded institutional content); `PageSchedule.astro`, `PageExperienceMusic.astro`, `PageExperienceInstallations.astro`, and `PageExperienceFood.astro` render the four experience-section pages, each backed by its own WP page template. `PageProjects.astro` renders the projects listing — a real WP page (Projects template) with the page editor content as its description and the project CPT items rendered as a filterable grid below.
 - **Pages**:
-    - `src/pages/[...link].astro` handles all WP pages dynamically. Each experience section is a regular WP page using its own template (`page-schedule.php`, `page-experience-music.php`, etc.) and reaches the right `Page*.astro` template through `PageTemplate.astro`'s `SLUG_TO_TEMPLATE` map. Section URLs (`/schedule`, `/music`, `/installations`, `/food-drink`) come from each WP page's slug — there is no separate `[section].astro` route or `/experiences` hub.
-    - `src/pages/projects/index.astro` and `[slug].astro` handle the project listing and detail pages.
+    - `src/pages/[...link].astro` handles all WP pages dynamically. Each section page is a regular WP page using its own template (`page-schedule.php`, `page-experience-music.php`, `page-projects.php`, etc.) and reaches the right `Page*.astro` template through `PageTemplate.astro`'s `SLUG_TO_TEMPLATE` map. Section URLs (`/schedule`, `/music`, `/installations`, `/food-drink`, `/projects`) come from each WP page's slug — there is no separate `[section].astro` route or `/experiences` hub.
+    - `src/pages/projects/[slug].astro` handles the project detail pages. The listing at `/projects/` is served by the WP Projects page through `[...link].astro` → `PageProjects.astro` (not a hardcoded Astro route).
 - **Components** — `src/components/site/` for site-wide pieces (Header, Sponsors, Contact, Iq, CtaBanner), `src/components/elements/` for reusable primitives (Svg, WpImage, WpVideo, ProjectCard), `src/components/experiences/` for experience-section list components (MusicList, InstallationsList). The food page renders its grid inline in `PageExperienceFood.astro`; the schedule day-toggle UI lives inline in `PageSchedule.astro`.
 
 ## Styling

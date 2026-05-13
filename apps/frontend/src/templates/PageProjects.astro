@@ -1,0 +1,137 @@
+---
+import type { CollectionEntry } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import ProjectCard from "../components/elements/ProjectCard.astro";
+import PageIntro from "../components/site/PageIntro.astro";
+import { getProjectsPage } from "../lib/experience-pages";
+
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const { page } = Astro.props;
+
+const data = await getProjectsPage();
+
+if (!data) {
+    throw new Error(
+        "Projects page is missing — create a page using the Projects template.",
+    );
+}
+---
+
+<Layout
+    title={page.title}
+    metaDescription={page.metaDescription}
+    ogImage={page.image}
+    ctaCompact
+>
+    <PageIntro title={page.title} descriptionHtml={data.description?.html} />
+
+    <section>
+        <div class="filters" role="group" aria-label="Filter projects">
+            <button class="btn" data-filter="group" aria-pressed="true">
+                Group projects
+            </button>
+            <button class="btn" data-filter="individual" aria-pressed="false">
+                Individual projects
+            </button>
+        </div>
+
+        <ul class="grid">
+            {
+                data.projects.map((project) => (
+                    <li data-type={project.type}>
+                        <ProjectCard
+                            company={project.company}
+                            image={project.image}
+                            teamMembers={project.teamMembers}
+                            href={`/projects/${project.slug}`}
+                        />
+                    </li>
+                ))
+            }
+        </ul>
+    </section>
+</Layout>
+
+<script>
+    const buttons =
+        document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+    const items = document.querySelectorAll<HTMLLIElement>("ul.grid > li");
+
+    const applyFilter = (filterType: string | undefined) => {
+        items.forEach((item) => {
+            item.hidden = item.dataset.type !== filterType;
+        });
+    };
+
+    applyFilter("group");
+
+    buttons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            if (btn.getAttribute("aria-pressed") === "true") return;
+            buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
+            btn.setAttribute("aria-pressed", "true");
+            applyFilter(btn.dataset.filter);
+        });
+    });
+</script>
+
+<style>
+    section {
+        padding-block-end: var(--space-xl);
+    }
+
+    .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-xs);
+        margin-block-end: var(--space-md);
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        background-color: var(--color-paper);
+        color: var(--color-ink);
+        font-family: inherit;
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        padding: var(--space-sm) var(--space-md);
+        border: 0;
+        cursor: pointer;
+        min-block-size: max(44px, 2em);
+        line-height: 1;
+    }
+
+    .btn[aria-pressed="false"] {
+        background-color: transparent;
+        color: var(--color-paper);
+        border: var(--border);
+    }
+
+    @media (any-hover: hover) and (any-pointer: fine) {
+        .btn[aria-pressed="false"]:hover {
+            background-color: var(--color-paper);
+            color: var(--color-ink);
+        }
+    }
+
+    .grid {
+        --col-min: 20rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        grid-template-columns: repeat(
+            auto-fill,
+            minmax(min(100%, var(--col-min)), 1fr)
+        );
+        gap: var(--space-md) var(--space-lg);
+    }
+
+    .grid > li[hidden] {
+        display: none;
+    }
+</style>

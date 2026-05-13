@@ -4,97 +4,92 @@ import WpImage from "./WpImage.astro";
 
 interface Props {
     company: string;
-    title: string;
+    title?: string;
     image: ReferenceDataEntry<"media"> | null;
     teamMembers: { name: string; class: string }[];
+    type?: "group" | "individual";
     href?: string;
 }
 
-const { company, title, image, teamMembers, href } = Astro.props;
+const { company, title, image, teamMembers, type, href } = Astro.props;
+
+const studentCount = teamMembers.length;
 
 const Tag = href ? "a" : "div";
 ---
 
 <Tag class="project-card" {href}>
-    <div>
-        {image && <WpImage image={image} alt={title} />}
+    <div class="thumb">
+        {image && <WpImage image={image} alt={title ?? company} />}
     </div>
 
-    <div>
-        <p>{company}</p>
-        <p>{title}</p>
-    </div>
-
-    <ul>
+    <div class="meta">
+        <p class="company">{company}</p>
+        {title && <p class="title">{title}</p>}
         {
-            teamMembers.map((member) => (
-                <li>
-                    <span>{member.name}</span>
-                    <span>{member.class}</span>
-                </li>
-            ))
+            studentCount > 0 && (
+                <p class="student-count">
+                    {studentCount} {studentCount === 1 ? "student" : "students"}
+                </p>
+            )
         }
-    </ul>
+    </div>
 </Tag>
 
 <style>
     .project-card {
-        background: var(--color-accent-1);
-        color: var(--color-ink);
         display: grid;
-        gap: var(--space-xs);
-        padding: var(--space-sm);
-        width: 100%;
+        gap: var(--space-sm);
+        padding-block: var(--space-md);
+        color: var(--color-paper);
         text-decoration: none;
-        isolation: isolate;
     }
 
-    /* thumbnail */
-    .project-card > div:first-child {
+    @media (min-width: 64rem) {
+        .project-card {
+            padding-block: var(--space-lg);
+        }
+    }
+
+    .thumb {
         aspect-ratio: 3 / 2;
-        background-color: var(--color-ink);
         overflow: hidden;
+        background-color: var(--color-ink);
     }
 
-    .project-card > div:first-child :global(img) {
+    .thumb :global(img) {
         width: 100%;
         height: 100%;
         object-fit: cover;
         display: block;
     }
 
-    /* meta */
-    .project-card > div:nth-child(2) {
-        padding-block: var(--space-xs);
+    .meta {
+        display: grid;
+        gap: var(--space-xxs);
     }
 
-    .project-card > div:nth-child(2) p:first-child {
+    .company {
         font-size: var(--font-size-xs);
-    }
-
-    .project-card > div:nth-child(2) p:last-child {
-        font-size: var(--font-size-lg);
-        line-height: var(--line-height-tight);
-        text-wrap: balance;
-    }
-
-    /* members */
-    .project-card ul {
-        list-style: none;
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-label);
+        text-transform: uppercase;
         margin: 0;
-        padding: 0;
-        display: grid;
     }
 
-    .project-card li {
-        display: grid;
+    .title {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        line-height: var(--line-height-tight);
+        letter-spacing: var(--letter-spacing-tight);
+        text-wrap: balance;
+        margin: 0;
     }
 
-    .project-card li span:first-child {
-        font-size: var(--font-size-base);
-    }
-
-    .project-card li span:last-child {
+    .student-count {
+        margin: 0;
         font-size: var(--font-size-xs);
+        letter-spacing: var(--letter-spacing-label);
+        text-transform: uppercase;
     }
 </style>
