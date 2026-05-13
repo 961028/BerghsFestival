@@ -30,42 +30,40 @@ function getVimeoId(url: string): string | null {
 const videoId = getVimeoId(video);
 
 const embedUrl = videoId
-    ? `https://player.vimeo.com/video/${videoId}?dnt=1&title=0&byline=0&portrait=0`
+    ? `https://player.vimeo.com/video/${videoId}?dnt=1&title=0&byline=0&portrait=0&transparent=0`
     : null;
 ---
 
-<div class:list={["outer", className]} {...attrs}>
-    {
-        embedUrl ? (
-            <iframe
-                class="iframe"
-                src={embedUrl}
-                allow="fullscreen; picture-in-picture"
-                allowfullscreen
-                title={title}
-            />
-        ) : (
-            <div class="error">
-                <p>Invalid Vimeo Video: {video}</p>
-            </div>
-        )
-    }
-</div>
+{
+    embedUrl ? (
+        <iframe
+            class:list={["iframe", className]}
+            src={embedUrl}
+            allow="fullscreen; picture-in-picture"
+            allowfullscreen
+            title={title}
+            {...attrs}
+        />
+    ) : (
+        <div class:list={["error", className]} {...attrs}>
+            <p>Invalid Vimeo Video: {video}</p>
+        </div>
+    )
+}
 
 <style>
-    .outer {
-        aspect-ratio: 16 / 9;
-        display: grid;
-    }
-
     .iframe {
         border: 0;
         width: 100%;
-        height: 100%;
+        aspect-ratio: 16 / 9;
+        display: block;
+        background: #000;
     }
 
     .error {
+        aspect-ratio: 16 / 9;
         display: grid;
         place-items: center;
+        background: #000;
     }
 </style>

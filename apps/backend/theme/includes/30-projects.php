@@ -159,11 +159,12 @@ function _app_project_register_fields() {
 							'type'  => 'text',
 						),
 						array(
-							'key'     => _app_projects_field_key( 'team_members', 'class' ),
-							'label'   => 'Class',
-							'name'    => 'class',
-							'type'    => 'select',
-							'choices' => array(
+							'key'           => _app_projects_field_key( 'team_members', 'class' ),
+							'label'         => 'Class',
+							'name'          => 'class',
+							'type'          => 'select',
+							'return_format' => 'label',
+							'choices'       => array(
 								''      => '',
 								'AD'    => 'Art Director',
 								'CD'    => 'Communication Design',
@@ -171,10 +172,10 @@ function _app_project_register_fields() {
 								'CW'    => 'Copywriter',
 								'DDS'   => 'Digital Design & Strategy',
 								'GM'    => 'Growth Marketing',
-								'PL'    => 'Produktionsledning',
+								'PL'    => 'Production Management',
 								'PR'    => 'Public Relations',
-								'SK'    => 'Strategisk kommunikation',
-								'Tutor' => 'Handledare',
+								'SK'    => 'Strategic Communication',
+								'Tutor' => 'Tutor',
 							),
 						),
 					),
@@ -224,3 +225,30 @@ function _app_project_register_fields() {
 	);
 }
 add_action( 'acf/init', '_app_project_register_fields' );
+
+function _app_project_resolve_team_member_class_labels( $response, $post ) {
+	if ( $post->post_type !== 'project' ) {
+		return $response;
+	}
+
+	$data = $response->get_data();
+
+	if ( empty( $data['acf']['team_members'] ) || ! is_array( $data['acf']['team_members'] ) ) {
+		return $response;
+	}
+
+	$field   = get_field_object( _app_projects_field_key( 'team_members', 'class' ) );
+	$choices = $field['choices'] ?? array();
+
+	foreach ( $data['acf']['team_members'] as &$member ) {
+		if ( isset( $member['class'], $choices[ $member['class'] ] ) ) {
+			$member['class'] = $choices[ $member['class'] ];
+		}
+	}
+	unset( $member );
+
+	$response->set_data( $data );
+
+	return $response;
+}
+add_filter( 'rest_prepare_project', '_app_project_resolve_team_member_class_labels', 10, 2 );

@@ -38,45 +38,49 @@ const relatedProjects = allProjects
 ---
 
 <Layout title={title} metaDescription={metaDescription} ogImage={image}>
-    <article>
-        {
-            !image || (
-                <div class="project-hero">
-                    <WpImage image={image} loading="eager" alt={title} />
-                </div>
-            )
-        }
+    <article class="project">
+        <header class="project-hero">
+            {
+                video ? (
+                    <WpVideo video={video} title={`${title} — case film`} />
+                ) : (
+                    image && (
+                        <WpImage image={image} loading="eager" alt={title} />
+                    )
+                )
+            }
+        </header>
 
         <div class="project-body">
-            <div>
-                <div>{company}</div>
-                <h1 class="page-title">{title}</h1>
+            <h1 class="project-company">{company}</h1>
 
-                <ul>
-                    {
-                        teamMembers.map((teamMember) => (
-                            <li>
-                                <div>{teamMember.name}</div>
-                                <div>{teamMember.class}</div>
-                            </li>
-                        ))
-                    }
-                </ul>
-            </div>
+            {
+                contentSections.map((section) => (
+                    <section class="project-section">
+                        <h2>{section.title}</h2>
+                        <div set:html={section.content.html} />
+                    </section>
+                ))
+            }
 
-            <div>
-                {
-                    contentSections.map((contentSection) => (
-                        <>
-                            <h2>{contentSection.title}</h2>
-                            <div set:html={contentSection.content.html} />
-                        </>
-                    ))
-                }
-            </div>
+            {
+                teamMembers.length > 0 && (
+                    <section class="project-credits">
+                        <h2>Contributors</h2>
+                        <ul class="project-team">
+                            {teamMembers.map((member) => (
+                                <li>
+                                    <span class="team-class">
+                                        {member.class}
+                                    </span>
+                                    <span class="team-name">{member.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                )
+            }
         </div>
-
-        {!video || <WpVideo video={video} title={`${title} — project video`} />}
     </article>
 
     <ul class="related-projects">
@@ -96,40 +100,69 @@ const relatedProjects = allProjects
 </Layout>
 
 <style>
-    /* hero */
     .project-hero {
-        aspect-ratio: 3 / 2;
-        overflow: hidden;
+        margin-block-start: var(--space-xl);
+        margin-block-end: var(--space-lg);
     }
 
     .project-hero :global(img) {
         width: 100%;
-        height: 100%;
-        object-fit: cover;
+        height: auto;
         display: block;
     }
 
-    /* video */
-    article :global(.outer) {
-        width: 100%;
-    }
-
-    /* body */
     .project-body {
-        --body-col-min: 18rem;
-        display: grid;
-        grid-template-columns: repeat(
-            auto-fit,
-            minmax(min(100%, var(--body-col-min)), 1fr)
-        );
+        max-width: 60rem;
+        display: flex;
+        flex-direction: column;
         gap: var(--space-sm);
     }
 
-    /* related */
+    .project-company {
+        margin: 0;
+    }
+
+    .project-section :global(p:first-child) {
+        margin-block-start: 0;
+    }
+
+    .project-credits {
+        text-align: center;
+    }
+
+    .project-credits h2 {
+        text-align: center;
+    }
+
+    .project-team {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        max-width: 40rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .project-team li {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--space-sm);
+    }
+
+    .team-class {
+        text-align: right;
+    }
+
+    .team-name {
+        text-align: left;
+        font-weight: var(--font-weight-bold);
+    }
+
     .related-projects {
         --col-min: 16rem;
         list-style: none;
-        margin-block-start: var(--space-sm);
+        margin-block-start: var(--space-md);
         padding: 0;
         display: grid;
         grid-template-columns: repeat(
