@@ -26,13 +26,5 @@ if (!data) {
 >
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
-    <div class="page-section">
-        <FoodList items={data.items} scheduleDays={data.scheduleDays} />
-    </div>
+    <FoodList items={data.items} scheduleDays={data.scheduleDays} />
 </Layout>
-
-<style>
-    .page-section {
-        padding-block-end: var(--space-xl);
-    }
-</style>

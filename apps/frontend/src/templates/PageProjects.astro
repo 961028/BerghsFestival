@@ -20,12 +20,13 @@ if (!data) {
 }
 
 const groupProjects = data.projects.filter((p) => p.type === "group");
-const individualProjects = data.projects.filter(
-    (p) => p.type === "individual",
-);
+const individualProjects = data.projects.filter((p) => p.type === "individual");
 
 const INDIVIDUAL_GROUPS = [
-    { heading: "Content engineering projects", classes: ["Content Engineering"] },
+    {
+        heading: "Content engineering projects",
+        classes: ["Content Engineering"],
+    },
     { heading: "Growth marketing projects", classes: ["Growth Marketing"] },
     { heading: "YOU projects", classes: ["Communication Design"] },
 ] as const;
@@ -131,15 +132,11 @@ const individualSections = [
 </script>
 
 <style>
-    section {
-        padding-block-end: var(--space-xl);
-    }
-
     .filters {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-xs);
-        margin-block-end: var(--space-md);
+        gap: var(--space-sm);
+        margin-block-end: var(--space-lg);
     }
 
     .btn {
@@ -180,7 +177,7 @@ const individualSections = [
             auto-fill,
             minmax(min(100%, var(--col-min)), 1fr)
         );
-        gap: var(--space-md) var(--space-lg);
+        gap: var(--space-lg) var(--space-lg);
     }
 
     .grid > li[hidden] {
@@ -189,13 +186,5 @@ const individualSections = [
 
     [data-view][hidden] {
         display: none;
-    }
-
-    .individual-section + .individual-section {
-        margin-block-start: var(--space-xl);
-    }
-
-    .section-heading {
-        margin: 0 0 var(--space-md);
     }
 </style>

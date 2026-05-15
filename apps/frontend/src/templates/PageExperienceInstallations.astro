@@ -28,14 +28,5 @@ if (!data) {
 >
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
-    <div class="page-section">
-        <InstallationsList items={data.items} />
-    </div>
+    <InstallationsList items={data.items} />
 </Layout>
-
-<style>
-    .page-section {
-        padding-block-end: var(--space-xl);
-    }
-
-</style>
