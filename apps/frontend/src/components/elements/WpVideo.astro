@@ -24,8 +24,13 @@ function getVimeoId(url: string): string | null {
 const videoId = getVimeoId(video);
 
 const embedUrl = videoId
+    ? `https://player.vimeo.com/video/${videoId}?dnt=1&title=0&byline=0&portrait=0&transparent=0&controls=1&autopause=0`
+    : null;
+
+const embedUrlNoControls = videoId
     ? `https://player.vimeo.com/video/${videoId}?dnt=1&title=0&byline=0&portrait=0&transparent=0&controls=0&autopause=0`
     : null;
+
 ---
 
 {
@@ -37,11 +42,21 @@ const embedUrl = videoId
         >
             <iframe
                 class="iframe"
-                src={embedUrl}
+                src={embedUrlNoControls}
+                data-src-fallback={embedUrl}
                 allow="autoplay; fullscreen; picture-in-picture"
                 allowfullscreen
                 title={title}
             />
+            <noscript>
+                <iframe
+                    class="iframe"
+                    src={embedUrl}
+                    allow="autoplay; fullscreen; picture-in-picture"
+                    allowfullscreen
+                    title={title}
+                />
+            </noscript>
             <button
                 type="button"
                 class="toggle"
@@ -87,6 +102,15 @@ const embedUrl = videoId
         if (!iframe || !button) return;
 
         const player = new Player(iframe);
+
+        player.ready().catch((err) => {
+            console.error("Vimeo init failed — restoring native controls", err);
+            const fallbackSrc = iframe.getAttribute("data-src-fallback");
+            if (fallbackSrc) {
+                iframe.setAttribute("src", fallbackSrc);
+            }
+            button.hidden = true;
+        });
 
         button.addEventListener("click", () => {
             const playing = wrapper.dataset.playing === "true";
