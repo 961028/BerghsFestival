@@ -14,12 +14,6 @@ const {
 } = Astro.props;
 
 function getVimeoId(url: string): string | null {
-    // Handle formats:
-    // https://vimeo.com/123456789
-    // https://vimeo.com/channels/channel/123456789
-    // https://vimeo.com/groups/group/videos/123456789
-    // https://player.vimeo.com/video/123456789
-    // 123456789 (raw ID)
     const match = url.match(
         /(?:vimeo\.com\/(?:video\/|channels\/[^/]+\/|groups\/[^/]+\/videos\/)?|^)(\d+)(?:[/?#]|$)/,
     );
@@ -30,20 +24,49 @@ function getVimeoId(url: string): string | null {
 const videoId = getVimeoId(video);
 
 const embedUrl = videoId
-    ? `https://player.vimeo.com/video/${videoId}?dnt=1&title=0&byline=0&portrait=0&transparent=0`
+    ? `https://player.vimeo.com/video/${videoId}?dnt=1&title=0&byline=0&portrait=0&transparent=0&controls=0&autopause=0`
     : null;
 ---
 
 {
     embedUrl ? (
-        <iframe
-            class:list={["iframe", className]}
-            src={embedUrl}
-            allow="fullscreen; picture-in-picture"
-            allowfullscreen
-            title={title}
+        <div
+            class:list={["player", className]}
+            data-wp-video
             {...attrs}
-        />
+        >
+            <iframe
+                class="iframe"
+                src={embedUrl}
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowfullscreen
+                title={title}
+            />
+            <button
+                type="button"
+                class="toggle"
+                data-toggle
+                aria-label="Play video"
+            >
+                <svg
+                    class="icon icon-play"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                >
+                    <polygon points="6,4 20,12 6,20" fill="currentColor" />
+                </svg>
+                <svg
+                    class="icon icon-pause"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                    focusable="false"
+                >
+                    <rect x="6" y="4" width="4" height="16" fill="currentColor" />
+                    <rect x="14" y="4" width="4" height="16" fill="currentColor" />
+                </svg>
+            </button>
+        </div>
     ) : (
         <div class:list={["error", className]} {...attrs}>
             <p>Invalid Vimeo Video: {video}</p>
@@ -51,19 +74,112 @@ const embedUrl = videoId
     )
 }
 
+<script>
+    import Player from "@vimeo/player";
+
+    const players = document.querySelectorAll<HTMLElement>("[data-wp-video]");
+
+    players.forEach((wrapper) => {
+        const iframe = wrapper.querySelector("iframe");
+        const button =
+            wrapper.querySelector<HTMLButtonElement>("[data-toggle]");
+
+        if (!iframe || !button) return;
+
+        const player = new Player(iframe);
+
+        button.addEventListener("click", () => {
+            const playing = wrapper.dataset.playing === "true";
+            const action = playing ? player.pause() : player.play();
+            action.catch((err) => {
+                console.error("Vimeo toggle failed", err);
+            });
+        });
+
+        player.on("play", () => {
+            wrapper.dataset.playing = "true";
+            button.setAttribute("aria-label", "Pause video");
+        });
+
+        player.on("pause", () => {
+            wrapper.dataset.playing = "false";
+            button.setAttribute("aria-label", "Play video");
+        });
+
+        player.on("ended", () => {
+            wrapper.dataset.playing = "false";
+            button.setAttribute("aria-label", "Play video");
+        });
+    });
+</script>
+
 <style>
+    .player {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        background: var(--color-ink);
+    }
+
     .iframe {
         border: 0;
         width: 100%;
-        aspect-ratio: 16 / 9;
+        height: 100%;
         display: block;
-        background: #000;
+    }
+
+    .toggle {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: transparent;
+        border: 0;
+        padding: 0;
+        margin: 0;
+        color: var(--color-paper);
+        cursor: pointer;
+        transition: opacity 0.2s ease;
+    }
+
+    .icon {
+        grid-area: 1 / 1;
+        width: 4rem;
+        height: 4rem;
+        display: block;
+        transition: transform 0.2s ease;
+    }
+
+    .icon-pause {
+        display: none;
+    }
+
+    .player[data-playing="true"] .icon-play {
+        display: none;
+    }
+
+    .player[data-playing="true"] .icon-pause {
+        display: block;
+    }
+
+    .player[data-playing="true"] .toggle {
+        opacity: 0;
+    }
+
+    .player[data-playing="true"] .toggle:hover,
+    .player[data-playing="true"] .toggle:focus-visible {
+        opacity: 1;
+    }
+
+    .toggle:hover .icon,
+    .toggle:focus-visible .icon {
+        transform: scale(1.1);
     }
 
     .error {
         aspect-ratio: 16 / 9;
         display: grid;
         place-items: center;
-        background: #000;
+        background: var(--color-ink);
     }
 </style>
