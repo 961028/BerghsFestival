@@ -18,6 +18,36 @@ if (!data) {
         "Projects page is missing — create a page using the Projects template.",
     );
 }
+
+const groupProjects = data.projects.filter((p) => p.type === "group");
+const individualProjects = data.projects.filter(
+    (p) => p.type === "individual",
+);
+
+const INDIVIDUAL_GROUPS = [
+    { heading: "Content engineering projects", classes: ["Content Engineering"] },
+    { heading: "Growth marketing projects", classes: ["Growth Marketing"] },
+    { heading: "YOU projects", classes: ["Communication Design"] },
+] as const;
+
+const matchedClasses = new Set<string>(
+    INDIVIDUAL_GROUPS.flatMap((g) => g.classes),
+);
+
+const individualSections = [
+    ...INDIVIDUAL_GROUPS.map((group) => ({
+        heading: group.heading,
+        projects: individualProjects.filter((p) =>
+            group.classes.includes(p.teamMembers[0]?.class ?? ""),
+        ),
+    })),
+    {
+        heading: "Other individual projects",
+        projects: individualProjects.filter(
+            (p) => !matchedClasses.has(p.teamMembers[0]?.class ?? ""),
+        ),
+    },
+].filter((section) => section.projects.length > 0);
 ---
 
 <Layout
@@ -38,35 +68,57 @@ if (!data) {
             </button>
         </div>
 
-        <ul class="grid">
+        <div data-view="group">
+            <ul class="grid">
+                {
+                    groupProjects.map((project) => (
+                        <li>
+                            <ProjectCard
+                                company={project.company}
+                                image={project.image}
+                                teamMembers={project.teamMembers}
+                                href={`/projects/${project.slug}`}
+                            />
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+
+        <div data-view="individual" hidden>
             {
-                data.projects.map((project) => (
-                    <li data-type={project.type}>
-                        <ProjectCard
-                            company={project.company}
-                            image={project.image}
-                            teamMembers={project.teamMembers}
-                            href={`/projects/${project.slug}`}
-                        />
-                    </li>
+                individualSections.map((section) => (
+                    <section class="individual-section">
+                        <h2 class="section-heading">{section.heading}</h2>
+                        <ul class="grid">
+                            {section.projects.map((project) => (
+                                <li>
+                                    <ProjectCard
+                                        company={project.company}
+                                        image={project.image}
+                                        teamMembers={project.teamMembers}
+                                        href={`/projects/${project.slug}`}
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
                 ))
             }
-        </ul>
+        </div>
     </section>
 </Layout>
 
 <script>
     const buttons =
         document.querySelectorAll<HTMLButtonElement>("[data-filter]");
-    const items = document.querySelectorAll<HTMLLIElement>("ul.grid > li");
+    const views = document.querySelectorAll<HTMLElement>("[data-view]");
 
     const applyFilter = (filterType: string | undefined) => {
-        items.forEach((item) => {
-            item.hidden = item.dataset.type !== filterType;
+        views.forEach((view) => {
+            view.hidden = view.dataset.view !== filterType;
         });
     };
-
-    applyFilter("group");
 
     buttons.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -133,5 +185,17 @@ if (!data) {
 
     .grid > li[hidden] {
         display: none;
+    }
+
+    [data-view][hidden] {
+        display: none;
+    }
+
+    .individual-section + .individual-section {
+        margin-block-start: var(--space-xl);
+    }
+
+    .section-heading {
+        margin: 0 0 var(--space-md);
     }
 </style>
