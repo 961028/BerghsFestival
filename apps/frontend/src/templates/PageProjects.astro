@@ -60,16 +60,43 @@ const individualSections = [
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
     <section>
-        <div class="filters" role="group" aria-label="Filter projects">
-            <button class="btn" data-filter="group" aria-pressed="true">
-                Group projects
+        <div class="filters" role="tablist" aria-label="Filter projects">
+            <button
+                type="button"
+                role="tab"
+                id="filter-tab-group"
+                class="btn"
+                data-color-hover
+                aria-controls="filter-panel-group"
+                aria-selected="true"
+                tabindex="0"
+                aria-label="Group projects"
+            >
+                <span class="label-full">Group projects</span>
+                <span class="label-short" aria-hidden="true">Group</span>
             </button>
-            <button class="btn" data-filter="individual" aria-pressed="false">
-                Individual projects
+            <button
+                type="button"
+                role="tab"
+                id="filter-tab-individual"
+                class="btn"
+                data-color-hover
+                aria-controls="filter-panel-individual"
+                aria-selected="false"
+                tabindex="-1"
+                aria-label="Individual projects"
+            >
+                <span class="label-full">Individual projects</span>
+                <span class="label-short" aria-hidden="true">Individual</span>
             </button>
         </div>
 
-        <div data-view="group">
+        <div
+            id="filter-panel-group"
+            role="tabpanel"
+            aria-labelledby="filter-tab-group"
+            tabindex="0"
+        >
             <ul class="grid">
                 {
                     groupProjects.map((project) => (
@@ -86,7 +113,13 @@ const individualSections = [
             </ul>
         </div>
 
-        <div data-view="individual" hidden>
+        <div
+            id="filter-panel-individual"
+            role="tabpanel"
+            aria-labelledby="filter-tab-individual"
+            tabindex="0"
+            hidden
+        >
             {
                 individualSections.map((section) => (
                     <section class="individual-section">
@@ -111,22 +144,51 @@ const individualSections = [
 </Layout>
 
 <script>
-    const buttons =
-        document.querySelectorAll<HTMLButtonElement>("[data-filter]");
-    const views = document.querySelectorAll<HTMLElement>("[data-view]");
+    import { attachRgbSplit } from "../scripts/accents";
 
-    const applyFilter = (filterType: string | undefined) => {
-        views.forEach((view) => {
-            view.hidden = view.dataset.view !== filterType;
+    const tabs = Array.from(
+        document.querySelectorAll<HTMLButtonElement>('.filters [role="tab"]'),
+    );
+    const panels = tabs.map((tab) =>
+        document.getElementById(tab.getAttribute("aria-controls")!),
+    );
+
+    function selectTab(index: number, focus = false) {
+        tabs.forEach((tab, i) => {
+            const selected = i === index;
+            tab.setAttribute("aria-selected", selected ? "true" : "false");
+            tab.tabIndex = selected ? 0 : -1;
+            if (selected && focus) tab.focus();
         });
-    };
+        panels.forEach((panel, i) => {
+            if (panel) panel.hidden = i !== index;
+        });
+    }
 
-    buttons.forEach((btn) => {
-        btn.addEventListener("click", () => {
-            if (btn.getAttribute("aria-pressed") === "true") return;
-            buttons.forEach((b) => b.setAttribute("aria-pressed", "false"));
-            btn.setAttribute("aria-pressed", "true");
-            applyFilter(btn.dataset.filter);
+    tabs.forEach((tab, index) => {
+        attachRgbSplit(tab);
+        tab.addEventListener("click", () => selectTab(index));
+        tab.addEventListener("keydown", (e) => {
+            const last = tabs.length - 1;
+            let next = -1;
+            switch (e.key) {
+                case "ArrowRight":
+                    next = index === last ? 0 : index + 1;
+                    break;
+                case "ArrowLeft":
+                    next = index === 0 ? last : index - 1;
+                    break;
+                case "Home":
+                    next = 0;
+                    break;
+                case "End":
+                    next = last;
+                    break;
+                default:
+                    return;
+            }
+            e.preventDefault();
+            selectTab(next, true);
         });
     });
 </script>
@@ -135,7 +197,7 @@ const individualSections = [
     .filters {
         display: flex;
         flex-wrap: wrap;
-        gap: var(--space-sm);
+        gap: var(--space-xs);
         margin-block-end: var(--space-lg);
     }
 
@@ -145,8 +207,9 @@ const individualSections = [
         background-color: var(--color-paper);
         color: var(--color-ink);
         font-family: inherit;
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
+        text-transform: uppercase;
         padding: var(--space-sm) var(--space-md);
         border: 0;
         cursor: pointer;
@@ -154,30 +217,42 @@ const individualSections = [
         line-height: 1;
     }
 
-    .btn[aria-pressed="false"] {
-        background-color: transparent;
-        color: var(--color-paper);
-        border: var(--border);
+    .label-short {
+        display: none;
     }
 
-    @media (any-hover: hover) and (any-pointer: fine) {
-        .btn[aria-pressed="false"]:hover {
-            background-color: var(--color-paper);
-            color: var(--color-ink);
+    @media (max-width: 40rem) {
+        .btn {
+            padding: var(--space-xs) var(--space-sm);
+        }
+
+        .label-full {
+            display: none;
+        }
+
+        .label-short {
+            display: inline;
         }
     }
 
+    .btn[aria-selected="false"] {
+        background-color: transparent;
+        color: var(--color-paper);
+    }
+
     .grid {
-        --col-min: 20rem;
         list-style: none;
         margin: 0;
         padding: 0;
         display: grid;
-        grid-template-columns: repeat(
-            auto-fill,
-            minmax(min(100%, var(--col-min)), 1fr)
-        );
+        grid-template-columns: 1fr;
         gap: var(--space-lg) var(--space-lg);
+    }
+
+    @media (min-width: 40rem) {
+        .grid {
+            grid-template-columns: 1fr 1fr;
+        }
     }
 
     .grid > li[hidden] {
