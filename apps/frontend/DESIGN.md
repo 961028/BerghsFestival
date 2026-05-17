@@ -60,7 +60,7 @@ The accent system is the site's defining interactive feature. Everything below i
 
 | Token | Value | Usage |
 |---|---|---|
-| `--font-size-xs` | `1rem` | Labels, metadata |
+| `--font-size-sm` | `1rem` | Labels, metadata |
 | `--font-size-base` | `1.125rem` | Body text, UI copy |
 | `--font-size-lg` | `clamp(2rem, 6vw, 2.75rem)` | Headings, schedule, nav |
 | `--font-size-display` | `clamp(2.75rem, 9vw, 4.5rem)` | Page titles only |
@@ -72,7 +72,7 @@ The accent system is the site's defining interactive feature. Everything below i
 
 **Line heights:**
 
-- `--line-height-base: 1.4` — body text
+- `--line-height-base: 1.5` — body text
 - `--line-height-tight: 1.2` — headings
 
 Note: Inria Sans, Georgia, Impact, Arial Black, and other fonts appear only in the nav-hover cycling effect (`header.ts`). They are not part of the type system — Inter is the only design typeface.

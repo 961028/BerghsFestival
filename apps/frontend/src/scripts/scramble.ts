@@ -1,24 +1,26 @@
 // ── Text scramble reveal effect ───────────────────────────────────────────────
-// Layout is never touched. The real text stays in the DOM, invisible, holding
-// its space. A ::before overlay (driven by a CSS custom property) shows the
-// scrambled or revealed characters. No reflow, no layout shift.
+// Real text stays in the DOM (color: transparent during animation) holding
+// layout. An injected sibling <span aria-hidden="true"> renders the scrambled
+// glyphs absolutely positioned on top. Assistive tech reads the real text;
+// the glyph overlay is hidden from the accessibility tree across all browsers.
 //
 // Re-triggers on Astro page transitions.
 // Between reveals, random words glitch briefly as an idle effect.
 // Instantly skips all animation for prefers-reduced-motion users.
 
 const GLYPHS = "█░▓▒╳╬▪▫◆◇✕╱╲┼┤├┴┬│─☺";
+const OVERLAY_CLASS = "scramble-overlay";
 
 // ── Reveal config ─────────────────────────────────────────────────────────────
-const CHAR_STAGGER = 15; // ms between each character starting its scramble
-const SCRAMBLE_FRAMES = 8; // frames before snapping to final character
-const FRAME_INTERVAL = 40; // ms between scramble frames
+const CHAR_STAGGER = 15;
+const SCRAMBLE_FRAMES = 8;
+const FRAME_INTERVAL = 40;
 
 // ── Idle glitch config ────────────────────────────────────────────────────────
-const IDLE_BASE = 8000; // base ms between idle glitch bursts
-const IDLE_JITTER = 1500; // ± random jitter on top of base
-const IDLE_FRAMES = 5; // frames before snapping back
-const IDLE_FRAME_INTERVAL = 50; // ms between idle scramble frames
+const IDLE_BASE = 8000;
+const IDLE_JITTER = 1500;
+const IDLE_FRAMES = 5;
+const IDLE_FRAME_INTERVAL = 50;
 
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
@@ -28,26 +30,38 @@ function randomGlyph(): string {
 
 type ElState = {
     el: HTMLElement;
-    // Mutable character buffer — directly joined to produce the overlay string
+    overlay: HTMLElement;
     buf: string[];
-    // Final characters, parallel to buf
     final: string[];
-    // Pre-computed word boundary groups (indices into buf)
     words: number[][];
 };
 
 let elStates: ElState[] = [];
 
-function setOverlay(el: HTMLElement, buf: string[]) {
-    el.style.setProperty("--scramble", `"${buf.join("")}"`);
+function renderOverlay(state: ElState) {
+    state.overlay.textContent = state.buf.join("");
+}
+
+function ensureOverlay(el: HTMLElement): HTMLElement {
+    let overlay = el.querySelector<HTMLElement>(`:scope > .${OVERLAY_CLASS}`);
+    if (!overlay) {
+        overlay = document.createElement("span");
+        overlay.className = OVERLAY_CLASS;
+        overlay.setAttribute("aria-hidden", "true");
+        el.appendChild(overlay);
+    }
+    overlay.textContent = "";
+    return overlay;
+}
+
+function clearOverlay(state: ElState) {
+    state.overlay.textContent = "";
+    state.el.style.removeProperty("color");
 }
 
 function scrambleReveal() {
     if (reducedMotion.matches) {
-        for (const { el } of elStates) {
-            el.style.removeProperty("--scramble");
-            el.style.removeProperty("color");
-        }
+        for (const state of elStates) clearOverlay(state);
         elStates = [];
         return;
     }
@@ -58,32 +72,27 @@ function scrambleReveal() {
 
     if (allElements.length === 0) return;
 
-    // Reset any previously active elements
-    for (const { el } of elStates) {
-        el.style.removeProperty("--scramble");
-        el.style.removeProperty("color");
-    }
+    for (const state of elStates) clearOverlay(state);
     elStates = [];
 
-    // Exclude elements not currently visible (e.g. hidden mobile menu duplicates)
     const elements = allElements.filter((el) => el.offsetParent !== null);
 
-    // Sort top → bottom
     elements.sort(
         (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top,
     );
 
     for (const el of elements) {
-        const text = el.getAttribute("aria-label") ?? el.textContent ?? "";
-        el.setAttribute("aria-label", text);
-        el.setAttribute("aria-live", "off");
+        // Strip overlay from text source so previous runs don't pollute
+        const existing = el.querySelector<HTMLElement>(
+            `:scope > .${OVERLAY_CLASS}`,
+        );
+        if (existing) existing.remove();
 
+        const text = el.textContent ?? "";
         const chars = Array.from(text);
         const final = chars;
-        // Start all non-space chars as a non-breaking space (invisible placeholder)
-        const buf = chars.map((ch) => (ch.trim() === "" ? ch : "\u00A0"));
+        const buf = chars.map((ch) => (ch.trim() === "" ? ch : " "));
 
-        // Pre-compute word groups
         const words: number[][] = [];
         let word: number[] = [];
         for (let i = 0; i < chars.length; i++) {
@@ -96,17 +105,18 @@ function scrambleReveal() {
         }
         if (word.length > 0) words.push(word);
 
+        const overlay = ensureOverlay(el);
         el.style.color = "transparent";
-        setOverlay(el, buf);
-        elStates.push({ el, buf, final, words });
+
+        const state: ElState = { el, overlay, buf, final, words };
+        renderOverlay(state);
+        elStates.push(state);
     }
 
-    // Animate: stagger each non-space character, scramble then snap.
-    // Elements sharing a data-scramble-group value reset the stagger counter,
-    // so they animate in parallel with their group rather than after all prior elements.
     let globalIndex = 0;
     let currentGroup: string | null = null;
-    for (const { el, buf, final } of elStates) {
+    for (const state of elStates) {
+        const { el, buf, final } = state;
         const group = el.dataset.scrambleGroup ?? null;
         if (group !== null && group !== currentGroup) {
             globalIndex = 0;
@@ -123,7 +133,7 @@ function scrambleReveal() {
             setTimeout(() => {
                 let frame = 0;
                 buf[idx] = randomGlyph();
-                setOverlay(el, buf);
+                renderOverlay(state);
 
                 const ticker = setInterval(() => {
                     frame++;
@@ -131,14 +141,11 @@ function scrambleReveal() {
                         clearInterval(ticker);
                         buf[idx] = final[idx];
                         remaining--;
-                        setOverlay(el, buf);
-                        if (remaining === 0) {
-                            el.style.removeProperty("--scramble");
-                            el.style.removeProperty("color");
-                        }
+                        renderOverlay(state);
+                        if (remaining === 0) clearOverlay(state);
                     } else {
                         buf[idx] = randomGlyph();
-                        setOverlay(el, buf);
+                        renderOverlay(state);
                     }
                 }, FRAME_INTERVAL);
             }, delay);
@@ -147,36 +154,32 @@ function scrambleReveal() {
 }
 
 // ── Idle glitch ───────────────────────────────────────────────────────────────
-// Each element runs its own independent timer. Only fires if the element is
-// currently in the viewport and not mid-reveal.
 
 function isInViewport(el: HTMLElement): boolean {
     const { top, bottom } = el.getBoundingClientRect();
     return bottom > 0 && top < window.innerHeight;
 }
 
-function glitchElement({ el, buf, final, words }: ElState) {
-    if (el.style.getPropertyValue("--scramble") || !isInViewport(el)) return;
-    if (words.length === 0) return;
+function glitchElement(state: ElState) {
+    if (state.overlay.textContent || !isInViewport(state.el)) return;
+    if (state.words.length === 0) return;
 
-    const indices = words[Math.floor(Math.random() * words.length)];
+    const indices = state.words[Math.floor(Math.random() * state.words.length)];
 
-    el.style.color = "transparent";
-    for (const i of indices) buf[i] = randomGlyph();
-    setOverlay(el, buf);
+    state.el.style.color = "transparent";
+    for (const i of indices) state.buf[i] = randomGlyph();
+    renderOverlay(state);
 
     let frame = 0;
     const ticker = setInterval(() => {
         frame++;
         if (frame >= IDLE_FRAMES) {
             clearInterval(ticker);
-            for (const i of indices) buf[i] = final[i];
-            setOverlay(el, buf);
-            el.style.removeProperty("--scramble");
-            el.style.removeProperty("color");
+            for (const i of indices) state.buf[i] = state.final[i];
+            clearOverlay(state);
         } else {
-            for (const i of indices) buf[i] = randomGlyph();
-            setOverlay(el, buf);
+            for (const i of indices) state.buf[i] = randomGlyph();
+            renderOverlay(state);
         }
     }, IDLE_FRAME_INTERVAL);
 }
@@ -194,7 +197,6 @@ function startIdleLoops() {
     for (const state of elStates) scheduleElGlitch(state);
 }
 
-// Run on initial load and page transitions
 scrambleReveal();
 startIdleLoops();
 

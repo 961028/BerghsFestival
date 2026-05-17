@@ -55,9 +55,12 @@ const relatedProjects = allProjects
             <h1 class="project-company">{company}</h1>
 
             {
-                contentSections.map((section) => (
-                    <section class="project-section">
-                        <h2>{section.title}</h2>
+                contentSections.map((section, i) => (
+                    <section
+                        class="project-section"
+                        aria-labelledby={`project-section-${i}`}
+                    >
+                        <h2 id={`project-section-${i}`}>{section.title}</h2>
                         <div set:html={section.content.html} />
                     </section>
                 ))
@@ -65,8 +68,8 @@ const relatedProjects = allProjects
 
             {
                 teamMembers.length > 0 && (
-                    <section class="project-credits">
-                        <h2>Contributors</h2>
+                    <section class="project-credits" aria-labelledby="project-credits-heading">
+                        <h2 id="project-credits-heading">Contributors</h2>
                         <ul class="project-team">
                             {teamMembers.map((member) => (
                                 <li>

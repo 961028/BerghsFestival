@@ -9,3 +9,7 @@
 # Dependencies
 
 /node_modules/
+
+# A11y audit artifacts
+
+/a11y-report/

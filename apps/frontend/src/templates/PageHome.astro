@@ -105,11 +105,7 @@ const projectCount = acf.project_count as number | undefined;
             </ol>
 
             <div class="hero-footer">
-                <p
-                    class="countdown"
-                    aria-live="polite"
-                    aria-label="Countdown to festival opening"
-                >
+                <p class="countdown" aria-hidden="true">
                     <span id="js-countdown">--</span>
                 </p>
                 {
@@ -236,7 +232,7 @@ const projectCount = acf.project_count as number | undefined;
         gap: var(--space-xxs);
         padding-block: var(--space-xs);
         border-block-start: var(--border);
-        font-size: var(--font-size-xs);
+        font-size: var(--font-size-sm);
         letter-spacing: var(--letter-spacing-label);
         color: var(--color-paper);
         font-weight: var(--font-weight-normal);

@@ -118,7 +118,10 @@ const { schedule } = data;
 
     dayTabs.forEach((tab, index) => {
         attachRgbSplit(tab);
-        tab.addEventListener("click", () => selectDay(index));
+        tab.addEventListener("click", () => {
+            selectDay(index);
+            dayPanels[index]?.focus();
+        });
         tab.addEventListener("keydown", (e) => {
             const last = dayTabs.length - 1;
             let next = -1;
@@ -199,16 +202,19 @@ const { schedule } = data;
         font-weight: var(--font-weight-bold);
     }
 
-    .day-toggle button[aria-selected="true"] [data-scramble]::before {
+    .day-toggle button[aria-selected="true"] [data-scramble] :global(.scramble-overlay) {
         color: var(--color-ink);
+    }
+
+    @media (forced-colors: active) {
+        .day-toggle button[aria-selected="true"] {
+            outline: 2px solid LinkText;
+            outline-offset: -2px;
+        }
     }
 
     .day-panel {
         scroll-margin-top: calc(var(--header-height) + 3.5rem);
-    }
-
-    .day-panel:focus-visible {
-        outline: none;
     }
 
     .day-panel ul {

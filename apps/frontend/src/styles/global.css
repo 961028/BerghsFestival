@@ -16,14 +16,14 @@
 
         /* Typography */
         --font-family-base: var(--font-inter);
-        --font-size-xs: 1rem;
+        --font-size-sm: 1rem;
         --font-size-base: 1.125rem;
         --font-size-lg: 1.5rem;
         --font-size-display: 2.75rem;
         --font-weight-light: 300;
         --font-weight-normal: 400;
         --font-weight-bold: 700;
-        --line-height-base: 1.4;
+        --line-height-base: 1.5;
         --line-height-tight: 1.2;
         --letter-spacing-tight: -0.03em;
         --letter-spacing-label: 0.15em;
@@ -174,7 +174,7 @@
     }
 
     .footer-label {
-        font-size: var(--font-size-xs);
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--letter-spacing-label);
         text-transform: uppercase;
@@ -233,22 +233,24 @@
     }
 
     /* ── Scramble overlay ────────────────────────────────────────────────────
-       The real text stays in place (transparent) to hold layout.
-       ::before renders the scrambled/glitched characters on top.
-       JS sets --scramble to a quoted string and color: transparent on the el.
+       The real text stays in place (transparent during reveal) to hold layout
+       and remain the source of truth for assistive tech. JS injects a sibling
+       <span class="scramble-overlay" aria-hidden="true"> rendering the glyphs
+       on top, then removes them when the animation finishes.
     */
     [data-scramble] {
         position: relative;
         overflow: hidden;
+    }
 
-        &::before {
-            content: var(--scramble, none);
-            position: absolute;
-            inset: 0;
-            color: var(--color-paper);
-            white-space: pre;
-            pointer-events: none;
-            font-weight: inherit;
-        }
+    .scramble-overlay {
+        position: absolute;
+        inset: 0;
+        color: var(--color-paper);
+        white-space: pre;
+        pointer-events: none;
+        font: inherit;
+        letter-spacing: inherit;
+        text-transform: inherit;
     }
 }

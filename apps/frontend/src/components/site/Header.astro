@@ -41,9 +41,6 @@ function menuItemPath(url: string): string {
     }
 }
 
-function submenuId(node: MenuNode): string {
-    return `submenu-${node.id}`;
-}
 ---
 
 <header>
@@ -73,7 +70,6 @@ function submenuId(node: MenuNode): string {
                                     class="nav-link submenu-toggle"
                                     aria-expanded="false"
                                     aria-haspopup="true"
-                                    aria-controls={submenuId(node)}
                                     aria-current={
                                         inSection ? "page" : undefined
                                     }
@@ -87,7 +83,7 @@ function submenuId(node: MenuNode): string {
                                         class="submenu-chevron"
                                     />
                                 </button>
-                                <ul class="submenu" id={submenuId(node)}>
+                                <ul class="submenu">
                                     {node.children.map((child) => (
                                         <li>
                                             <a
@@ -148,7 +144,12 @@ function submenuId(node: MenuNode): string {
         </a>
     </nav>
 
-    <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+    <dialog
+        class="mobile-menu"
+        id="mobile-menu"
+        aria-label="Site navigation"
+        tabindex="-1"
+    >
         {
             tree.map((node) => {
                 if (node.children.length > 0) {
@@ -186,7 +187,7 @@ function submenuId(node: MenuNode): string {
                 );
             })
         }
-    </div>
+    </dialog>
 </header>
 
 <script src="../../scripts/header.ts"></script>
@@ -376,26 +377,38 @@ function submenuId(node: MenuNode): string {
         inset-inline: 0;
         top: var(--header-height);
         bottom: 0;
+        inline-size: 100%;
+        max-inline-size: none;
+        block-size: auto;
+        max-block-size: none;
+        margin: 0;
+        border: 0;
         background: var(--color-ink);
         color: var(--color-paper);
+        padding-block: var(--space-xl);
+        padding-inline: var(--site-padding-inline);
+        opacity: 0;
+    }
+
+    .mobile-menu[open] {
         display: flex;
         flex-direction: column;
         gap: var(--space-md);
-        padding-block: var(--space-xl);
-        padding-inline: var(--site-padding-inline);
-        visibility: hidden;
-        opacity: 0;
-        transition:
-            opacity 0.2s ease,
-            visibility 0s 0.2s;
+        opacity: 1;
     }
 
-    .mobile-menu[aria-hidden="false"] {
-        visibility: visible;
-        opacity: 1;
-        transition:
-            opacity 0.2s ease,
-            visibility 0s 0s;
+    @starting-style {
+        .mobile-menu[open] {
+            opacity: 0;
+        }
+    }
+
+    .mobile-menu::backdrop {
+        background: transparent;
+    }
+
+    .mobile-menu:focus {
+        outline: none;
     }
 
     .mobile-menu a {

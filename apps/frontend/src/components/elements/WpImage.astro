@@ -28,7 +28,12 @@ if (image.data.type !== "image") {
     );
 }
 
+const explicitAlt = alt !== undefined;
 alt ??= image.data.altText;
+
+// No alt text from caller or CMS — treat as decorative.
+const isDecorative = !explicitAlt && !alt;
+const resolvedAlt = isDecorative ? "" : (alt as string);
 
 const src = image.data.sourceUrl;
 const width = image.data.width;
@@ -37,8 +42,8 @@ const height = image.data.height;
 
 {
     width && height ? (
-        <Image src={src} alt={alt} width={width} height={height} {...attrs} />
+        <Image src={src} alt={resolvedAlt} aria-hidden={isDecorative || undefined} width={width} height={height} {...attrs} />
     ) : (
-        <Image src={src} alt={alt} inferSize {...attrs} />
+        <Image src={src} alt={resolvedAlt} aria-hidden={isDecorative || undefined} inferSize {...attrs} />
     )
 }

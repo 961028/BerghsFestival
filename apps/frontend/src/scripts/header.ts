@@ -14,39 +14,56 @@ const LOGO_STROBE_INTERVAL_MS = 50;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const toggle = document.querySelector(".menu-toggle") as HTMLButtonElement;
-const menu = document.getElementById("mobile-menu")!;
+const menu = document.getElementById("mobile-menu") as HTMLDialogElement;
 
-function open() {
+let openedViaKeyboard = false;
+let lastPointerType: string | null = null;
+
+toggle.addEventListener("pointerdown", (e) => {
+    lastPointerType = e.pointerType;
+});
+
+function openMenu(viaKeyboard: boolean) {
+    openedViaKeyboard = viaKeyboard;
     toggle.setAttribute("aria-expanded", "true");
     toggle.setAttribute("aria-label", "Close menu");
-    menu.setAttribute("aria-hidden", "false");
+    menu.showModal();
+    if (viaKeyboard) {
+        menu.querySelector<HTMLAnchorElement>("a")?.focus();
+    } else {
+        menu.focus();
+    }
     document.body.style.overflow = "hidden";
 }
 
-function close() {
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.setAttribute("aria-label", "Open menu");
-    menu.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
+function closeMenu() {
+    if (menu.open) menu.close();
 }
 
+menu.addEventListener("close", () => {
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+    document.body.style.overflow = "";
+    if (openedViaKeyboard) toggle.focus();
+    openedViaKeyboard = false;
+});
+
 toggle.addEventListener("click", () => {
-    if (toggle.getAttribute("aria-expanded") === "true") {
-        close();
+    if (menu.open) {
+        closeMenu();
     } else {
-        open();
+        const viaKeyboard = !lastPointerType;
+        lastPointerType = null;
+        openMenu(viaKeyboard);
     }
 });
 
 menu.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", close);
+    link.addEventListener("click", closeMenu);
 });
 
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
-        close();
-        toggle.focus();
-    }
+menu.addEventListener("click", (event) => {
+    if (event.target === menu) closeMenu();
 });
 
 // ── Logo RGB strobe on load + hover ──

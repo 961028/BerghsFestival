@@ -18,9 +18,15 @@ const studentCount = teamMembers.length;
 const Tag = href ? "a" : "div";
 ---
 
-<Tag class="project-card" {href}>
+<Tag
+    class="project-card"
+    {href}
+    aria-label={href
+        ? `${company}${title ? ` — ${title}` : ""}`
+        : undefined}
+>
     <div class="thumb">
-        {image && <WpImage image={image} alt={title ?? company} />}
+        {image && <WpImage image={image} alt="" />}
     </div>
 
     <div class="meta">
@@ -70,7 +76,7 @@ const Tag = href ? "a" : "div";
     }
 
     .company {
-        font-size: var(--font-size-xs);
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--letter-spacing-label);
         text-transform: uppercase;
@@ -88,7 +94,7 @@ const Tag = href ? "a" : "div";
 
     .student-count {
         margin: 0;
-        font-size: var(--font-size-xs);
+        font-size: var(--font-size-sm);
         letter-spacing: var(--letter-spacing-label);
         text-transform: uppercase;
     }

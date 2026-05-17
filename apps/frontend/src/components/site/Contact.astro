@@ -33,8 +33,7 @@ const venue = z
                     <li>
                         <a
                             href={service.url}
-                            aria-label={service.label}
-                            title={service.label}
+                            aria-label={`${service.label} (opens in new tab)`}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -75,9 +74,19 @@ const venue = z
     .socials {
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: calc(var(--space-xs) * -1);
         display: flex;
-        gap: var(--space-sm);
+        gap: 0;
+    }
+
+    .socials a {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-inline-size: 44px;
+        min-block-size: 44px;
+        padding: var(--space-xs);
+        color: inherit;
     }
 
     .socials :global(svg) {

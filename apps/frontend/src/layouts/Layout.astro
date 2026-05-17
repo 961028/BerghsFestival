@@ -85,10 +85,11 @@ if (ogImageRef) {
         <a href="#cta" class="skip-link">Skip to apply</a>
         <div class="wrapper">
             <div data-region="header"><Header /></div>
+            <!-- tabindex="-1" lets the skip-link target main for focus. -->
             <main id="main-content" data-region="main" tabindex="-1">
                 <slot />
             </main>
-            <footer data-region="footer">
+            <footer data-region="footer" aria-label="Site footer">
                 <div class="footer-row footer-row--sponsors">
                     <h2 class="footer-label">Sponsors</h2>
                     <Sponsors />
@@ -289,7 +290,7 @@ if (ogImageRef) {
         padding: var(--space-xs) var(--space-sm);
         background: var(--color-paper);
         color: var(--color-ink);
-        font-size: var(--font-size-xs);
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--letter-spacing-label);
         text-transform: uppercase;

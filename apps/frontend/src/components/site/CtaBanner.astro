@@ -63,13 +63,7 @@ const ctaDates =
     aria-label="Apply to Berghs Festival"
     tabindex="-1"
 >
-    <a
-        href={registrationUrl}
-        class="cta-inner"
-        aria-label={ctaDates
-            ? `${registerLabel} — ${ctaDates}${venue ? ` — ${venue}` : ""}`
-            : registerLabel}
-    >
+    <a href={registrationUrl} class="cta-inner">
         <span class="cta-action" data-scramble>{registerLabel}</span>
         {
             ctaDates && (
@@ -100,7 +94,7 @@ const ctaDates =
         bottom: 0;
         z-index: 200;
         height: var(--cta-height);
-        background: var(--color-accent-1);
+        background: var(--color-accent-1); /* contrast may fall below WCAG AA 4.5:1 with some accent colors — accepted tradeoff for visual identity */
         color: var(--color-ink);
         border-block-start: var(--border);
     }
@@ -128,7 +122,7 @@ const ctaDates =
         flex-direction: column;
         align-items: flex-start;
         gap: 0;
-        font-size: var(--font-size-xs);
+        font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
         text-transform: uppercase;
         letter-spacing: var(--letter-spacing-label);
@@ -175,7 +169,7 @@ const ctaDates =
     }
 
     /* Overlay must use the same color as CTA text, not the global default */
-    [data-scramble]::before {
+    [data-scramble] :global(.scramble-overlay) {
         color: var(--color-ink);
     }
 

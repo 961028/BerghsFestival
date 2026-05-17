@@ -59,7 +59,7 @@ const individualSections = [
 >
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
-    <section>
+    <div>
         <div class="filters" role="tablist" aria-label="Filter projects">
             <button
                 type="button"
@@ -70,10 +70,9 @@ const individualSections = [
                 aria-controls="filter-panel-group"
                 aria-selected="true"
                 tabindex="0"
-                aria-label="Group projects"
             >
-                <span class="label-full">Group projects</span>
                 <span class="label-short" aria-hidden="true">Group</span>
+                <span class="label-full">Group projects</span>
             </button>
             <button
                 type="button"
@@ -84,10 +83,9 @@ const individualSections = [
                 aria-controls="filter-panel-individual"
                 aria-selected="false"
                 tabindex="-1"
-                aria-label="Individual projects"
             >
-                <span class="label-full">Individual projects</span>
                 <span class="label-short" aria-hidden="true">Individual</span>
+                <span class="label-full">Individual projects</span>
             </button>
         </div>
 
@@ -121,9 +119,14 @@ const individualSections = [
             hidden
         >
             {
-                individualSections.map((section) => (
-                    <section class="individual-section">
-                        <h2 class="section-heading">{section.heading}</h2>
+                individualSections.map((section, i) => (
+                    <section
+                        class="individual-section"
+                        aria-labelledby={`individual-section-${i}`}
+                    >
+                        <h2 id={`individual-section-${i}`} class="section-heading">
+                            {section.heading}
+                        </h2>
                         <ul class="grid">
                             {section.projects.map((project) => (
                                 <li>
@@ -140,7 +143,7 @@ const individualSections = [
                 ))
             }
         </div>
-    </section>
+    </div>
 </Layout>
 
 <script>
@@ -167,7 +170,10 @@ const individualSections = [
 
     tabs.forEach((tab, index) => {
         attachRgbSplit(tab);
-        tab.addEventListener("click", () => selectTab(index));
+        tab.addEventListener("click", () => {
+                selectTab(index);
+                panels[index]?.focus();
+            });
         tab.addEventListener("keydown", (e) => {
             const last = tabs.length - 1;
             let next = -1;
@@ -218,7 +224,12 @@ const individualSections = [
     }
 
     .label-short {
-        display: none;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
     }
 
     @media (max-width: 40rem) {
@@ -227,17 +238,34 @@ const individualSections = [
         }
 
         .label-full {
-            display: none;
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip-path: inset(50%);
+            white-space: nowrap;
         }
 
         .label-short {
-            display: inline;
+            position: static;
+            width: auto;
+            height: auto;
+            overflow: visible;
+            clip-path: none;
+            white-space: normal;
         }
     }
 
     .btn[aria-selected="false"] {
         background-color: transparent;
         color: var(--color-paper);
+    }
+
+    @media (forced-colors: active) {
+        .btn[aria-selected="true"] {
+            outline: 2px solid LinkText;
+            outline-offset: -2px;
+        }
     }
 
     .grid {
