@@ -63,7 +63,7 @@ const { items } = Astro.props;
     const symbols = document.querySelectorAll<HTMLElement>(
         ".installation-symbol-wrap",
     );
-    symbols.forEach((el) => runRgbSplitIntense(el, 0.3));
+    symbols.forEach((el) => runRgbSplitIntense(el, 0.5));
 </script>
 
 <style>
@@ -146,7 +146,6 @@ const { items } = Astro.props;
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         color: var(--color-paper);
-        margin-block-start: var(--space-sm);
     }
 
     .links {

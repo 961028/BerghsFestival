@@ -74,19 +74,26 @@ const venue = z
     .socials {
         list-style: none;
         padding: 0;
-        margin: calc(var(--space-xs) * -1);
+        margin: 0;
         display: flex;
-        gap: 0;
+        gap: var(--space-xs);
     }
 
     .socials a {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        min-inline-size: 44px;
-        min-block-size: 44px;
         padding: var(--space-xs);
         color: inherit;
+        position: relative;
+    }
+
+    .socials a :global(.glitch-wrap) {
+        pointer-events: none;
+    }
+
+    .socials :global(svg) {
+        pointer-events: auto;
     }
 
     .socials :global(svg) {

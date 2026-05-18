@@ -112,23 +112,27 @@ const SimpleItems = repeater(
 
 export type SimpleItem = z.infer<typeof SimpleItems>[number];
 
+const LocationsRepeater = repeater(
+    z.object({
+        location: z.string().nullable().optional(),
+    }),
+);
+
 const FoodItems = repeater(
     z
         .object({
             name: z.string(),
             image: nullableIntReference("media"),
             description: z.string().transform((val) => ({ html: val })),
-            url: z.string().optional(),
-            social_url: z.string().optional(),
-            slots: SlotsRepeater.optional(),
+            locations: LocationsRepeater.optional(),
         })
         .transform((item) => ({
             name: item.name,
             image: item.image,
             description: item.description,
-            url: item.url || null,
-            socialUrl: item.social_url || null,
-            slots: item.slots ?? [],
+            locations: (item.locations ?? [])
+                .map((row) => row.location)
+                .filter((l): l is string => !!l),
         })),
 );
 
@@ -236,7 +240,6 @@ export async function getFoodPage() {
         page,
         description: page.data.content,
         items: FoodItems.parse(page.data.acf.items),
-        scheduleDays: await getScheduleDays(),
     };
 }
 

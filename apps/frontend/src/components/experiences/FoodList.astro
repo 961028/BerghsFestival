@@ -1,60 +1,12 @@
 ---
 import WpImage from "../elements/WpImage.astro";
-import type { FoodItem, Slot } from "../../lib/experience-pages";
+import type { FoodItem } from "../../lib/experience-pages";
 
 interface Props {
     items: FoodItem[];
-    scheduleDays: string[];
 }
 
-const { items, scheduleDays } = Astro.props;
-
-type DayGroup = { label: string | null; slots: Slot[] };
-
-function groupSlotsByDay(slots: Slot[]): DayGroup[] {
-    const byDay = new Map<string, Slot[]>();
-    const unscheduled: Slot[] = [];
-
-    for (const slot of slots) {
-        if (slot.day) {
-            const list = byDay.get(slot.day) ?? [];
-            list.push(slot);
-            byDay.set(slot.day, list);
-        } else {
-            unscheduled.push(slot);
-        }
-    }
-
-    const sortByTime = (a: Slot, b: Slot) =>
-        (a.startTime || "").localeCompare(b.startTime || "");
-
-    const groups: DayGroup[] = [];
-
-    for (const day of scheduleDays) {
-        const list = byDay.get(day);
-        if (list) {
-            groups.push({ label: day, slots: [...list].sort(sortByTime) });
-            byDay.delete(day);
-        }
-    }
-
-    for (const [day, list] of byDay) {
-        groups.push({ label: day, slots: [...list].sort(sortByTime) });
-    }
-
-    if (unscheduled.length > 0) {
-        groups.push({ label: null, slots: [...unscheduled].sort(sortByTime) });
-    }
-
-    return groups;
-}
-
-function formatTimeRange(slot: Slot): string {
-    if (slot.startTime && slot.endTime) {
-        return `${slot.startTime}—${slot.endTime}`;
-    }
-    return slot.startTime || slot.endTime || "";
-}
+const { items } = Astro.props;
 ---
 
 <div class="food">
@@ -77,68 +29,13 @@ function formatTimeRange(slot: Slot): string {
                     )}
                     <div class="text">
                         <h2 class="name heading-display">{item.name}</h2>
+                        {item.locations.length > 0 && (
+                            <p class="meta">{item.locations.join(", ")}</p>
+                        )}
                         <div
                             class="description section-body"
                             set:html={item.description.html}
                         />
-                        {item.slots.length > 0 && (
-                            <div class="slot-days">
-                                {groupSlotsByDay(item.slots).map((group) => (
-                                    <div class="slot-day">
-                                        {group.label && (
-                                            <h3 class="day">{group.label}</h3>
-                                        )}
-                                        <ul class="slots" role="list">
-                                            {group.slots.map((slot) => {
-                                                const range = formatTimeRange(slot);
-                                                return (
-                                                    <li class="slot">
-                                                        {range && (
-                                                            <span class="time">
-                                                                {range}
-                                                            </span>
-                                                        )}
-                                                        {slot.location && (
-                                                            <span class="location">
-                                                                {slot.location}
-                                                            </span>
-                                                        )}
-                                                    </li>
-                                                );
-                                            })}
-                                        </ul>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                        {(item.url || item.socialUrl) && (
-                            <div class="links">
-                                {item.url && (
-                                    <a
-                                        class="btn"
-                                        data-color-hover
-                                        href={item.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={`${item.name} website`}
-                                    >
-                                        Website
-                                    </a>
-                                )}
-                                {item.socialUrl && (
-                                    <a
-                                        class="btn"
-                                        data-color-hover
-                                        href={item.socialUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        aria-label={`${item.name} social media`}
-                                    >
-                                        Social
-                                    </a>
-                                )}
-                            </div>
-                        )}
                     </div>
                 </li>
             ))
@@ -147,9 +44,6 @@ function formatTimeRange(slot: Slot): string {
 </div>
 
 <style>
-    /* ── Food rows ───────────────────────────────────────────────────
-       Mirrors Music layout. Mobile: image full-width on top, text
-       below. ≥40rem: thumb left fixed, text right. */
     ul {
         list-style: none;
         margin: 0;
@@ -201,97 +95,20 @@ function formatTimeRange(slot: Slot): string {
     .text {
         display: flex;
         flex-direction: column;
-        gap: var(--space-xxs);
+        gap: var(--space-xs);
         min-width: 0;
     }
 
-    .slot-days {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-sm);
-        margin-block-start: var(--space-md);
-    }
-
-    .slot-day {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-xxs);
-    }
-
-    .day {
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-normal);
-        text-transform: uppercase;
-        line-height: var(--line-height-tight);
-        letter-spacing: var(--letter-spacing-caps-sm);
-    }
-
-    .slots {
-        display: flex;
-        flex-direction: column;
-        gap: var(--space-xxs);
-        margin: 0;
-        padding: 0;
-    }
-
-    .slots li {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-xs);
-        padding: 0;
-        border: 0;
-    }
-
-    .time,
-    .location {
-        font-size: var(--font-size-sm);
+    .meta {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
         color: var(--color-paper);
         line-height: var(--line-height-tight);
-    }
-
-    .time {
-        font-weight: var(--font-weight-bold);
-        font-variant-numeric: tabular-nums;
-    }
-
-    .location {
-        font-weight: var(--font-weight-normal);
-    }
-
-    @media (min-width: 40rem) {
-        .day,
-        .time,
-        .location {
-            font-size: var(--font-size-base);
-        }
     }
 
     .description {
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         color: var(--color-paper);
-        margin-block-start: var(--space-xs);
-    }
-
-    .links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: var(--space-xs);
-        margin-block-start: auto;
-        padding-block-start: var(--space-sm);
-    }
-
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        background-color: var(--color-paper);
-        color: var(--color-ink);
-        font-size: var(--font-size-base);
-        font-weight: var(--font-weight-bold);
-        padding: var(--space-sm) var(--space-md);
-        text-decoration: none;
-        min-block-size: max(44px, 2em);
-        line-height: var(--line-height-none);
-        transition: background-color 0.08s;
     }
 </style>

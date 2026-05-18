@@ -46,51 +46,17 @@ function _app_page_experience_food_register_fields() {
 							'media_upload' => 0,
 						),
 						array(
-							'key'   => _app_page_experience_food_field_key( 'items', 'url' ),
-							'label' => 'Website URL',
-							'name'  => 'url',
-							'type'  => 'url',
-						),
-						array(
-							'key'   => _app_page_experience_food_field_key( 'items', 'social_url' ),
-							'label' => 'Social media URL',
-							'name'  => 'social_url',
-							'type'  => 'url',
-						),
-						array(
-							'key'          => _app_page_experience_food_field_key( 'items', 'slots' ),
-							'label'        => 'Slots',
-							'name'         => 'slots',
+							'key'          => _app_page_experience_food_field_key( 'items', 'locations' ),
+							'label'        => 'Locations',
+							'name'         => 'locations',
 							'type'         => 'repeater',
-							'instructions' => 'One row per slot. Each slot has a day, start/end time, and location. A vendor can have multiple slots at the same day and time in different locations.',
+							'instructions' => 'One row per location. A vendor can be present at multiple locations.',
 							'layout'       => 'table',
-							'button_label' => 'Add Slot',
+							'button_label' => 'Add Location',
 							'min'          => 0,
 							'sub_fields'   => array(
 								array(
-									'key'           => _app_page_experience_food_field_key( 'items', 'slots', 'day' ),
-									'label'         => 'Day',
-									'name'          => 'day',
-									'type'          => 'select',
-									'instructions'  => 'Pulled from the festival days defined on the Schedule page.',
-									'choices'       => array(),
-									'allow_null'    => 1,
-									'return_format' => 'value',
-								),
-								array(
-									'key'   => _app_page_experience_food_field_key( 'items', 'slots', 'start_time' ),
-									'label' => 'Start',
-									'name'  => 'start_time',
-									'type'  => 'text',
-								),
-								array(
-									'key'   => _app_page_experience_food_field_key( 'items', 'slots', 'end_time' ),
-									'label' => 'End',
-									'name'  => 'end_time',
-									'type'  => 'text',
-								),
-								array(
-									'key'           => _app_page_experience_food_field_key( 'items', 'slots', 'location' ),
+									'key'           => _app_page_experience_food_field_key( 'items', 'locations', 'location' ),
 									'label'         => 'Location',
 									'name'          => 'location',
 									'type'          => 'select',
@@ -111,37 +77,7 @@ function _app_page_experience_food_register_fields() {
 }
 add_action( 'acf/init', '_app_page_experience_food_register_fields' );
 
-function _app_page_experience_food_load_slot_day_choices( $field ) {
-	$schedule_page = app_acf_get_schedule_page();
-
-	if ( ! $schedule_page ) {
-		return $field;
-	}
-
-	$count = (int) get_post_meta( $schedule_page->ID, 'schedule', true );
-
-	$choices = array();
-
-	for ( $i = 0; $i < $count; $i++ ) {
-		$day = trim( (string) get_post_meta( $schedule_page->ID, "schedule_{$i}_day", true ) );
-
-		if ( '' === $day ) {
-			continue;
-		}
-
-		$choices[ $day ] = $day;
-	}
-
-	$field['choices'] = $choices;
-
-	return $field;
-}
 add_filter(
-	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'slots', 'day' ),
-	'_app_page_experience_food_load_slot_day_choices'
-);
-
-add_filter(
-	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'slots', 'location' ),
+	'acf/load_field/key=' . _app_page_experience_food_field_key( 'items', 'locations', 'location' ),
 	'app_acf_load_schedule_location_choices'
 );
