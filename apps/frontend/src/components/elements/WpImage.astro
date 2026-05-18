@@ -38,10 +38,13 @@ const resolvedAlt = isDecorative ? "" : (alt as string);
 const src = image.data.sourceUrl;
 const width = image.data.width;
 const height = image.data.height;
+const isSvg = image.data.mimeType === "image/svg+xml" || src.endsWith(".svg");
 ---
 
 {
-    width && height ? (
+    isSvg ? (
+        <img src={src} alt={resolvedAlt} aria-hidden={isDecorative || undefined} width={width} height={height} {...attrs} />
+    ) : width && height ? (
         <Image src={src} alt={resolvedAlt} aria-hidden={isDecorative || undefined} width={width} height={height} {...attrs} />
     ) : (
         <Image src={src} alt={resolvedAlt} aria-hidden={isDecorative || undefined} inferSize {...attrs} />

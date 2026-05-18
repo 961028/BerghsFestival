@@ -203,6 +203,55 @@ export function buildDropShadow(
     return `${r} ${g} ${b}`;
 }
 
+// Always-on intense RGB split via `filter: drop-shadow(...)`. No hover gating.
+// Intensity scales amount, burst chance, and burst strength on top of the
+// base `rgbSplitConfig`. Respects prefers-reduced-motion (static split).
+export function runRgbSplitIntense(
+    el: HTMLElement | SVGElement,
+    intensity = 1,
+): () => void {
+    const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const c = rgbSplitConfig;
+    const amount = c.amount * 2 * intensity;
+    const burstChance = Math.min(1, c.burstChance * 3 * intensity);
+    const burstStrength = c.burstStrength * 2 * intensity;
+
+    if (reducedMotion) {
+        (el as HTMLElement).style.filter = buildDropShadow(amount, 1, 0);
+        return () => {
+            (el as HTMLElement).style.filter = "";
+        };
+    }
+
+    let raf = 0;
+    let lastTick = 0;
+
+    function tick(now: number) {
+        const tickInterval = 1000 / c.jitterSpeed;
+        if (now - lastTick >= tickInterval) {
+            lastTick = now;
+            const burst =
+                Math.random() < burstChance ? burstStrength * c.glitchiness : 1;
+            const jitter = amount * 0.3;
+            (el as HTMLElement).style.filter = buildDropShadow(
+                amount,
+                burst,
+                jitter,
+            );
+        }
+        raf = requestAnimationFrame(tick);
+    }
+
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+        if (raf) cancelAnimationFrame(raf);
+        (el as HTMLElement).style.filter = "";
+    };
+}
+
 // RGB split via `filter: drop-shadow(...)` — works for SVG/img where
 // `text-shadow` does not. Same jitter logic as `attachRgbSplit`.
 // Optional `trigger` element fires hover events instead of `el` itself

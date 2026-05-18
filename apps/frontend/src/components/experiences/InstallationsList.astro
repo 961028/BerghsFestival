@@ -21,6 +21,7 @@ const { items } = Astro.props;
             <li>
                 {item.image && (
                     <WpImage
+                        data-installation-symbol
                         image={item.image}
                         width={1200}
                         height={600}
@@ -30,7 +31,10 @@ const { items } = Astro.props;
                 <div class="text">
                     <h2 class="name heading-display">{item.name}</h2>
                     {item.location && <p class="meta">{item.location}</p>}
-                    <div class="description section-body" set:html={item.description.html} />
+                    <div
+                        class="description section-body"
+                        set:html={item.description.html}
+                    />
                     {item.url && (
                         <div class="links">
                             <a
@@ -50,6 +54,15 @@ const { items } = Astro.props;
         ))
     }
 </ul>
+
+<script>
+    import { runRgbSplitIntense } from "../../scripts/accents";
+
+    const symbols = document.querySelectorAll<HTMLElement>(
+        "[data-installation-symbol]",
+    );
+    symbols.forEach((el) => runRgbSplitIntense(el, 0.3));
+</script>
 
 <style>
     ul {
@@ -72,6 +85,13 @@ const { items } = Astro.props;
             grid-template-columns: var(--installation-img-w) 1fr;
             gap: var(--space-md);
         }
+
+        li:has(img[data-installation-symbol]) {
+            grid-template-columns: var(--installation-symbol-size) 1fr;
+            gap: var(--space-xl);
+            padding-block: var(--space-xl);
+            align-items: center;
+        }
     }
 
     li :global(img) {
@@ -82,10 +102,22 @@ const { items } = Astro.props;
         object-fit: cover;
     }
 
+    li :global(img[data-installation-symbol]) {
+        width: var(--installation-symbol-size);
+        height: var(--installation-symbol-size);
+        aspect-ratio: auto;
+        object-fit: contain;
+    }
+
     @container (min-width: 48rem) {
         li :global(img) {
             width: var(--installation-img-w);
             height: var(--installation-img-w);
+        }
+
+        li :global(img[data-installation-symbol]) {
+            width: var(--installation-symbol-size);
+            height: var(--installation-symbol-size);
         }
     }
 
