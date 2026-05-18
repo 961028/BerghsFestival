@@ -79,7 +79,7 @@
             --font-size-lg: 1.75rem;
             --font-size-display: 3.5rem;
             --space-lg: 1.75rem;
-            --space-xl: 4rem;
+            --space-xl: 2.5rem;
             --site-padding-inline: 1.75rem;
             --cta-height: 4.125rem;
             --music-thumb-w: 20rem;
@@ -92,7 +92,7 @@
             --font-size-lg: 2rem;
             --font-size-display: 4.5rem;
             --space-lg: 2.5rem;
-            --space-xl: 6.25rem;
+            --space-xl: 3.5rem;
             --site-padding-inline: 2.5rem;
         }
     }

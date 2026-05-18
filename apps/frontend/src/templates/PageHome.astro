@@ -89,14 +89,23 @@ const projectCount = acf.project_count as number | undefined;
                     festivalDays.map((day) => (
                         <li class="schedule-day">
                             <div class="schedule-headline">
-                                <span class="schedule-abbr heading-display" data-scramble>
+                                <span
+                                    class="schedule-abbr heading-display"
+                                    data-scramble
+                                >
                                     {day.abbr}
                                 </span>
-                                <span class="schedule-num heading-display" data-scramble>
+                                <span
+                                    class="schedule-num heading-display"
+                                    data-scramble
+                                >
                                     {day.date}
                                 </span>
                             </div>
-                            <span class="schedule-hours heading-display" data-scramble>
+                            <span
+                                class="schedule-hours heading-display"
+                                data-scramble
+                            >
                                 {day.hours}
                             </span>
                         </li>
@@ -352,8 +361,7 @@ const projectCount = acf.project_count as number | undefined;
             writing-mode: vertical-lr;
             rotate: 180deg;
             place-self: start;
-            /* Offset half-leading of adjacent prose (line-height 1.4, font-size 1.125rem) */
-            translate: 0 0.75rem;
+            translate: 0 0.25rem;
         }
 
         .section {
