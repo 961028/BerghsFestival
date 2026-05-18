@@ -55,7 +55,6 @@ const individualSections = [
     title={page.title}
     metaDescription={page.metaDescription}
     ogImage={page.image}
-    ctaCompact
 >
     <PageIntro title={page.title} descriptionHtml={data.description?.html} />
 
@@ -71,7 +70,7 @@ const individualSections = [
                 aria-selected="true"
                 tabindex="0"
             >
-                <span class="label-short" aria-hidden="true">Group</span>
+                <span class="label-short" aria-hidden="true">Groups</span>
                 <span class="label-full">Group projects</span>
             </button>
             <button
@@ -84,7 +83,7 @@ const individualSections = [
                 aria-selected="false"
                 tabindex="-1"
             >
-                <span class="label-short" aria-hidden="true">Individual</span>
+                <span class="label-short" aria-hidden="true">Individuals</span>
                 <span class="label-full">Individual projects</span>
             </button>
         </div>
@@ -124,7 +123,10 @@ const individualSections = [
                         class="individual-section"
                         aria-labelledby={`individual-section-${i}`}
                     >
-                        <h2 id={`individual-section-${i}`} class="section-heading">
+                        <h2
+                            id={`individual-section-${i}`}
+                            class="section-heading"
+                        >
                             {section.heading}
                         </h2>
                         <ul class="grid">
@@ -171,9 +173,8 @@ const individualSections = [
     tabs.forEach((tab, index) => {
         attachRgbSplit(tab);
         tab.addEventListener("click", () => {
-                selectTab(index);
-                panels[index]?.focus();
-            });
+            selectTab(index);
+        });
         tab.addEventListener("keydown", (e) => {
             const last = tabs.length - 1;
             let next = -1;
