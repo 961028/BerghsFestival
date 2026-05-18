@@ -46,8 +46,13 @@ const { schedule } = data;
                             aria-selected={i === 0 ? "true" : "false"}
                             tabindex={i === 0 ? 0 : -1}
                         >
-                            <span data-scramble data-scramble-group="day-tabs">
-                                {d.day}
+                            <span class="glitch-wrap">
+                                <span
+                                    data-scramble
+                                    data-scramble-group="day-tabs"
+                                >
+                                    {d.day}
+                                </span>
                             </span>
                         </button>
                     </div>
@@ -97,7 +102,7 @@ const { schedule } = data;
 </Layout>
 
 <script>
-    import { attachRgbSplit, attachRgbSplitFilter } from "../scripts/accents";
+    import { attachRgbSplitFilter } from "../scripts/accents";
 
     const dayTabs = Array.from(
         document.querySelectorAll<HTMLButtonElement>('[role="tab"]'),
@@ -119,7 +124,8 @@ const { schedule } = data;
     }
 
     dayTabs.forEach((tab, index) => {
-        attachRgbSplit(tab);
+        const wrap = tab.querySelector<HTMLElement>(".glitch-wrap");
+        if (wrap) attachRgbSplitFilter(wrap, tab);
         tab.addEventListener("click", () => {
             selectDay(index);
             dayPanels[index]?.focus();
