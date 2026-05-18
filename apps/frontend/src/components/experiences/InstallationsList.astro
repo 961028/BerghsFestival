@@ -85,20 +85,25 @@ const { items } = Astro.props;
     @container (min-width: 48rem) {
         li:has(img) {
             grid-template-columns: var(--installation-img-w) 1fr;
-            gap: var(--space-md);
+            gap: var(--space-xl);
         }
 
         li:has(img[data-installation-symbol]) {
             grid-template-columns: var(--installation-symbol-size) 1fr;
             gap: var(--space-xl);
             padding-block: var(--space-xl);
-            align-items: center;
+            align-items: start;
         }
+    }
+
+    .glitch-wrap {
+        justify-self: start;
     }
 
     li :global(img) {
         display: block;
         width: 100%;
+        max-width: var(--installation-img-w);
         height: auto;
         aspect-ratio: 1 / 1;
         object-fit: cover;
@@ -141,6 +146,7 @@ const { items } = Astro.props;
         font-size: var(--font-size-base);
         line-height: var(--line-height-base);
         color: var(--color-paper);
+        margin-block-start: var(--space-sm);
     }
 
     .links {
