@@ -61,6 +61,24 @@ When in doubt: if the value feels arbitrary, it should be a token.
 
 ---
 
+## Typography — role → token table
+
+Letter-spacing follows the type role, not the size in isolation. Tracking scales inversely with size, and uppercase always needs more tracking than mixed-case at the same size.
+
+| Role | Selector traits | `font-size` | `font-weight` | `text-transform` | `letter-spacing` |
+|------|----------------|-------------|---------------|------------------|------------------|
+| Display heading | big bold headline | `display` | `bold` | `uppercase` (optional) | `--letter-spacing-caps-lg` if uppercase, else `--letter-spacing-display` |
+| Large heading | section/card/item title | `lg` | `bold` | none | `--letter-spacing-display` |
+| Large uppercase | CTA button, filter button, nav link | `lg` | `bold` (usually) | `uppercase` | `--letter-spacing-caps-lg` |
+| Small uppercase label | eyebrow, meta label, footer label | `sm` / `base` | `bold` | `uppercase` | `--letter-spacing-caps-sm` |
+| Body / running text | paragraphs, list items, descriptions | `sm` / `base` / `lg` | `normal` / `light` | none | none (omit the property) |
+
+**Never** apply `--letter-spacing-display` (negative tracking) to body, small, or light-weight text — it reduces legibility.
+
+`npm run lint:css` enforces this mechanically for uppercase + large headings (see [`scripts/check-css-tokens.mjs`](scripts/check-css-tokens.mjs)).
+
+---
+
 ## Shared classes
 
 Some styles are semantic patterns used across multiple pages and belong in `global.css` rather than any single component:

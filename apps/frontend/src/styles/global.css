@@ -25,8 +25,9 @@
         --font-weight-bold: 700;
         --line-height-base: 1.5;
         --line-height-tight: 1.2;
-        --letter-spacing-tight: -0.03em;
-        --letter-spacing-label: 0.15em;
+        --letter-spacing-display: -0.03em;
+        --letter-spacing-caps-lg: 0.05em;
+        --letter-spacing-caps-sm: 0.15em;
 
         /* Spacing */
         --space-xxs: 0.25rem;
@@ -160,6 +161,7 @@
     .page-title {
         font-size: var(--font-size-display);
         font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-caps-lg);
         margin-block-end: var(--space-md);
         text-transform: uppercase;
     }
@@ -176,7 +178,7 @@
     .footer-label {
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
-        letter-spacing: var(--letter-spacing-label);
+        letter-spacing: var(--letter-spacing-caps-sm);
         text-transform: uppercase;
         color: var(--color-paper);
     }
