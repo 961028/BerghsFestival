@@ -119,9 +119,9 @@ export const rgbSplitConfig = {
     gBaseY: -1,
 
     // ── Colors ────────────────────────────────────────────────────────────────
-    colorR: "#ff0040",
-    colorG: "#00ff66",
-    colorB: "#00d9ff",
+    colorR: "#ff0000",
+    colorG: "#00ff00",
+    colorB: "#00ffff",
 };
 
 // R always +X, B always -X (opposite). G sits at gBaseY with tiny
