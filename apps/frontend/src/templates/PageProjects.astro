@@ -60,32 +60,38 @@ const individualSections = [
 
     <div>
         <div class="filters" role="tablist" aria-label="Filter projects">
-            <button
-                type="button"
-                role="tab"
-                id="filter-tab-group"
-                class="btn"
-                data-color-hover
-                aria-controls="filter-panel-group"
-                aria-selected="true"
-                tabindex="0"
-            >
-                <span class="label-short" aria-hidden="true">Groups</span>
-                <span class="label-full">Group projects</span>
-            </button>
-            <button
-                type="button"
-                role="tab"
-                id="filter-tab-individual"
-                class="btn"
-                data-color-hover
-                aria-controls="filter-panel-individual"
-                aria-selected="false"
-                tabindex="-1"
-            >
-                <span class="label-short" aria-hidden="true">Individuals</span>
-                <span class="label-full">Individual projects</span>
-            </button>
+            <div class="btn-cell">
+                <button
+                    type="button"
+                    role="tab"
+                    id="filter-tab-group"
+                    class="btn"
+                    data-color-hover
+                    aria-controls="filter-panel-group"
+                    aria-selected="true"
+                    tabindex="0"
+                >
+                    <span class="label-short" aria-hidden="true">Groups</span>
+                    <span class="label-full">Group projects</span>
+                </button>
+            </div>
+            <div class="btn-cell">
+                <button
+                    type="button"
+                    role="tab"
+                    id="filter-tab-individual"
+                    class="btn"
+                    data-color-hover
+                    aria-controls="filter-panel-individual"
+                    aria-selected="false"
+                    tabindex="-1"
+                >
+                    <span class="label-short" aria-hidden="true"
+                        >Individuals</span
+                    >
+                    <span class="label-full">Individual projects</span>
+                </button>
+            </div>
         </div>
 
         <div
@@ -208,9 +214,14 @@ const individualSections = [
         margin-block-end: var(--space-lg);
     }
 
+    .btn-cell {
+        display: flex;
+    }
+
     .btn {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         background-color: var(--color-paper);
         color: var(--color-ink);
         font-family: inherit;
@@ -223,6 +234,7 @@ const individualSections = [
         cursor: pointer;
         min-block-size: max(44px, 2em);
         line-height: var(--line-height-none);
+        white-space: nowrap;
     }
 
     .label-short {
@@ -235,8 +247,15 @@ const individualSections = [
     }
 
     @media (max-width: 40rem) {
+        .btn-cell {
+            flex: 1;
+            container-type: inline-size;
+        }
+
         .btn {
+            width: 100%;
             padding: var(--space-xs) var(--space-sm);
+            font-size: clamp(0.875rem, 12cqi, var(--font-size-lg));
         }
 
         .label-full {
@@ -254,7 +273,7 @@ const individualSections = [
             height: auto;
             overflow: visible;
             clip-path: none;
-            white-space: normal;
+            white-space: nowrap;
         }
     }
 
