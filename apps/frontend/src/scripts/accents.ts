@@ -181,6 +181,14 @@ export function attachRgbSplit(el: HTMLElement): void {
         raf = 0;
         el.style.textShadow = "";
     });
+
+    window.addEventListener("pageshow", (e) => {
+        if (e.persisted) {
+            if (raf) cancelAnimationFrame(raf);
+            raf = 0;
+            el.style.textShadow = "";
+        }
+    });
 }
 
 export function buildDropShadow(
