@@ -89,14 +89,14 @@ const projectCount = acf.project_count as number | undefined;
                     festivalDays.map((day) => (
                         <li class="schedule-day">
                             <div class="schedule-headline">
-                                <span class="schedule-abbr" data-scramble>
+                                <span class="schedule-abbr heading-display" data-scramble>
                                     {day.abbr}
                                 </span>
-                                <span class="schedule-num" data-scramble>
+                                <span class="schedule-num heading-display" data-scramble>
                                     {day.date}
                                 </span>
                             </div>
-                            <span class="schedule-hours" data-scramble>
+                            <span class="schedule-hours heading-display" data-scramble>
                                 {day.hours}
                             </span>
                         </li>
@@ -279,23 +279,11 @@ const projectCount = acf.project_count as number | undefined;
         line-height: var(--line-height-tight);
     }
 
-    .schedule-abbr {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: var(--letter-spacing-display);
-    }
-
     .schedule-num {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: var(--letter-spacing-display);
         color: var(--color-paper);
     }
 
     .schedule-hours {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: var(--letter-spacing-display);
         font-variant-numeric: tabular-nums;
         color: var(--color-paper);
     }

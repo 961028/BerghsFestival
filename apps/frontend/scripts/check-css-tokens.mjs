@@ -13,16 +13,27 @@ const ROOT = join(fileURLToPath(import.meta.url), "../../src");
 const HARDCODE_RULES = [
     {
         property: "letter-spacing",
-        violates: (value) => !/^var\(--/.test(value),
+        violates: (value) =>
+            !/^var\(--/.test(value) && value.trim() !== "inherit",
     },
     {
         property: "font-size",
-        violates: (value) => !/^var\(--/.test(value),
+        violates: (value) =>
+            !/^var\(--/.test(value) &&
+            value.trim() !== "inherit" &&
+            !/\d+cqi/.test(value),
     },
     {
         property: "font-weight",
         violates: (value) =>
             !/^var\(--/.test(value) && value.trim() !== "inherit",
+    },
+    {
+        property: "line-height",
+        violates: (value) =>
+            !/^var\(--/.test(value) &&
+            value.trim() !== "inherit" &&
+            !value.startsWith("calc("),
     },
 ];
 

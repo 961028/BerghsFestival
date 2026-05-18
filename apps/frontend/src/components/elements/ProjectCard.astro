@@ -30,8 +30,8 @@ const Tag = href ? "a" : "div";
     </div>
 
     <div class="meta">
-        <p class="company">{company}</p>
-        {title && <p class="title">{title}</p>}
+        <p class="company label-caps">{company}</p>
+        {title && <p class="title heading-display">{title}</p>}
         {
             studentCount > 0 && (
                 <p class="student-count">
@@ -76,20 +76,11 @@ const Tag = href ? "a" : "div";
     }
 
     .company {
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
-        letter-spacing: var(--letter-spacing-caps-sm);
-        text-transform: uppercase;
         margin: 0;
     }
 
     .title {
-        font-size: var(--font-size-lg);
-        font-weight: var(--font-weight-bold);
-        line-height: var(--line-height-tight);
-        letter-spacing: var(--letter-spacing-display);
         text-wrap: balance;
-        margin: 0;
     }
 
     .student-count {
