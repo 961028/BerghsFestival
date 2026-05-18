@@ -37,6 +37,7 @@
         --space-md: 1.25rem;
         --space-lg: 1.25rem;
         --space-xl: 2.5rem;
+        --space-xxl: 4rem;
 
         /* Layout */
         --max-width: 64rem;
@@ -49,7 +50,6 @@
 
         /* Component layout */
         --icon-size: 1.5rem;
-        --schedule-time-col: max-content;
         --schedule-food-col-min: 12rem;
         --music-thumb-w: 20rem;
         --music-thumb-h: 25rem;
@@ -81,6 +81,7 @@
             --font-size-display: 3.5rem;
             --space-lg: 1.75rem;
             --space-xl: 2.5rem;
+            --space-xxl: 5rem;
             --site-padding-inline: 1.75rem;
             --cta-height: 4.125rem;
             --music-thumb-w: 20rem;
@@ -94,6 +95,7 @@
             --font-size-display: 4.5rem;
             --space-lg: 2.5rem;
             --space-xl: 3.5rem;
+            --space-xxl: 7rem;
             --site-padding-inline: 2.5rem;
         }
     }
