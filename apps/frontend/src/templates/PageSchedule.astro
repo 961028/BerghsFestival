@@ -77,12 +77,14 @@ const { schedule } = data;
                                         <span class="time">
                                             {event.startTime}
                                         </span>
-                                        <p class="title">{event.title}</p>
-                                        <span class="event-icon">
-                                            <span class="glitch-wrap">
-                                                <Svg name="chevron-right" alt="" />
+                                        <p class="title">
+                                            <span class="title-text">{event.title}</span>
+                                            <span class="event-icon">
+                                                <span class="glitch-wrap">
+                                                    <Svg name="chevron-right" alt="" />
+                                                </span>
                                             </span>
-                                        </span>
+                                        </p>
                                     </a>
                                 ) : (
                                     <div class="event-row">
@@ -242,18 +244,24 @@ const { schedule } = data;
         border-block-start: none;
     }
 
-    .day-panel li:has(a.event-row):hover :global(.event-icon) {
-        background: var(--color-paper);
-        color: var(--color-ink);
+    .event-row {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+        padding-block: var(--space-md);
     }
 
-    .event-row {
-        display: grid;
-        grid-template-columns: var(--schedule-time-col) 1fr;
-        gap: var(--space-md);
-        padding-block: var(--space-md);
-        align-items: center;
-        position: relative;
+    @media (min-width: 40rem) {
+        .event-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: var(--space-md);
+            align-items: center;
+        }
+
+        .title {
+            order: -1;
+        }
     }
 
     .time {
@@ -265,7 +273,7 @@ const { schedule } = data;
     }
 
     .title {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-lg);
         font-weight: var(--font-weight-bold);
         line-height: var(--line-height-tight);
         min-width: 0;
@@ -273,8 +281,7 @@ const { schedule } = data;
     }
 
     @media (min-width: 40rem) {
-        .time,
-        .title {
+        .time {
             font-size: var(--font-size-lg);
         }
 
@@ -290,15 +297,13 @@ const { schedule } = data;
 
     .event-icon {
         color: var(--color-paper);
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
         width: calc(var(--space-md) * 1.75);
         height: calc(var(--space-md) * 1.75);
-        display: flex;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        vertical-align: middle;
+        margin-inline-start: var(--space-sm);
     }
 
     @media (min-width: 40rem) {
