@@ -63,14 +63,14 @@ const ScheduleRepeater = repeater(
         events: repeater(
             z
                 .object({
-                    artist: z.string().nullable().optional(),
                     start_time: z.string().optional(),
                     title: z.string().optional(),
+                    link_url: z.string().optional(),
                 })
                 .transform((item) => ({
-                    artistSlug: item.artist || null,
                     startTime: item.start_time ?? "",
                     title: item.title ?? "",
+                    linkUrl: item.link_url || null,
                 })),
         ),
     }),
@@ -162,12 +162,6 @@ async function findPageByTemplate(
     return pages.find((page) => page.data.template === template) ?? null;
 }
 
-async function getArtists(): Promise<Artist[]> {
-    const page = await findPageByTemplate("page-experience-music.php");
-    if (!page) return [];
-    return deduplicateSlugs(ArtistsRepeater.parse(page.data.acf.artists));
-}
-
 export async function getSchedulePage() {
     const page = await findPageByTemplate("page-schedule.php");
 
@@ -176,32 +170,16 @@ export async function getSchedulePage() {
     }
 
     const raw = ScheduleRepeater.parse(page.data.acf.schedule);
-    const artists = await getArtists();
-    const artistBySlug = new Map(artists.map((a) => [a.slug, a]));
     const festivalDates = await getFestivalDays();
 
     const schedule: Schedule = raw.map((dayRow, i) => ({
         day: dayRow.day,
         date: festivalDates[i] ?? null,
-        events: dayRow.events.map((event) => {
-            const linked = event.artistSlug
-                ? artistBySlug.get(event.artistSlug)
-                : undefined;
-
-            if (linked) {
-                return {
-                    startTime: event.startTime,
-                    title: linked.name,
-                    href: `/music#${linked.slug}`,
-                };
-            }
-
-            return {
-                startTime: event.startTime,
-                title: event.title,
-                href: null,
-            };
-        }),
+        events: dayRow.events.map((event) => ({
+            startTime: event.startTime,
+            title: event.title,
+            href: event.linkUrl,
+        })),
     }));
 
     return {

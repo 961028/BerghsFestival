@@ -55,35 +55,23 @@ function _app_page_schedule_register_fields() {
 							'button_label' => 'Add Event',
 							'sub_fields'   => array(
 								array(
-									'key'           => _app_page_schedule_field_key( 'schedule', 'events', 'artist' ),
-									'label'         => 'Artist',
-									'name'          => 'artist',
-									'type'          => 'select',
-									'instructions'  => 'Optional. Choices come from the artists defined on the Music page. Leave empty for non-music events (talks, breaks, etc.).',
-									'choices'       => array(),
-									'allow_null'    => 1,
-									'return_format' => 'value',
-								),
-								array(
 									'key'   => _app_page_schedule_field_key( 'schedule', 'events', 'start_time' ),
 									'label' => 'Starts',
 									'name'  => 'start_time',
 									'type'  => 'text',
 								),
 								array(
-									'key'               => _app_page_schedule_field_key( 'schedule', 'events', 'title' ),
-									'label'             => 'Title',
-									'name'              => 'title',
-									'type'              => 'text',
-									'instructions'      => 'Used only when no artist is linked.',
-									'conditional_logic' => array(
-										array(
-											array(
-												'field'    => _app_page_schedule_field_key( 'schedule', 'events', 'artist' ),
-												'operator' => '==empty',
-											),
-										),
-									),
+									'key'   => _app_page_schedule_field_key( 'schedule', 'events', 'title' ),
+									'label' => 'Title',
+									'name'  => 'title',
+									'type'  => 'text',
+								),
+								array(
+									'key'          => _app_page_schedule_field_key( 'schedule', 'events', 'link_url' ),
+									'label'        => 'Link URL',
+									'name'         => 'link_url',
+									'type'         => 'text',
+									'instructions' => 'Optional. Link target for this event. Use a relative path like /music, /installations, or /food-drink, or a full https:// URL.',
 								),
 							),
 						),
@@ -96,11 +84,6 @@ function _app_page_schedule_register_fields() {
 	);
 }
 add_action( 'acf/init', '_app_page_schedule_register_fields' );
-
-add_filter(
-	'acf/load_field/key=' . _app_page_schedule_field_key( 'schedule', 'events', 'artist' ),
-	'app_acf_load_music_page_artist_choices'
-);
 
 function app_acf_get_schedule_page(): ?WP_Post {
 	$schedule_page = get_page_by_path( 'schedule' );

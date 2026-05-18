@@ -153,51 +153,6 @@ add_filter(
 	'app_acf_load_schedule_location_choices'
 );
 
-/**
- * Get artists from the music page as a list of associative rows keyed by slug.
- *
- * Returns array<string, array{ name: string }>.
- */
-function app_acf_get_music_page_artist_choices(): array {
-	$pages = get_pages(
-		array(
-			'meta_key'   => '_wp_page_template',
-			'meta_value' => 'page-experience-music.php',
-			'number'     => 1,
-		)
-	);
-
-	if ( empty( $pages ) ) {
-		return array();
-	}
-
-	$count = (int) get_post_meta( $pages[0]->ID, 'artists', true );
-
-	$choices = array();
-
-	for ( $i = 0; $i < $count; $i++ ) {
-		$name = trim( (string) get_post_meta( $pages[0]->ID, "artists_{$i}_name", true ) );
-
-		if ( '' === $name ) {
-			continue;
-		}
-
-		// Prefer stored slug so schedule links survive artist renames.
-		$slug = trim( (string) get_post_meta( $pages[0]->ID, "artists_{$i}_slug", true ) );
-		if ( '' === $slug ) {
-			$slug = sanitize_title( $name );
-		}
-
-		if ( '' === $slug ) {
-			continue;
-		}
-
-		$choices[ $slug ] = $name;
-	}
-
-	return $choices;
-}
-
 function _app_page_experience_music_autofill_slugs( mixed $post_id ): void {
 	if (!is_int($post_id) || $post_id <= 0) {
 		return;
@@ -229,8 +184,3 @@ function _app_page_experience_music_autofill_slugs( mixed $post_id ): void {
 }
 add_action( 'acf/save_post', '_app_page_experience_music_autofill_slugs', 20 );
 
-function app_acf_load_music_page_artist_choices( $field ) {
-	$field['choices'] = app_acf_get_music_page_artist_choices();
-
-	return $field;
-}
