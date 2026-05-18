@@ -122,17 +122,19 @@ const relatedProjects = allProjects
     }
 
     .project-company {
-        margin: 0;
         line-height: var(--line-height-tight);
     }
 
-    .project-section :global(p:first-child) {
-        margin-block-start: 0;
+    .project-section h2 {
+        margin-block-end: var(--space-sm);
     }
 
     .project-credits {
         text-align: center;
-        margin-block: var(--space-xl);
+        margin-block-start: var(--space-xl);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
     }
 
     .project-team {
@@ -142,13 +144,14 @@ const relatedProjects = allProjects
         max-width: 40rem;
         display: flex;
         flex-direction: column;
-        gap: var(--space-xs);
+        gap: var(--space-sm);
     }
 
     .project-team li {
         display: grid;
         grid-template-columns: 1fr 1fr;
         column-gap: var(--space-sm);
+        align-items: baseline;
     }
 
     .team-class {
@@ -163,7 +166,7 @@ const relatedProjects = allProjects
     .related-projects {
         --col-min: 16rem;
         list-style: none;
-        margin-block-start: var(--space-md);
+        margin-block-start: calc(var(--space-xl) * 2);
         padding: 0;
         display: grid;
         grid-template-columns: repeat(

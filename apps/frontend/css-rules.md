@@ -57,7 +57,7 @@ Every spacing, sizing, typographic, or colour value in a `<style>` block must co
 
 When in doubt: if the value feels arbitrary, it should be a token.
 
-`npm run lint:css` enforces the rule mechanically for `letter-spacing`, `font-size`, and `font-weight`. Extend [`scripts/check-css-tokens.mjs`](scripts/check-css-tokens.mjs) when adding new properties to the rule.
+`npm run lint:css` enforces the rule mechanically for typography (`letter-spacing`, `font-size`, `font-weight`, `line-height`), spacing (all `margin-*`, `padding-*`, `gap`, `column-gap`, `row-gap`), and color (`color`, `background-color`, `background`, `border-color`, `border`). The check runs only inside `<style>` blocks and skips CSS comments. Extend [`scripts/check-css-tokens.mjs`](scripts/check-css-tokens.mjs) when adding new properties to the rule.
 
 ---
 

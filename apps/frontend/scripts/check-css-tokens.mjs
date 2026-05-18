@@ -10,6 +10,89 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(fileURLToPath(import.meta.url), "../../src");
 
+// Spacing exceptions allowed per css-rules.md:
+// - `0` (with any unit) — structural reset
+// - `auto` — flex/grid sizing
+// - `100%`, `100dvh`, `100vh`, `100vw`, `100dvw` — full-viewport sizing
+// - negative pixel hairlines like `-1px` — border-overlap tricks
+// - `max(...)`, `min(...)`, `clamp(...)`, `calc(...)` — composed values
+// - `inherit`, `unset`, `revert`, `initial` — keywords
+const SPACING_KEYWORDS = new Set([
+    "0",
+    "auto",
+    "inherit",
+    "unset",
+    "revert",
+    "initial",
+    "none",
+]);
+
+function isSpacingTokenValue(value) {
+    const v = value.trim();
+    if (SPACING_KEYWORDS.has(v)) return true;
+    // 0 with any unit
+    if (/^-?0(\.\d+)?(px|rem|em|%|vh|vw|dvh|dvw|cqi|cqb)?$/.test(v)) return true;
+    // 100% / 100dvh family
+    if (/^100(%|dvh|vh|dvw|vw)$/.test(v)) return true;
+    // hairline -1px / 0.5px / -0.5px for border tricks
+    if (/^-?0?\.?\d+px$/.test(v) && Math.abs(parseFloat(v)) <= 1) return true;
+    // var() — tokenised
+    if (/^var\(--/.test(v)) return true;
+    // composed: max/min/clamp/calc — assume composed of tokens; allow
+    if (/^(calc|clamp|min|max)\(/.test(v)) return true;
+    // multi-value (e.g. shorthand `var(--space-sm) var(--space-md)`)
+    if (/\s/.test(v)) {
+        return v.split(/\s+/).every((part) => isSpacingTokenValue(part));
+    }
+    return false;
+}
+
+const SPACING_PROPERTIES = [
+    "margin",
+    "margin-block",
+    "margin-block-start",
+    "margin-block-end",
+    "margin-inline",
+    "margin-inline-start",
+    "margin-inline-end",
+    "margin-top",
+    "margin-right",
+    "margin-bottom",
+    "margin-left",
+    "padding",
+    "padding-block",
+    "padding-block-start",
+    "padding-block-end",
+    "padding-inline",
+    "padding-inline-start",
+    "padding-inline-end",
+    "padding-top",
+    "padding-right",
+    "padding-bottom",
+    "padding-left",
+    "gap",
+    "column-gap",
+    "row-gap",
+];
+
+const COLOR_KEYWORDS = new Set([
+    "inherit",
+    "currentColor",
+    "currentcolor",
+    "transparent",
+    "unset",
+    "revert",
+    "initial",
+    "none",
+]);
+
+function isColorTokenValue(value) {
+    const v = value.trim();
+    if (COLOR_KEYWORDS.has(v)) return true;
+    if (/^var\(--/.test(v)) return true;
+    return false;
+}
+
 const HARDCODE_RULES = [
     {
         property: "letter-spacing",
@@ -34,6 +117,42 @@ const HARDCODE_RULES = [
             !/^var\(--/.test(value) &&
             value.trim() !== "inherit" &&
             !value.startsWith("calc("),
+    },
+    ...SPACING_PROPERTIES.map((property) => ({
+        property,
+        violates: (value) => !isSpacingTokenValue(value),
+    })),
+    {
+        property: "color",
+        violates: (value) => !isColorTokenValue(value),
+    },
+    {
+        property: "background-color",
+        violates: (value) => !isColorTokenValue(value),
+    },
+    {
+        property: "border-color",
+        violates: (value) => !isColorTokenValue(value),
+    },
+    {
+        // `background` shorthand — token, color keyword, none, url(), or gradient()
+        property: "background",
+        violates: (value) => {
+            const v = value.trim();
+            if (v === "none" || v.startsWith("url(") || /gradient\(/.test(v))
+                return false;
+            return !isColorTokenValue(v);
+        },
+    },
+    {
+        // `border` shorthand — must be `0`, `none`, or `var(--border)`
+        property: "border",
+        violates: (value) => {
+            const v = value.trim();
+            if (v === "0" || v === "none") return false;
+            if (/^var\(--/.test(v)) return false;
+            return true;
+        },
     },
 ];
 
@@ -174,10 +293,16 @@ function extractDecls(body) {
 
 function extractStyleSources(file, text) {
     if (file.endsWith(".css")) return [{ text, offset: 0 }];
+    // Blank out <script> blocks so `<style>` mentions in JS don't confuse the
+    // style-block regex (whitespace preserves line numbers + offsets).
+    const masked = text.replace(
+        /<script[^>]*>[\s\S]*?<\/script>/g,
+        (m) => m.replace(/[^\n]/g, " "),
+    );
     const out = [];
     const re = /<style[^>]*>([\s\S]*?)<\/style>/g;
     let m;
-    while ((m = re.exec(text)) !== null) {
+    while ((m = re.exec(masked)) !== null) {
         const start = m.index + m[0].indexOf(m[1]);
         out.push({ text: m[1], offset: start });
     }
@@ -197,25 +322,32 @@ const roleViolations = [];
 
 for (const file of walk(ROOT)) {
     const text = readFileSync(file, "utf8");
-    const lines = text.split("\n");
 
-    // Hardcode check (line-based, as before)
-    for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        if (/^\s*--[a-z-]+:/.test(line)) continue;
-        for (const { property, violates } of HARDCODE_RULES) {
-            const match = new RegExp(
-                `(?<!-)\\b${property}\\s*:\\s*([^;}]+)`,
-            ).exec(line);
-            if (!match) continue;
-            const value = match[1].trim();
-            if (violates(value)) {
-                hardcodeViolations.push({
-                    file: relative(process.cwd(), file),
-                    line: i + 1,
-                    property,
-                    value,
-                });
+    // Hardcode check (scoped to style blocks only — skip <script> and markup)
+    for (const src of extractStyleSources(file, text)) {
+        // Strip CSS comments to avoid matching property names in comments
+        const cleaned = src.text.replace(/\/\*[\s\S]*?\*\//g, (m) =>
+            m.replace(/[^\n]/g, " "),
+        );
+        const startLine = lineOf(text, src.offset);
+        const lines = cleaned.split("\n");
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            if (/^\s*--[a-z-]+:/.test(line)) continue;
+            for (const { property, violates } of HARDCODE_RULES) {
+                const match = new RegExp(
+                    `(?<!-)\\b${property}\\s*:\\s*([^;}]+)`,
+                ).exec(line);
+                if (!match) continue;
+                const value = match[1].trim();
+                if (violates(value)) {
+                    hardcodeViolations.push({
+                        file: relative(process.cwd(), file),
+                        line: startLine + i,
+                        property,
+                        value,
+                    });
+                }
             }
         }
     }

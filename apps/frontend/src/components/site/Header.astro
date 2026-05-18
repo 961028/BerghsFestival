@@ -274,8 +274,8 @@ function menuItemPath(url: string): string {
 
     .submenu-toggle .nav-link-text {
         display: inline-block;
-        padding-inline: 12px;
-        margin-inline: -12px;
+        padding-inline: var(--space-sm);
+        margin-inline: calc(-1 * var(--space-sm));
     }
 
     .nav-link[aria-current="page"] {
