@@ -105,7 +105,7 @@ const individualSections = [
                     groupProjects.map((project) => (
                         <li>
                             <ProjectCard
-                                company={project.company}
+                                company={project.company || project.title}
                                 image={project.image}
                                 teamMembers={project.teamMembers}
                                 href={`/projects/${project.slug}`}
@@ -139,7 +139,7 @@ const individualSections = [
                             {section.projects.map((project) => (
                                 <li>
                                     <ProjectCard
-                                        company={project.company}
+                                        company={project.company || project.title}
                                         image={project.image}
                                         teamMembers={project.teamMembers}
                                         href={`/projects/${project.slug}`}
