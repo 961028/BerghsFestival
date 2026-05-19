@@ -52,7 +52,10 @@ const relatedProjects = allProjects
         </header>
 
         <div class="project-body">
-            <h1 class="project-company">{company}</h1>
+            <header class="project-heading">
+                <h1 class="project-title">{title}</h1>
+                {company && <p class="project-company">{company}</p>}
+            </header>
 
             {
                 contentSections.map((section, i) => (
@@ -121,11 +124,21 @@ const relatedProjects = allProjects
         max-width: 60rem;
         display: flex;
         flex-direction: column;
-        gap: var(--space-md);
+        gap: var(--space-lg);
+    }
+
+    .project-heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .project-title {
+        line-height: var(--line-height-tight);
     }
 
     .project-company {
-        line-height: var(--line-height-tight);
+        margin: 0;
     }
 
     .project-section h2 {
