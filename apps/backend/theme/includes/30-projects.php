@@ -166,10 +166,10 @@ function _app_project_register_fields() {
 							'return_format' => 'label',
 							'choices'       => array(
 								''      => '',
-								'AD'    => 'Art Director',
+								'AD'    => 'Art Direction',
 								'CD'    => 'Communication Design',
 								'CE'    => 'Content Engineering',
-								'CW'    => 'Copywriter',
+								'CW'    => 'Copywriting',
 								'DDS'   => 'Digital Design & Strategy',
 								'GM'    => 'Growth Marketing',
 								'PL'    => 'Production Management',
