@@ -168,7 +168,7 @@ function _app_project_register_fields() {
 								''      => '',
 								'AD'    => 'Art Direction',
 								'CD'    => 'Communication Design',
-								'CE'    => 'Content Engineering',
+								'CE'    => 'AI Content Engineering',
 								'CW'    => 'Copywriting',
 								'DDS'   => 'Digital Design & Strategy',
 								'GM'    => 'Growth Marketing',
