@@ -63,23 +63,27 @@ const embedUrlNoControls = videoId
                 data-toggle
                 aria-label="Play video"
             >
-                <svg
-                    class="icon icon-play"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    focusable="false"
-                >
-                    <polygon points="6,4 20,12 6,20" fill="currentColor" />
-                </svg>
-                <svg
-                    class="icon icon-pause"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    focusable="false"
-                >
-                    <rect x="6" y="4" width="4" height="16" fill="currentColor" />
-                    <rect x="14" y="4" width="4" height="16" fill="currentColor" />
-                </svg>
+                <span class="glitch-wrap icon-wrap icon-wrap-play" data-icon-play>
+                    <svg
+                        class="icon icon-play"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                    >
+                        <polygon points="6,4 20,12 6,20" fill="currentColor" />
+                    </svg>
+                </span>
+                <span class="glitch-wrap icon-wrap icon-wrap-pause" data-icon-pause>
+                    <svg
+                        class="icon icon-pause"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                        focusable="false"
+                    >
+                        <rect x="6" y="4" width="4" height="16" fill="currentColor" />
+                        <rect x="14" y="4" width="4" height="16" fill="currentColor" />
+                    </svg>
+                </span>
             </button>
         </div>
     ) : (
@@ -91,6 +95,7 @@ const embedUrlNoControls = videoId
 
 <script>
     import Player from "@vimeo/player";
+    import { attachRgbSplitFilter } from "../../scripts/accents";
 
     const players = document.querySelectorAll<HTMLElement>("[data-wp-video]");
 
@@ -100,6 +105,12 @@ const embedUrlNoControls = videoId
             wrapper.querySelector<HTMLButtonElement>("[data-toggle]");
 
         if (!iframe || !button) return;
+
+        const playWrap = wrapper.querySelector<HTMLElement>("[data-icon-play]");
+        const pauseWrap =
+            wrapper.querySelector<HTMLElement>("[data-icon-pause]");
+        if (playWrap) attachRgbSplitFilter(playWrap, button);
+        if (pauseWrap) attachRgbSplitFilter(pauseWrap, button);
 
         const player = new Player(iframe);
 
@@ -155,6 +166,7 @@ const embedUrlNoControls = videoId
     .toggle {
         position: absolute;
         inset: 0;
+        z-index: 1;
         display: grid;
         place-items: center;
         background: transparent;
@@ -166,38 +178,35 @@ const embedUrlNoControls = videoId
         transition: opacity 0.2s ease;
     }
 
-    .icon {
+    .icon-wrap {
         grid-area: 1 / 1;
+    }
+
+    .icon {
         width: 4rem;
         height: 4rem;
         display: block;
-        transition: transform 0.2s ease;
     }
 
-    .icon-pause {
+    .icon-wrap-pause {
         display: none;
     }
 
-    .player[data-playing="true"] .icon-play {
+    .player[data-playing="true"] .icon-wrap-play {
         display: none;
     }
 
-    .player[data-playing="true"] .icon-pause {
-        display: block;
+    .player[data-playing="true"] .icon-wrap-pause {
+        display: inline-flex;
     }
 
     .player[data-playing="true"] .toggle {
         opacity: 0;
     }
 
-    .player[data-playing="true"] .toggle:hover,
+    .player[data-playing="true"]:hover .toggle,
     .player[data-playing="true"] .toggle:focus-visible {
         opacity: 1;
-    }
-
-    .toggle:hover .icon,
-    .toggle:focus-visible .icon {
-        transform: scale(1.1);
     }
 
     .error {
