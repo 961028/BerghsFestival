@@ -270,4 +270,15 @@
         letter-spacing: inherit;
         text-transform: inherit;
     }
+
+    /* Wrapper for RGB split drop-shadow filter on SVG/img. Padding extends
+       the filter region so split channels don't clip at the element edge;
+       negative margin cancels the layout impact. */
+    .glitch-wrap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-xl);
+        margin: calc(-1 * var(--space-xl));
+    }
 }
