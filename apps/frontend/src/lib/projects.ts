@@ -1,5 +1,6 @@
 export const CLASS_LABELS: Record<string, string> = {
     AD: "Art Direction",
+    C: "Copywriting",
     CD: "Communication Design",
     CE: "AI Content Engineering",
     CW: "Copywriting",
