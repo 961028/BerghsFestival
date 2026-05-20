@@ -2,6 +2,7 @@
 interface Props {
     video?: string;
     title?: string;
+    poster?: string;
     class?: string;
     [key: string]: unknown;
 }
@@ -9,6 +10,7 @@ interface Props {
 const {
     video,
     title: _title = "Project video",
+    poster,
     class: className,
     ...attrs
 } = Astro.props;
@@ -24,6 +26,7 @@ const src = video;
     <video
         class="video"
         src={src}
+        poster={poster}
         controls
         playsinline
         preload="metadata"
