@@ -194,7 +194,7 @@ const projects = defineCollection({
     schema: z
         .object({
             id: z.int().positive(),
-            project_type: z.enum(["regular", "solo"]),
+            project_type: z.string(),
             title: z.string(),
             company_name: z.string().nullable().optional(),
             image: z.string().nullable().optional(),
