@@ -139,13 +139,8 @@ if (ogImageRef) {
         const hasText = a.textContent?.trim().length ?? 0 > 0;
 
         if (svg && !hasText) {
-            // Icon-only link: wrap svg in padded span so drop-shadow filter
-            // region extends beyond glyph bounds (avoids clipped channels).
-            const wrap = document.createElement("span");
-            wrap.className = "glitch-wrap";
-            svg.replaceWith(wrap);
-            wrap.appendChild(svg);
-            attachRgbSplitFilter(wrap, a);
+            // Icon-only link: apply filter split to the SVG element
+            attachRgbSplitFilter(svg);
         } else {
             // Text link (may also contain SVG alongside text)
             attachRgbSplit(a);
