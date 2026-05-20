@@ -128,10 +128,6 @@
         width: 100%;
     }
 
-    body {
-        overflow-x: clip;
-    }
-
     p,
     h1,
     h2,
