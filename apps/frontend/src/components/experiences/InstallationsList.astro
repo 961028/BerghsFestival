@@ -20,13 +20,15 @@ const { items } = Astro.props;
         items.map((item) => (
             <li>
                 {item.image && (
-                    <WpImage
-                        data-installation-symbol
-                        image={item.image}
-                        width={1200}
-                        height={600}
-                        alt=""
-                    />
+                    <span class="glitch-wrap installation-symbol-wrap">
+                        <WpImage
+                            data-installation-symbol
+                            image={item.image}
+                            width={1200}
+                            height={600}
+                            alt=""
+                        />
+                    </span>
                 )}
                 <div class="text">
                     <h2 class="name heading-display">{item.name}</h2>
@@ -59,7 +61,7 @@ const { items } = Astro.props;
     import { runRgbSplitIntense } from "../../scripts/accents";
 
     const symbols = document.querySelectorAll<HTMLElement>(
-        "[data-installation-symbol]",
+        ".installation-symbol-wrap",
     );
     symbols.forEach((el) => runRgbSplitIntense(el, 0.5));
 </script>

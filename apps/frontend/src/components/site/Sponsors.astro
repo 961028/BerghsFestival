@@ -52,13 +52,15 @@ const sponsorLogos = (
         sponsorLogos.map(({ url, name, src, width, height, widthStyle }) => (
             <li>
                 <a href={url} style={`max-width: ${widthStyle};`}>
-                    <img
-                        data-logo
-                        src={src}
-                        width={width}
-                        height={height}
-                        alt={name}
-                    />
+                    <span class="glitch-wrap">
+                        <img
+                            data-logo
+                            src={src}
+                            width={width}
+                            height={height}
+                            alt={name}
+                        />
+                    </span>
                 </a>
             </li>
         ))
@@ -92,8 +94,8 @@ const sponsorLogos = (
     import { attachRgbSplitFilter } from "../../scripts/accents";
 
     document
-        .querySelectorAll<HTMLImageElement>("[data-sponsors] [data-logo]")
-        .forEach((img) => {
-            attachRgbSplitFilter(img);
+        .querySelectorAll<HTMLElement>("[data-sponsors] .glitch-wrap")
+        .forEach((wrap) => {
+            attachRgbSplitFilter(wrap);
         });
 </script>
