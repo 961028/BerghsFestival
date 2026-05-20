@@ -271,13 +271,4 @@
         text-transform: inherit;
     }
 
-    /* Wrapper for RGB split drop-shadow filter on SVG/img. translateZ(0)
-       promotes to its own compositor layer so the filter paints without
-       clipping at the element edge, with zero layout impact. */
-    .glitch-wrap {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        transform: translateZ(0);
-    }
 }

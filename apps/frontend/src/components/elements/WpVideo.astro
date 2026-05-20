@@ -36,16 +36,15 @@ const src = video;
         aria-label="Play video"
     >
         <span class="icon-wrap">
-            <span class="glitch-wrap" data-icon-play>
-                <svg
-                    class="icon"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                    focusable="false"
-                >
-                    <polygon points="6,4 20,12 6,20" fill="currentColor" />
-                </svg>
-            </span>
+            <svg
+                class="icon"
+                data-icon-play
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+                focusable="false"
+            >
+                <polygon points="6,4 20,12 6,20" fill="currentColor" />
+            </svg>
         </span>
     </button>
 </div>
@@ -62,8 +61,8 @@ const src = video;
 
         if (!video || !button) return;
 
-        const playWrap = wrapper.querySelector<HTMLElement>("[data-icon-play]");
-        if (playWrap) attachRgbSplitFilter(playWrap, button);
+        const playIcon = wrapper.querySelector<SVGElement>("[data-icon-play]");
+        if (playIcon) attachRgbSplitFilter(playIcon, button);
 
         const sync = () => {
             wrapper.dataset.playing = video.paused ? "false" : "true";
@@ -118,10 +117,6 @@ const src = video;
     .icon-wrap {
         background: var(--color-ink);
         padding: var(--space-xs);
-        display: inline-flex;
-    }
-
-    .glitch-wrap {
         display: inline-flex;
     }
 

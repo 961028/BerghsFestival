@@ -226,6 +226,8 @@ export function runRgbSplitIntense(
     const burstChance = Math.min(1, c.burstChance * 3 * intensity);
     const burstStrength = c.burstStrength * 2 * intensity;
 
+    (el as HTMLElement).style.transform = "translateZ(0)";
+
     if (reducedMotion) {
         (el as HTMLElement).style.filter = buildDropShadow(amount, 1, 0);
         return () => {
@@ -274,6 +276,10 @@ export function attachRgbSplitFilter(
     const c = rgbSplitConfig;
     let raf = 0;
     let lastTick = 0;
+
+    // Promote to own compositor layer so drop-shadow filter paints beyond
+    // element bounds without clipping the offset channels.
+    (el as HTMLElement).style.transform = "translateZ(0)";
 
     function tick(now: number) {
         const tickInterval = 1000 / c.jitterSpeed;
