@@ -12,7 +12,7 @@ import {
     repeater,
 } from "./lib/schema";
 
-const definePaginatedCollection = <S extends BaseSchema>(
+const definePaginatedWpCollection = <S extends BaseSchema>(
     path: string,
     schema: S,
 ) =>
@@ -38,7 +38,7 @@ const definePaginatedCollection = <S extends BaseSchema>(
         },
     });
 
-const defineSingletonCollection = <S extends BaseSchema>(
+const defineSingletonWpCollection = <S extends BaseSchema>(
     path: string,
     schema: S,
 ) =>
@@ -60,7 +60,7 @@ const defineSingletonCollection = <S extends BaseSchema>(
         },
     });
 
-const settings = defineSingletonCollection(
+const settings = defineSingletonWpCollection(
     "wp/v2/settings",
     z
         .object({
@@ -105,7 +105,7 @@ const menuLocations = defineCollection({
     },
 });
 
-const menuItems = definePaginatedCollection(
+const menuItems = definePaginatedWpCollection(
     "wp/v2/menu-items",
     z
         .object({
@@ -132,7 +132,7 @@ const menuItems = definePaginatedCollection(
         })),
 );
 
-const media = definePaginatedCollection(
+const media = definePaginatedWpCollection(
     "wp/v2/media",
     z
         .object({
@@ -159,7 +159,7 @@ const media = definePaginatedCollection(
         })),
 );
 
-const pages = definePaginatedCollection(
+const pages = definePaginatedWpCollection(
     "wp/v2/pages",
     z
         .object({
@@ -188,58 +188,84 @@ const pages = definePaginatedCollection(
         })),
 );
 
-const projects = definePaginatedCollection(
-    "wp/v2/projects",
-    z
+const PROJECTS_API_URL = "https://www.berghs.se/api/student-projects";
+
+const projects = defineCollection({
+    schema: z
         .object({
-            id: intId(),
-            slug: z.string().nonempty(),
-            title: z.object({ rendered: z.string() }),
-            acf: z.object({
-                meta_description: z.string(),
-                project_type: z.enum(["group", "individual"]).catch("group"),
-                company: z.string(),
-                image: nullableIntReference("media"),
-                video: z.string().nullable(),
-                team_members: repeater(
+            id: z.int().positive(),
+            project_type: z.enum(["regular", "solo"]),
+            title: z.string(),
+            company_name: z.string().nullable().optional(),
+            image: z.string().nullable().optional(),
+            team_members: z
+                .array(
                     z.object({
                         name: z.string(),
                         class: z.string(),
                     }),
-                ),
-                "content-company": z.string(),
-                "content-background": z.string(),
-                "content-solution": z.string(),
-            }),
+                )
+                .catch([]),
+            content_company: z.string().nullable(),
+            content_background: z.string().nullable(),
+            content_solution: z.string().nullable(),
+            video: z.string().nullable(),
         })
         .transform((item) => ({
-            id: item.id,
-            slug: item.slug,
-            type: item.acf.project_type,
-            title: stripHtml(item.title.rendered),
-            metaDescription: item.acf.meta_description,
-            company: item.acf.company,
-            image: item.acf.image,
-            video: item.acf.video ?? null,
-            teamMembers: item.acf.team_members,
+            id: String(item.id),
+            slug: z.string().slugify().parse(item.title),
+            type: item.project_type,
+            title: item.title,
+            metaDescription: "",
+            company: item.company_name ?? "",
+            image: item.image ? { url: item.image } : null,
+            video: item.video ?? null,
+            teamMembers: item.team_members.map((m) => ({
+                name: m.name,
+                class: m.class,
+            })),
             contentSections: [
                 {
                     title: "The Company",
-                    content: { html: item.acf["content-company"] },
+                    content: { html: item.content_company ?? "" },
                 },
                 {
                     title: "Background",
-                    content: { html: item.acf["content-background"] },
+                    content: { html: item.content_background ?? "" },
                 },
                 {
                     title: "Solution",
-                    content: { html: item.acf["content-solution"] },
+                    content: { html: item.content_solution ?? "" },
                 },
             ],
         })),
-);
+    loader: {
+        name: "berghs/student-projects",
+        load: async ({ store, parseData }) => {
+            store.clear();
 
-const seo = defineSingletonCollection(
+            const response = await fetch(PROJECTS_API_URL);
+            if (!response.ok) {
+                throw new Error(
+                    `GET ${PROJECTS_API_URL} failed — ${response.status} ${response.statusText}`,
+                );
+            }
+            const items = z
+                .array(z.record(z.string(), z.unknown()))
+                .parse(await response.json());
+
+            for (const item of items) {
+                const id = String(item.id);
+
+                const data = await parseData({ id, data: item });
+
+                store.set({ id, data });
+            }
+        },
+    },
+});
+
+const seo = defineSingletonWpCollection(
     "app/v1/seo",
     z
         .object({
@@ -252,7 +278,7 @@ const seo = defineSingletonCollection(
         })),
 );
 
-const sponsors = definePaginatedCollection(
+const sponsors = definePaginatedWpCollection(
     "app/v1/sponsors",
     z.object({
         id: intId(),
@@ -262,7 +288,7 @@ const sponsors = definePaginatedCollection(
     }),
 );
 
-const contact = defineSingletonCollection(
+const contact = defineSingletonWpCollection(
     "app/v1/contact",
     z
         .object({
@@ -295,9 +321,9 @@ const footerTextBlockSchema = z
         content: { html: item.content.trim() },
     }));
 
-const iq = defineSingletonCollection("app/v1/iq", footerTextBlockSchema);
+const iq = defineSingletonWpCollection("app/v1/iq", footerTextBlockSchema);
 
-const photoNotice = defineSingletonCollection(
+const photoNotice = defineSingletonWpCollection(
     "app/v1/photo-notice",
     footerTextBlockSchema,
 );

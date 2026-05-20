@@ -9,6 +9,14 @@ type Props = {
     page: CollectionEntry<"pages">["data"];
 };
 
+type Project = CollectionEntry<"projects">["data"];
+
+const CLASS_TO_INDIVIDUAL_GROUP_TITLE: Record<string, string> = {
+    CE: "AI Content Engineering Projects",
+    GM: "Growth Marketing Projects",
+    CD: "YOU Projects",
+} as const;
+
 const { page } = Astro.props;
 
 const data = await getProjectsPage();
@@ -19,36 +27,32 @@ if (!data) {
     );
 }
 
-const groupProjects = data.projects.filter((p) => p.type === "group");
-const individualProjects = data.projects.filter((p) => p.type === "individual");
+const groupProjects = data.projects.filter((p) => p.type === "regular");
+const individualProjects = data.projects.filter((p) => p.type !== "regular");
 
-const INDIVIDUAL_GROUPS = [
-    {
-        heading: "Content engineering projects",
-        classes: ["Content Engineering"],
-    },
-    { heading: "Growth marketing projects", classes: ["Growth Marketing"] },
-    { heading: "YOU projects", classes: ["Communication Design"] },
-] as const;
+const classToIndividualProjects: Record<string, Project[]> = {};
 
-const matchedClasses = new Set<string>(
-    INDIVIDUAL_GROUPS.flatMap((g) => g.classes),
-);
+individualProjects.forEach((project) => {
+    const projectClass = project.teamMembers[0]?.class;
 
-const individualSections = [
-    ...INDIVIDUAL_GROUPS.map((group) => ({
-        heading: group.heading,
-        projects: individualProjects.filter((p) =>
-            group.classes.includes(p.teamMembers[0]?.class ?? ""),
-        ),
-    })),
-    {
-        heading: "Other individual projects",
-        projects: individualProjects.filter(
-            (p) => !matchedClasses.has(p.teamMembers[0]?.class ?? ""),
-        ),
-    },
-].filter((section) => section.projects.length > 0);
+    if (projectClass && CLASS_TO_INDIVIDUAL_GROUP_TITLE[projectClass]) {
+        classToIndividualProjects[projectClass] ??= [];
+        classToIndividualProjects[projectClass].push(project);
+    } else {
+        classToIndividualProjects["other"] ??= [];
+        classToIndividualProjects["other"].push(project);
+    }
+});
+
+const individualSections: { heading: string; projects: Project[] }[] =
+    Object.entries(classToIndividualProjects).map(
+        ([projectClass, projects]) => ({
+            heading:
+                CLASS_TO_INDIVIDUAL_GROUP_TITLE[projectClass] ||
+                "Other Individual Projects",
+            projects,
+        }),
+    );
 ---
 
 <Layout
@@ -139,7 +143,9 @@ const individualSections = [
                             {section.projects.map((project) => (
                                 <li>
                                     <ProjectCard
-                                        company={project.company || project.title}
+                                        company={
+                                            project.company || project.title
+                                        }
                                         image={project.image}
                                         teamMembers={project.teamMembers}
                                         href={`/projects/${project.slug}`}

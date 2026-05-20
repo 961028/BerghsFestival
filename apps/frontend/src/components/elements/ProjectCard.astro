@@ -1,11 +1,10 @@
 ---
-import type { ReferenceDataEntry } from "astro:content";
-import WpImage from "./WpImage.astro";
+import { Image } from "astro:assets";
 
 interface Props {
     company: string;
     title?: string;
-    image: ReferenceDataEntry<"media"> | null;
+    image: { url: string } | null;
     teamMembers: { name: string; class: string }[];
     type?: "group" | "individual";
     href?: string;
@@ -26,7 +25,7 @@ const Tag = href ? "a" : "div";
         : undefined}
 >
     <div class="thumb">
-        {image && <WpImage image={image} alt="" />}
+        {image && <Image src={image.url} alt="" loading="lazy" inferSize />}
     </div>
 
     <div class="meta">

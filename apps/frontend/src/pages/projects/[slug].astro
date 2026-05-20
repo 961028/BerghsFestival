@@ -1,10 +1,11 @@
 ---
 import { getCollection } from "astro:content";
+import { Image } from "astro:assets";
 
-import WpImage from "../../components/elements/WpImage.astro";
 import WpVideo from "../../components/elements/WpVideo.astro";
 import ProjectCard from "../../components/elements/ProjectCard.astro";
 import Layout from "../../layouts/Layout.astro";
+import { classLabel } from "../../lib/projects";
 
 export async function getStaticPaths() {
     const projects = await getCollection("projects");
@@ -37,7 +38,7 @@ const relatedProjects = allProjects
     .slice(0, 3);
 ---
 
-<Layout title={title} metaDescription={metaDescription} ogImage={image}>
+<Layout title={title} metaDescription={metaDescription}>
     <article class="project">
         <header class="project-hero">
             {
@@ -45,7 +46,12 @@ const relatedProjects = allProjects
                     <WpVideo video={video} title={`${title} — case film`} />
                 ) : (
                     image && (
-                        <WpImage image={image} loading="eager" alt={title} />
+                        <Image
+                            src={image.url}
+                            alt={title}
+                            loading="eager"
+                            inferSize
+                        />
                     )
                 )
             }
@@ -80,7 +86,7 @@ const relatedProjects = allProjects
                             {teamMembers.map((member) => (
                                 <li>
                                     <span class="team-class">
-                                        {member.class}
+                                        {classLabel(member.class)}
                                     </span>
                                     <span class="team-name">{member.name}</span>
                                 </li>

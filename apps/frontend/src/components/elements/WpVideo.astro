@@ -7,13 +7,17 @@ interface Props {
 }
 
 const {
-    video: _video,
+    video,
     title: _title = "Project video",
     class: className,
     ...attrs
 } = Astro.props;
 
-const src = "/temp-video.mp4";
+if (!video) {
+    return;
+}
+
+const src = video;
 ---
 
 <div class:list={["player", className]} data-wp-video {...attrs}>

@@ -83,7 +83,7 @@ export default defineConfig({
         },
     ],
     image: {
-        domains: [APP_HOST],
+        domains: [APP_HOST, "www.berghs.se"],
         layout: "constrained",
     },
     integrations: [cmsWatcher(), sitemap()],

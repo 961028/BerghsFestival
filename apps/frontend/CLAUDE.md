@@ -15,7 +15,6 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
     - `20-contact.php` — Contact options (address, phone, social)
     - `20-iq.php` — IQ section (title, content)
     - `20-sponsors.php` — Sponsors repeater (name, image, url)
-    - `30-projects.php` — Project post type and fields
     - `40-page-schedule.php` — Schedule page template (locations repeater + day/event repeater). Locations defined here are the single source of truth for the Location dropdowns on Music artists, Installations, and Food & drink — pulled via `app_acf_load_schedule_location_choices` (helper: `app_acf_get_schedule_location_choices`). Schedule events have a free-form `link_url` text field (relative paths like `/music` or absolute URLs) — events no longer reference Music artists.
     - `40-page-experience-music.php` — Music page template. Owns an `artists` repeater (name, image, description, url, social_url, shows). Each artist has a nested `shows` repeater (day, start_time, end_time, location). Day and location selects are populated dynamically from the Schedule page. Note: `app_acf_get_schedule_location_choices()` uses raw `get_post_meta` instead of `get_field()` to avoid circular filter recursion.
     - `40-page-experience-installations.php` — Installations page template (items repeater with name, location, image, description, url). Location choices come from the Schedule page.
@@ -26,12 +25,12 @@ The backend lives at `../backend/` relative to this directory (absolute: `apps/b
     - `page-experience-music.php` — Music page
     - `page-experience-installations.php` — Installations page
     - `page-experience-food.php` — Food & drink page
-    - `page-projects.php` — Projects listing page (no ACF fields; the standard WP editor content is used as the page description above the grid)
+    - `page-projects.php` — Projects listing page (no ACF fields; the standard WP editor content is used as the page description above the grid). Projects themselves are **not** stored in WordPress — they come from the external berghs.se API (see Frontend → Content collections).
 - When adding or modifying content collection schemas in `src/content.config.ts`, read the corresponding ACF file to verify field names and types.
 
 ## Frontend (Astro)
 
-- **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), collection utilities (`content.ts`), and the per-experience-page schemas + page-load helpers (`experience-pages.ts`).
+- **Content collections** in `src/content.config.ts` define schemas (with Zod) that map WP REST API responses to typed data. Helpers in `src/lib/` handle fetching (`wp-api.ts`), HTML stripping (`html.ts`), collection utilities (`content.ts`), and the per-experience-page schemas + page-load helpers (`experience-pages.ts`). The `projects` collection is the only collection not backed by WordPress — it loads from `https://www.berghs.se/api/student-projects` at build time. The endpoint returns a flat JSON array; project slugs are derived from the title (deduplicated with `-2`/`-3` suffixes), and class codes (`CD`, `CE`, …) are mapped to readable labels in the loader.
 - **Layouts** (`src/layouts/`) — `Layout.astro` is the main shell (header, main, footer).
 - **Templates** (`src/templates/`) — page-specific layouts dispatched by `PageTemplate.astro`. `Page.astro` is the generic page template; `PageAboutBerghs.astro` handles the About page (hardcoded institutional content); `PageSchedule.astro`, `PageExperienceMusic.astro`, `PageExperienceInstallations.astro`, and `PageExperienceFood.astro` render the four experience-section pages, each backed by its own WP page template. `PageProjects.astro` renders the projects listing — a real WP page (Projects template) with the page editor content as its description and the project CPT items rendered as a filterable grid below.
 - **Pages**:

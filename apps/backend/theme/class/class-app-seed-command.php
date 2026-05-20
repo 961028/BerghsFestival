@@ -26,6 +26,7 @@ final class App_Seed_Command {
 		$music_page_id         = $this->insert_music_page();
 		$installations_page_id = $this->insert_installations_page();
 		$food_page_id          = $this->insert_food_page();
+		$projects_page_id      = $this->insert_projects_page();
 		$about_page_id         = $this->insert_about_page();
 
 		$this->insert_primary_menu(
@@ -34,6 +35,7 @@ final class App_Seed_Command {
 			$music_page_id,
 			$installations_page_id,
 			$food_page_id,
+			$projects_page_id,
 		);
 
 		$this->set_contact_options();
@@ -41,8 +43,6 @@ final class App_Seed_Command {
 		$this->set_iq_options();
 		$this->set_photo_notice_options();
 		$this->set_sponsor_options();
-
-		$this->insert_projects();
 
 		WP_CLI::line( 'Done.' );
 	}
@@ -421,6 +421,28 @@ Saturday 23 May, 12:00–18:00'
 		return $page_id;
 	}
 
+	private function insert_projects_page(): int {
+		WP_CLI::line( 'Inserting "Projects" page' );
+
+		$page_id = $this->insert_post(
+			array(
+				'post_type'    => 'page',
+				'post_status'  => 'publish',
+				'post_title'   => 'Projects',
+				'post_name'    => 'projects',
+				'post_content' => wpautop(
+					'Real-world projects from Berghs students, made in collaboration with companies and organisations across Sweden.'
+				),
+				'meta_input'   => array(
+					'_wp_page_template' => 'page-projects.php',
+					'meta_description' => 'Real-world student projects from Berghs School of Communication, made in collaboration with companies and organisations across Sweden.',
+				),
+			)
+		);
+
+		return $page_id;
+	}
+
 	private function insert_about_page(): int {
 		WP_CLI::line( 'Inserting "About Berghs" page' );
 
@@ -482,6 +504,7 @@ Saturday 23 May, 12:00–18:00'
 		int $music_page_id,
 		int $installations_page_id,
 		int $food_page_id,
+		int $projects_page_id,
 	): void {
 		WP_CLI::line( 'Inserting primary menu' );
 
@@ -558,9 +581,10 @@ Saturday 23 May, 12:00–18:00'
 		$this->create_menu_item(
 			$primary_menu_id,
 			array(
-				'menu-item-type'   => 'post_type_archive',
-				'menu-item-object' => 'project',
-				'menu-item-title'  => 'Projects',
+				'menu-item-type'      => 'post_type',
+				'menu-item-object'    => 'page',
+				'menu-item-object-id' => $projects_page_id,
+				'menu-item-title'     => '',
 			)
 		);
 
@@ -711,46 +735,4 @@ Thank you for helping us share the experience.';
 		update_field( _app_sponsors_field_key( 'sponsors' ), $sponsors, 'options' );
 	}
 
-	private function insert_projects(): void {
-		WP_CLI::line( 'Inserting projects' );
-
-		for ( $i = 0; $i < 30; $i++ ) {
-			$this->insert_project( $i );
-		}
-	}
-
-	private function insert_project( int $i ): void {
-		$title = ucwords( $this->faker->words( 5, true ) );
-
-		WP_CLI::line( "Inserting project $i ($title)" );
-
-		$post_id = $this->insert_post(
-			array(
-				'post_type'   => 'project',
-				'post_status' => 'publish',
-				'post_title'  => $title,
-			)
-		);
-
-		update_field( _app_projects_field_key( 'meta_description' ), $this->faker->sentence(), $post_id );
-		update_field( _app_projects_field_key( 'project_type' ), $this->faker->randomElement( array( 'group', 'individual' ) ), $post_id );
-		update_field( _app_projects_field_key( 'company' ), ucwords( $this->faker->words( 3, true ) ), $post_id );
-		update_field( _app_projects_field_key( 'image' ), $this->get_rand_generic_image(), $post_id );
-		update_field( _app_projects_field_key( 'video' ), 'https://vimeo.com/714785167', $post_id );
-
-		$class_choices = array( 'AD', 'CD', 'CE', 'CW', 'DDS', 'GM', 'PL', 'PR', 'SK', 'Tutor' );
-		$team_members  = array();
-		$num_members   = random_int( 5, 10 );
-		for ( $j = 0; $j < $num_members; $j++ ) {
-			$team_members[] = array(
-				'name'  => ucwords( $this->faker->words( 2, true ) ),
-				'class' => $this->faker->randomElement( $class_choices ),
-			);
-		}
-		update_field( _app_projects_field_key( 'team_members' ), $team_members, $post_id );
-
-		update_field( _app_projects_field_key( 'content', 'company' ), $this->faker->paragraphs( 3, true ), $post_id );
-		update_field( _app_projects_field_key( 'content', 'background' ), $this->faker->paragraphs( 3, true ), $post_id );
-		update_field( _app_projects_field_key( 'content', 'solution' ), $this->faker->paragraphs( 3, true ), $post_id );
-	}
 }
