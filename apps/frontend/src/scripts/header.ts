@@ -73,9 +73,9 @@ const reducedMotion = window.matchMedia(
 ).matches;
 
 const logoLink = document.querySelector<HTMLElement>("nav > a");
-const logoWrap = logoLink?.querySelector<HTMLElement>(".glitch-wrap");
+const logoSvg = logoLink?.querySelector<SVGSVGElement>("svg");
 
-if (logoLink && logoWrap) {
+if (logoLink && logoSvg) {
     if (!reducedMotion) {
         const c = rgbSplitConfig;
         const timer = setInterval(() => {
@@ -83,7 +83,7 @@ if (logoLink && logoWrap) {
                 Math.random() < c.burstChance
                     ? c.burstStrength * c.glitchiness
                     : 1;
-            logoWrap.style.filter = buildDropShadow(
+            logoSvg.style.filter = buildDropShadow(
                 c.amount,
                 burst,
                 c.amount * 0.3,
@@ -91,11 +91,11 @@ if (logoLink && logoWrap) {
         }, LOGO_STROBE_INTERVAL_MS);
         setTimeout(() => {
             clearInterval(timer);
-            logoWrap.style.filter = "";
+            logoSvg.style.filter = "";
         }, LOGO_STROBE_DURATION_MS);
     }
 
-    attachRgbSplitFilter(logoWrap);
+    attachRgbSplitFilter(logoSvg);
 }
 
 document.querySelectorAll<HTMLElement>(".nav-link").forEach((link) => {

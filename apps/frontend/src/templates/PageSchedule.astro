@@ -79,9 +79,7 @@ const { schedule } = data;
                                         <p class="title">
                                             <span class="title-text">{event.title}</span>
                                             <span class="event-icon">
-                                                <span class="glitch-wrap">
-                                                    <Svg name="chevron-right" alt="" />
-                                                </span>
+                                                <Svg name="chevron-right" alt="" />
                                             </span>
                                         </p>
                                     </a>
@@ -156,10 +154,10 @@ const { schedule } = data;
     });
 
     document
-        .querySelectorAll<HTMLElement>("a.event-row .event-icon .glitch-wrap")
-        .forEach((wrap) => {
-            const row = wrap.closest<HTMLElement>("a.event-row")!;
-            attachRgbSplitFilter(wrap, row);
+        .querySelectorAll<SVGElement>("a.event-row .event-icon svg")
+        .forEach((svg) => {
+            const row = svg.closest<HTMLElement>("a.event-row")!;
+            attachRgbSplitFilter(svg, row);
         });
 
     if (
@@ -323,5 +321,4 @@ const { schedule } = data;
             height: 1.25rem;
         }
     }
-
 </style>
