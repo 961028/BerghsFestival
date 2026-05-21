@@ -50,7 +50,12 @@ const sponsorLogos = (
     {
         sponsorLogos.map(({ url, name, src, width, height, widthStyle }) => (
             <li>
-                <a href={url} style={`max-width: ${widthStyle};`}>
+                <a
+                    href={url}
+                    style={`max-width: ${widthStyle};`}
+                    target="_blank"
+                    aria-label={name}
+                >
                     <img
                         data-logo
                         src={src}
