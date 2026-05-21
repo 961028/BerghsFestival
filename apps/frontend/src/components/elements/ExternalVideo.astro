@@ -1,32 +1,38 @@
 ---
+import { getImage } from "astro:assets";
+
 interface Props {
-    video?: string;
+    videoSrc?: string;
+    posterSrc?: string;
     title?: string;
-    poster?: string;
     class?: string;
-    [key: string]: unknown;
 }
 
 const {
-    video,
+    videoSrc,
+    posterSrc,
     title = "Project video",
-    poster,
     class: className,
-    ...attrs
 } = Astro.props;
 
-if (!video) {
+if (!videoSrc) {
     return;
 }
 
-const src = video;
+const posterImage = !posterSrc
+    ? null
+    : await getImage({
+          src: posterSrc,
+          inferSize: true,
+          width: 944,
+      });
 ---
 
-<div class:list={["player", className]} data-wp-video {...attrs}>
+<div class:list={["player", className]} data-external-video>
     <video
         class="video"
-        src={src}
-        poster={poster}
+        src={videoSrc}
+        poster={posterImage?.src}
         controls
         playsinline
         preload="metadata"
@@ -50,7 +56,9 @@ const src = video;
 <script>
     import { attachRgbSplitFilter } from "../../scripts/accents";
 
-    const players = document.querySelectorAll<HTMLElement>("[data-wp-video]");
+    const players = document.querySelectorAll<HTMLElement>(
+        "[data-external-video]",
+    );
 
     players.forEach((wrapper) => {
         const video = wrapper.querySelector<HTMLVideoElement>("[data-video]");

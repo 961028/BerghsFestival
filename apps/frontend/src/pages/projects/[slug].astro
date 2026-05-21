@@ -2,10 +2,10 @@
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
 
-import WpVideo from "../../components/elements/WpVideo.astro";
 import ProjectCard from "../../components/elements/ProjectCard.astro";
 import Layout from "../../layouts/Layout.astro";
 import { classLabel } from "../../lib/projects";
+import ExternalVideo from "../../components/elements/ExternalVideo.astro";
 
 export async function getStaticPaths() {
     const projects = await getCollection("projects");
@@ -43,9 +43,9 @@ const relatedProjects = allProjects
         <header class="project-hero">
             {
                 video ? (
-                    <WpVideo
-                        video={video}
-                        poster={image?.url}
+                    <ExternalVideo
+                        videoSrc={video}
+                        posterSrc={image?.url}
                         title={`${title} — case film`}
                     />
                 ) : (
