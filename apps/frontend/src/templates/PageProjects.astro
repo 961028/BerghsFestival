@@ -103,12 +103,7 @@ const individualSections: { heading: string; projects: Project[] }[] =
                 {
                     groupProjects.map((project) => (
                         <li>
-                            <ProjectCard
-                                company={project.company || project.title}
-                                image={project.image}
-                                teamMembers={project.teamMembers}
-                                href={`/projects/${project.slug}`}
-                            />
+                            <ProjectCard project={project} />
                         </li>
                     ))
                 }
@@ -136,14 +131,7 @@ const individualSections: { heading: string; projects: Project[] }[] =
                         <ul class="grid">
                             {section.projects.map((project) => (
                                 <li>
-                                    <ProjectCard
-                                        company={
-                                            project.company || project.title
-                                        }
-                                        image={project.image}
-                                        teamMembers={project.teamMembers}
-                                        href={`/projects/${project.slug}`}
-                                    />
+                                    <ProjectCard project={project} />
                                 </li>
                             ))}
                         </ul>

@@ -1,34 +1,34 @@
 ---
 import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+
+type Project = CollectionEntry<"projects">["data"];
 
 interface Props {
-    company: string;
-    title?: string;
-    image: { url: string } | null;
-    teamMembers: { name: string; class: string }[];
-    type?: "group" | "individual";
-    href?: string;
+    project: Project;
 }
 
-const { company, title, image, teamMembers, href } = Astro.props;
+const { project } = Astro.props;
+
+const { slug, title, company, image, teamMembers } = project;
+
+let label;
+if (title && company) {
+    label = `${company} — ${title}`;
+} else {
+    label = title || company;
+}
 
 const studentCount = teamMembers.length;
-
-const Tag = href ? "a" : "div";
 ---
 
-<Tag
-    class="project-card"
-    {href}
-    aria-label={href ? `${company}${title ? ` — ${title}` : ""}` : undefined}
->
+<a class="project-card" href={`/projects/${slug}`} aria-label={label}>
     <div class="thumb">
         {image && <Image src={image.url} alt="" loading="lazy" inferSize />}
     </div>
 
     <div class="meta">
-        <p class="company label-caps">{company}</p>
-        {title && <p class="title heading-display">{title}</p>}
+        <p class="company label-caps">{company || title}</p>
         {
             studentCount > 0 && (
                 <p class="student-count">
@@ -37,7 +37,7 @@ const Tag = href ? "a" : "div";
             )
         }
     </div>
-</Tag>
+</a>
 
 <style>
     .project-card {

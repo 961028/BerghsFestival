@@ -108,12 +108,7 @@ const relatedProjects = allProjects
         {
             relatedProjects.map((related) => (
                 <li>
-                    <ProjectCard
-                        company={related.company}
-                        image={related.image}
-                        teamMembers={related.teamMembers}
-                        href={`/projects/${related.slug}`}
-                    />
+                    <ProjectCard project={related} />
                 </li>
             ))
         }
