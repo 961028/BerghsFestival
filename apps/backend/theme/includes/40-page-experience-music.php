@@ -154,7 +154,7 @@ add_filter(
 );
 
 function _app_page_experience_music_autofill_slugs( mixed $post_id ): void {
-	if (!is_int($post_id) || $post_id <= 0) {
+	if ( ! is_int( $post_id ) || $post_id <= 0 ) {
 		return;
 	}
 
@@ -183,4 +183,3 @@ function _app_page_experience_music_autofill_slugs( mixed $post_id ): void {
 	}
 }
 add_action( 'acf/save_post', '_app_page_experience_music_autofill_slugs', 20 );
-

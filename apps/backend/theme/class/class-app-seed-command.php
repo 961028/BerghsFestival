@@ -27,7 +27,7 @@ final class App_Seed_Command {
 		$installations_page_id = $this->insert_installations_page();
 		$food_page_id          = $this->insert_food_page();
 		$projects_page_id      = $this->insert_projects_page();
-		$about_page_id         = $this->insert_about_page();
+		$this->insert_about_page();
 
 		$this->insert_primary_menu(
 			$home_page_id,
@@ -279,7 +279,7 @@ Saturday 23 May, 12:00–18:00'
 				),
 				'meta_input'   => array(
 					'_wp_page_template' => 'page-schedule.php',
-					'meta_description' => 'Full schedule for Friction Festival, Stockholm. Installations, live acts and happenings across 22–23 May 2026. Plan your visit.',
+					'meta_description'  => 'Full schedule for Friction Festival, Stockholm. Installations, live acts and happenings across 22–23 May 2026. Plan your visit.',
 				),
 			)
 		);
@@ -325,7 +325,7 @@ Saturday 23 May, 12:00–18:00'
 				),
 				'meta_input'   => array(
 					'_wp_page_template' => 'page-experience-music.php',
-					'meta_description' => 'Live acts and DJ sets across both festival days. Friday night runs til 1am. Full lineup below. Friction Festival, Stockholm, 22–23 May 2026.',
+					'meta_description'  => 'Live acts and DJ sets across both festival days. Friday night runs til 1am. Full lineup below. Friction Festival, Stockholm, 22–23 May 2026.',
 				),
 			)
 		);
@@ -342,12 +342,12 @@ Saturday 23 May, 12:00–18:00'
 			$shows      = array();
 
 			for ( $j = 0; $j < $show_count; $j++ ) {
-				$start_hour      = random_int( 12, 21 );
-				$start_minute    = $this->faker->randomElement( array( 0, 30 ) );
-				$duration_min    = $this->faker->randomElement( array( 30, 45, 60, 75, 90, 120 ) );
-				$end_total_min   = ( $start_hour * 60 ) + $start_minute + $duration_min;
-				$end_hour        = intdiv( $end_total_min, 60 );
-				$end_minute      = $end_total_min % 60;
+				$start_hour    = random_int( 12, 21 );
+				$start_minute  = $this->faker->randomElement( array( 0, 30 ) );
+				$duration_min  = $this->faker->randomElement( array( 30, 45, 60, 75, 90, 120 ) );
+				$end_total_min = ( $start_hour * 60 ) + $start_minute + $duration_min;
+				$end_hour      = intdiv( $end_total_min, 60 );
+				$end_minute    = $end_total_min % 60;
 
 				$shows[] = array(
 					'day'        => $this->faker->randomElement( $days ),
@@ -386,7 +386,7 @@ Saturday 23 May, 12:00–18:00'
 				),
 				'meta_input'   => array(
 					'_wp_page_template' => 'page-experience-installations.php',
-					'meta_description' => '22 interactive installations and happenings at Berghs. Touch things, enter things, get a tattoo. Friction Festival, Stockholm, 22–23 May 2026.',
+					'meta_description'  => '22 interactive installations and happenings at Berghs. Touch things, enter things, get a tattoo. Friction Festival, Stockholm, 22–23 May 2026.',
 				),
 			)
 		);
@@ -411,7 +411,7 @@ Saturday 23 May, 12:00–18:00'
 				),
 				'meta_input'   => array(
 					'_wp_page_template' => 'page-experience-food.php',
-					'meta_description' => 'Cocktails, beer, food and more on site both days. Non-alcoholic options available. Card only. Stockholm, 22–23 May 2026.',
+					'meta_description'  => 'Cocktails, beer, food and more on site both days. Non-alcoholic options available. Card only. Stockholm, 22–23 May 2026.',
 				),
 			)
 		);
@@ -435,7 +435,7 @@ Saturday 23 May, 12:00–18:00'
 				),
 				'meta_input'   => array(
 					'_wp_page_template' => 'page-projects.php',
-					'meta_description' => 'Real-world student projects from Berghs School of Communication, made in collaboration with companies and organisations across Sweden.',
+					'meta_description'  => 'Real-world student projects from Berghs School of Communication, made in collaboration with companies and organisations across Sweden.',
 				),
 			)
 		);
@@ -734,5 +734,4 @@ Thank you for helping us share the experience.';
 
 		update_field( _app_sponsors_field_key( 'sponsors' ), $sponsors, 'options' );
 	}
-
 }
