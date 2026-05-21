@@ -127,9 +127,9 @@ if (ogImageRef) {
     // Text links get text-shadow split; icon-only links (containing SVG, no text)
     // get drop-shadow filter split applied to the <svg>.
     const EXCLUDED = [
-        ".nav-link",        // handled in header.ts
-        "nav > a",          // logo link — handled in header.ts
-        "[data-sponsors] a",// sponsor links — logos handled separately
+        ".nav-link", // handled in header.ts
+        "nav > a", // logo link — handled in header.ts
+        "[data-sponsors] a", // sponsor links — logos handled separately
     ].join(", ");
 
     document.querySelectorAll<HTMLAnchorElement>("a").forEach((a) => {

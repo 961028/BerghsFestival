@@ -58,7 +58,7 @@ function formatTimeRange(slot: Slot): string {
 ---
 
 <div class="music">
-    <ul role="list">
+    <ul>
         {
             artists.map((artist) => (
                 <li id={artist.slug}>
@@ -70,10 +70,7 @@ function formatTimeRange(slot: Slot): string {
                             alt=""
                         />
                     ) : (
-                        <div
-                            class="thumb-placeholder"
-                            aria-hidden="true"
-                        />
+                        <div class="thumb-placeholder" aria-hidden="true" />
                     )}
                     <div class="text">
                         <h2 class="name heading-display">{artist.name}</h2>
@@ -88,9 +85,10 @@ function formatTimeRange(slot: Slot): string {
                                         {group.label && (
                                             <h3 class="day">{group.label}</h3>
                                         )}
-                                        <ul class="slots" role="list">
+                                        <ul class="slots">
                                             {group.slots.map((slot) => {
-                                                const range = formatTimeRange(slot);
+                                                const range =
+                                                    formatTimeRange(slot);
                                                 return (
                                                     <li class="slot">
                                                         {range && (

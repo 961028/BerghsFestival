@@ -3,10 +3,7 @@ import type { CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import MusicList from "../components/experiences/MusicList.astro";
 import PageIntro from "../components/site/PageIntro.astro";
-import {
-    getMusicPage,
-    getScheduleDays,
-} from "../lib/experience-pages";
+import { getMusicPage, getScheduleDays } from "../lib/experience-pages";
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
@@ -17,7 +14,9 @@ const { page } = Astro.props;
 const data = await getMusicPage();
 
 if (!data) {
-    throw new Error("Music page is missing — create a page using the Music template.");
+    throw new Error(
+        "Music page is missing — create a page using the Music template.",
+    );
 }
 
 const scheduleDays = await getScheduleDays();

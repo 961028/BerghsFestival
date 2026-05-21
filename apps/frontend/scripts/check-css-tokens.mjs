@@ -31,7 +31,8 @@ function isSpacingTokenValue(value) {
     const v = value.trim();
     if (SPACING_KEYWORDS.has(v)) return true;
     // 0 with any unit
-    if (/^-?0(\.\d+)?(px|rem|em|%|vh|vw|dvh|dvw|cqi|cqb)?$/.test(v)) return true;
+    if (/^-?0(\.\d+)?(px|rem|em|%|vh|vw|dvh|dvw|cqi|cqb)?$/.test(v))
+        return true;
     // 100% / 100dvh family
     if (/^100(%|dvh|vh|dvw|vw)$/.test(v)) return true;
     // hairline -1px / 0.5px / -0.5px for border tricks
@@ -295,9 +296,8 @@ function extractStyleSources(file, text) {
     if (file.endsWith(".css")) return [{ text, offset: 0 }];
     // Blank out <script> blocks so `<style>` mentions in JS don't confuse the
     // style-block regex (whitespace preserves line numbers + offsets).
-    const masked = text.replace(
-        /<script[^>]*>[\s\S]*?<\/script>/g,
-        (m) => m.replace(/[^\n]/g, " "),
+    const masked = text.replace(/<script[^>]*>[\s\S]*?<\/script>/g, (m) =>
+        m.replace(/[^\n]/g, " "),
     );
     const out = [];
     const re = /<style[^>]*>([\s\S]*?)<\/style>/g;
@@ -398,9 +398,7 @@ if (roleViolations.length > 0) {
     for (const v of roleViolations) {
         console.error(`  ${v.file}:${v.line}  ${v.selector}  — ${v.msg}`);
     }
-    console.error(
-        "\nSee the role → token table in css-rules.md.",
-    );
+    console.error("\nSee the role → token table in css-rules.md.");
 }
 
 if (failed) process.exit(1);

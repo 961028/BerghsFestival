@@ -14,7 +14,9 @@ const { page } = Astro.props;
 const data = await getFoodPage();
 
 if (!data) {
-    throw new Error("Food & drink page is missing — create a page using the Food & drink template.");
+    throw new Error(
+        "Food & drink page is missing — create a page using the Food & drink template.",
+    );
 }
 ---
 

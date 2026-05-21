@@ -67,7 +67,11 @@ const ctaDates =
                     </span>
                     {venue && (
                         <>
-                            <span class="cta-separator" aria-hidden="true" data-scramble>
+                            <span
+                                class="cta-separator"
+                                aria-hidden="true"
+                                data-scramble
+                            >
                                 &mdash;
                             </span>
                             <span class="cta-venue" data-scramble>
@@ -88,7 +92,9 @@ const ctaDates =
         bottom: 0;
         z-index: 200;
         height: var(--cta-height);
-        background: var(--color-accent-1); /* contrast may fall below WCAG AA 4.5:1 with some accent colors — accepted tradeoff for visual identity */
+        background: var(
+            --color-accent-1
+        ); /* contrast may fall below WCAG AA 4.5:1 with some accent colors — accepted tradeoff for visual identity */
         color: var(--color-ink);
         border-block-start: var(--border);
     }

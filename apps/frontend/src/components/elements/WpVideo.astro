@@ -9,7 +9,7 @@ interface Props {
 
 const {
     video,
-    title: _title = "Project video",
+    title = "Project video",
     poster,
     class: className,
     ...attrs
@@ -30,14 +30,9 @@ const src = video;
         controls
         playsinline
         preload="metadata"
-        data-video
-    ></video>
-    <button
-        type="button"
-        class="overlay"
-        data-toggle
-        aria-label="Play video"
-    >
+        aria-label={title}
+        data-video></video>
+    <button type="button" class="overlay" data-toggle aria-label="Play video">
         <span class="icon-wrap">
             <svg
                 class="icon"
@@ -46,7 +41,7 @@ const src = video;
                 aria-hidden="true"
                 focusable="false"
             >
-                <polygon points="6,4 20,12 6,20" fill="currentColor" />
+                <polygon points="6,4 20,12 6,20" fill="currentColor"></polygon>
             </svg>
         </span>
     </button>

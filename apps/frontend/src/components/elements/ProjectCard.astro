@@ -10,7 +10,7 @@ interface Props {
     href?: string;
 }
 
-const { company, title, image, teamMembers, type, href } = Astro.props;
+const { company, title, image, teamMembers, href } = Astro.props;
 
 const studentCount = teamMembers.length;
 
@@ -20,9 +20,7 @@ const Tag = href ? "a" : "div";
 <Tag
     class="project-card"
     {href}
-    aria-label={href
-        ? `${company}${title ? ` — ${title}` : ""}`
-        : undefined}
+    aria-label={href ? `${company}${title ? ` — ${title}` : ""}` : undefined}
 >
     <div class="thumb">
         {image && <Image src={image.url} alt="" loading="lazy" inferSize />}

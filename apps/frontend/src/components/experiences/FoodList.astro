@@ -10,7 +10,7 @@ const { items } = Astro.props;
 ---
 
 <div class="food">
-    <ul role="list">
+    <ul>
         {
             items.map((item) => (
                 <li>
@@ -22,10 +22,7 @@ const { items } = Astro.props;
                             alt=""
                         />
                     ) : (
-                        <div
-                            class="thumb-placeholder"
-                            aria-hidden="true"
-                        />
+                        <div class="thumb-placeholder" aria-hidden="true" />
                     )}
                     <div class="text">
                         <h2 class="name heading-display">{item.name}</h2>

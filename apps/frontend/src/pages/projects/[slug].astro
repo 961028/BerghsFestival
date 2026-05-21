@@ -43,7 +43,11 @@ const relatedProjects = allProjects
         <header class="project-hero">
             {
                 video ? (
-                    <WpVideo video={video} poster={image?.url} title={`${title} — case film`} />
+                    <WpVideo
+                        video={video}
+                        poster={image?.url}
+                        title={`${title} — case film`}
+                    />
                 ) : (
                     image && (
                         <Image
@@ -65,7 +69,7 @@ const relatedProjects = allProjects
 
             {
                 contentSections
-                    .filter(section => section.content.html)
+                    .filter((section) => section.content.html)
                     .map((section, i) => (
                         <section
                             class="project-section"

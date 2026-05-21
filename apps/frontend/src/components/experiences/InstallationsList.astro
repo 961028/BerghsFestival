@@ -15,7 +15,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ul role="list">
+<ul>
     {
         items.map((item) => (
             <li>
@@ -57,11 +57,8 @@ const { items } = Astro.props;
 
 <script>
     import { runRgbSplitIntense } from "../../scripts/accents";
-
-    const symbols = document.querySelectorAll<HTMLElement>(
-        "[data-installation-symbol]",
-    );
-    symbols.forEach((el) => runRgbSplitIntense(el, 0.5));
+    const symbols = document.querySelectorAll<HTMLElement>( "[data-installation-symbol]", );
+        symbols.forEach((el) => runRgbSplitIntense(el, 0.5));
 </script>
 
 <style>
