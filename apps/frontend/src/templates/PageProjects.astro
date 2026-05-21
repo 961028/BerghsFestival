@@ -1,9 +1,9 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import ProjectCard from "../components/elements/ProjectCard.astro";
 import PageIntro from "../components/site/PageIntro.astro";
-import { getProjectsPage } from "../lib/experience-pages";
+import { shuffle } from "es-toolkit";
 
 type Props = {
     page: CollectionEntry<"pages">["data"];
@@ -19,16 +19,12 @@ const CLASS_TO_INDIVIDUAL_GROUP_TITLE: Record<string, string> = {
 
 const { page } = Astro.props;
 
-const data = await getProjectsPage();
+const projects = shuffle(
+    (await getCollection("projects")).map((entry) => entry.data),
+);
 
-if (!data) {
-    throw new Error(
-        "Projects page is missing — create a page using the Projects template.",
-    );
-}
-
-const groupProjects = data.projects.filter((p) => p.type === "regular");
-const individualProjects = data.projects.filter((p) => p.type !== "regular");
+const groupProjects = projects.filter((p) => p.type === "regular");
+const individualProjects = projects.filter((p) => p.type !== "regular");
 
 const classToIndividualProjects: Record<string, Project[]> = {};
 
@@ -60,7 +56,7 @@ const individualSections: { heading: string; projects: Project[] }[] =
     metaDescription={page.metaDescription}
     ogImage={page.image}
 >
-    <PageIntro title={page.title} descriptionHtml={data.description?.html} />
+    <PageIntro title={page.title} descriptionHtml={page.content.html} />
 
     <div>
         <div class="filters" role="tablist" aria-label="Filter projects">

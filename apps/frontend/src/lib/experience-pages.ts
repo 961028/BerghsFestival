@@ -242,21 +242,3 @@ export async function getFoodPage() {
         items: FoodItems.parse(page.data.acf.items),
     };
 }
-
-export async function getProjectsPage() {
-    const page = await findPageByTemplate("page-projects.php");
-
-    if (!page) {
-        return null;
-    }
-
-    const projects = (await getCollection("projects")).map(
-        (entry) => entry.data,
-    );
-
-    return {
-        page,
-        description: page.data.content,
-        projects,
-    };
-}
