@@ -2,7 +2,6 @@
 import { getCollection } from "astro:content";
 import { z } from "astro/zod";
 
-const RegistrationUrlSchema = z.string().optional().catch(undefined);
 const RegisterLabelSchema = z
     .string()
     .transform((v) => v.trim())
@@ -24,7 +23,6 @@ const pages = await getCollection("pages");
 const homePage = pages.find((p) => settings.pageOnFront?.id === p.data.id);
 const acf = homePage?.data.acf;
 
-const registrationUrl = RegistrationUrlSchema.parse(acf?.registration_url);
 const registerLabel = RegisterLabelSchema.parse(acf?.register_label);
 const festivalDays = FestivalDaysSchema.parse(acf?.festival_days);
 
@@ -54,10 +52,10 @@ const ctaDates =
     class="cta-banner"
     id="cta"
     data-region="cta"
-    aria-label="Apply to Berghs Festival"
+    aria-label="Watch Berghs Festival aftermovie"
     tabindex="-1"
 >
-    <a href={registrationUrl} class="cta-inner">
+    <a href="/aftermovie" class="cta-inner">
         <span class="cta-action" data-scramble>{registerLabel}</span>
         {
             ctaDates && (

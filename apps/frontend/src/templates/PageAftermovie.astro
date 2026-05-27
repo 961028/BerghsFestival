@@ -1,0 +1,253 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { z } from "astro/zod";
+
+import Layout from "../layouts/Layout.astro";
+import WpImage from "../components/elements/WpImage.astro";
+import ExternalVideo from "../components/elements/ExternalVideo.astro";
+import { getEntry } from "astro:content";
+import { intReference } from "../lib/schema";
+
+const VideoUrlSchema = z
+    .string()
+    .nullable()
+    .catch(null)
+    .transform((v) => (v ? v.trim() || null : null));
+
+const ParagraphBlockSchema = z
+    .object({
+        acf_fc_layout: z.literal("paragraph"),
+        text: z.string().catch(""),
+    })
+    .transform((v) => ({
+        type: "paragraph" as const,
+        html: v.text,
+    }));
+
+const ImageBlockSchema = z
+    .object({
+        acf_fc_layout: z.literal("image"),
+        image: intReference("media"),
+        caption: z.string().catch(""),
+    })
+    .transform((v) => ({
+        type: "image" as const,
+        image: v.image,
+        caption: v.caption,
+    }));
+
+const BlocksSchema = z
+    .array(z.union([ParagraphBlockSchema, ImageBlockSchema]))
+    .catch([]);
+
+const ContributorsSchema = z
+    .array(
+        z.object({
+            role: z.string().catch(""),
+            name: z.string().catch(""),
+        }),
+    )
+    .catch([]);
+
+type Props = {
+    page: CollectionEntry<"pages">["data"];
+};
+
+const { page } = Astro.props;
+const { title, metaDescription, image: pageImage, acf } = page;
+
+const heading = z.string().nullable().catch(null).parse(acf.heading) || title;
+const videoUrl = VideoUrlSchema.parse(acf.video_url);
+const blocks = BlocksSchema.parse(acf.blocks);
+const contributors = ContributorsSchema.parse(acf.contributors).filter(
+    (c) => c.name || c.role,
+);
+
+const posterEntry = pageImage ? await getEntry(pageImage) : null;
+const posterUrl =
+    posterEntry?.data.type === "image" ? posterEntry.data.sourceUrl : undefined;
+---
+
+<Layout title={title} metaDescription={metaDescription} ogImage={pageImage}>
+    <article class="aftermovie">
+        <header class="aftermovie-hero">
+            {
+                videoUrl ? (
+                    <ExternalVideo
+                        videoSrc={videoUrl}
+                        posterSrc={posterUrl}
+                        title={`${title} — aftermovie`}
+                    />
+                ) : (
+                    pageImage && (
+                        <WpImage
+                            image={pageImage}
+                            loading="eager"
+                            alt={title}
+                        />
+                    )
+                )
+            }
+        </header>
+
+        <div class="aftermovie-body">
+            <header class="aftermovie-heading">
+                <h1 class="aftermovie-title">{heading}</h1>
+            </header>
+
+            {
+                blocks.map((block) =>
+                    block.type === "paragraph" ? (
+                        <div
+                            class="aftermovie-paragraph"
+                            set:html={block.html}
+                        />
+                    ) : (
+                        <figure class="aftermovie-figure">
+                            <WpImage image={block.image} />
+                            {block.caption && (
+                                <figcaption>{block.caption}</figcaption>
+                            )}
+                        </figure>
+                    ),
+                )
+            }
+
+            {
+                contributors.length > 0 && (
+                    <section
+                        class="aftermovie-credits"
+                        aria-labelledby="aftermovie-credits-heading"
+                    >
+                        <h2 id="aftermovie-credits-heading">Contributors</h2>
+                        <ul class="aftermovie-team">
+                            {contributors.map((member) => (
+                                <li>
+                                    <span class="team-role">{member.role}</span>
+                                    <span class="team-name">{member.name}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+                )
+            }
+        </div>
+    </article>
+</Layout>
+
+<style>
+    .aftermovie-hero {
+        margin-block-start: var(--space-xl);
+        margin-block-end: var(--space-md);
+    }
+
+    .aftermovie-hero :global(img) {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .aftermovie-body {
+        max-width: 60rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-lg);
+    }
+
+    .aftermovie-heading {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .aftermovie-title {
+        line-height: var(--line-height-tight);
+    }
+
+    .aftermovie-paragraph {
+        font-size: var(--font-size-base);
+        line-height: var(--line-height-base);
+    }
+
+    .aftermovie-paragraph :global(p + p),
+    .aftermovie-paragraph :global(ul),
+    .aftermovie-paragraph :global(ol) {
+        margin-block-start: var(--space-md);
+    }
+
+    .aftermovie-paragraph :global(h2) {
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+        letter-spacing: var(--letter-spacing-display);
+        line-height: var(--line-height-tight);
+        margin-block-start: var(--space-lg);
+        margin-block-end: var(--space-sm);
+    }
+
+    .aftermovie-paragraph :global(h3) {
+        font-size: var(--font-size-base);
+        font-weight: var(--font-weight-bold);
+        margin-block-start: var(--space-md);
+        margin-block-end: var(--space-xs);
+    }
+
+    .aftermovie-paragraph :global(ul),
+    .aftermovie-paragraph :global(ol) {
+        padding-inline-start: var(--space-md);
+    }
+
+    .aftermovie-paragraph :global(li + li) {
+        margin-block-start: var(--space-xs);
+    }
+
+    .aftermovie-figure {
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .aftermovie-figure :global(img) {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .aftermovie-figure figcaption {
+        font-size: var(--font-size-sm);
+    }
+
+    .aftermovie-credits {
+        text-align: center;
+        margin-block-start: var(--space-xl);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .aftermovie-team {
+        list-style: none;
+        padding: 0;
+        margin: 0 auto;
+        max-width: 40rem;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+
+    .aftermovie-team li {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: var(--space-sm);
+        align-items: baseline;
+    }
+
+    .team-role {
+        text-align: right;
+    }
+
+    .team-name {
+        text-align: left;
+        font-weight: var(--font-weight-bold);
+    }
+</style>

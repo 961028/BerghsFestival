@@ -10,6 +10,7 @@ import PageExperienceMusic from "../templates/PageExperienceMusic.astro";
 import PageExperienceInstallations from "../templates/PageExperienceInstallations.astro";
 import PageExperienceFood from "../templates/PageExperienceFood.astro";
 import PageProjects from "../templates/PageProjects.astro";
+import PageAftermovie from "../templates/PageAftermovie.astro";
 
 interface Props {
     page: CollectionEntry<"pages">;
@@ -22,6 +23,7 @@ const SLUG_TO_TEMPLATE = {
     "page-experience-installations.php": PageExperienceInstallations,
     "page-experience-food.php": PageExperienceFood,
     "page-projects.php": PageProjects,
+    "page-aftermovie.php": PageAftermovie,
 };
 
 function isValidTemplate(

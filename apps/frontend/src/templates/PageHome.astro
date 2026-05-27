@@ -37,8 +37,6 @@ const SectionsSchema = z
     )
     .catch([]);
 
-const OpeningDateSchema = z.coerce.date().nullable().catch(null);
-
 const FestivalDaysSchema = z
     .array(
         z.object({
@@ -58,7 +56,6 @@ const { title, metaDescription, image, acf } = page;
 
 const hero = HeroSchema.parse(acf);
 const sections = SectionsSchema.parse(acf.sections);
-const openingDate = OpeningDateSchema.parse(acf.opening_date);
 const festivalDays = FestivalDaysSchema.parse(acf.festival_days);
 const studentCount = acf.student_count as number | undefined;
 const projectCount = acf.project_count as number | undefined;
@@ -114,18 +111,16 @@ const projectCount = acf.project_count as number | undefined;
             </ol>
 
             <div class="hero-footer">
-                <p class="countdown" aria-hidden="true">
-                    <span id="js-countdown">--</span>
-                </p>
-                {
-                    (studentCount || projectCount) && (
-                        <span class="hero-stats" data-scramble>
-                            {studentCount && `${studentCount} students`}
-                            {studentCount && projectCount && " — "}
-                            {projectCount && `${projectCount} projects`}
-                        </span>
-                    )
-                }
+                {studentCount && (
+                    <span class="hero-stat" data-scramble>
+                        {studentCount} students
+                    </span>
+                )}
+                {projectCount && (
+                    <span class="hero-stat" data-scramble>
+                        {projectCount} projects
+                    </span>
+                )}
             </div>
         </div>
     </section>
@@ -142,69 +137,6 @@ const projectCount = acf.project_count as number | undefined;
         ))
     }
 </Layout>
-
-<script define:vars={{ openingDateStr: openingDate?.toISOString() }}>
-    if (!openingDateStr) {
-        return;
-    }
-
-    const target = new Date(openingDateStr);
-    const el = document.getElementById("js-countdown");
-    if (!el) return;
-
-    function pad(n) {
-        return String(n).padStart(2, "0");
-    }
-
-    function compute() {
-        const diff = target - Date.now();
-        if (diff <= 0) return null;
-
-        const totalSeconds = Math.floor(diff / 1000);
-        const days = Math.floor(totalSeconds / 86400);
-        const hours = Math.floor((totalSeconds % 86400) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-
-        if (days > 0) {
-            return `OPENS IN ${days}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-        }
-        return `OPENS IN ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-    }
-
-    // Seed initial text + opt into the scramble reveal alongside other
-    // [data-scramble] elements. This inline script runs before scramble.ts
-    // (a bundled module), so the countdown is in the DOM with its attribute
-    // by the time scramble.ts queries for "[data-scramble]".
-    const initial = compute();
-    if (initial === null) {
-        el.closest(".countdown").textContent = "OPEN NOW";
-        return;
-    }
-    el.textContent = initial;
-    el.setAttribute("data-scramble", "");
-
-    // scramble.ts sets `color: transparent` during the reveal and clears it
-    // when done. Poll once per frame until cleared, then start ticking.
-    function waitForReveal() {
-        if (el.style.color === "transparent") {
-            requestAnimationFrame(waitForReveal);
-            return;
-        }
-        setInterval(() => {
-            const text = compute();
-            if (text === null) {
-                el.closest(".countdown").textContent = "OPEN NOW";
-                return;
-            }
-            el.textContent = text;
-        }, 1000);
-    }
-
-    // Wait two frames so scramble.ts (which runs after this inline script)
-    // has time to apply `color: transparent` before we start polling.
-    requestAnimationFrame(() => requestAnimationFrame(waitForReveal));
-</script>
 
 <style>
     /* Remove main's padding so the hero touches all wrapper edges */
@@ -233,7 +165,7 @@ const projectCount = acf.project_count as number | undefined;
         border-block-start: var(--border);
     }
 
-    /* ── Hero footer (countdown + stats) ──────────────────────────── */
+    /* ── Hero footer (stats) ──────────────────────────────────────── */
 
     .hero-footer {
         display: flex;
@@ -249,18 +181,14 @@ const projectCount = acf.project_count as number | undefined;
         text-transform: uppercase;
     }
 
-    /* 38rem: countdown + stats side by side */
-    @media (min-width: 38rem) {
+    /* 24rem: stats side by side */
+    @media (min-width: 24rem) {
         .hero-footer {
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
             gap: 0;
         }
-    }
-
-    .countdown {
-        margin: 0;
     }
 
     /* ── Schedule ──────────────────────────────────────────────────── */
