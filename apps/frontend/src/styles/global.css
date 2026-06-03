@@ -68,9 +68,9 @@
        - Tablet:      48rem (768px) — CTA 1 line, full layouts, medium text
        - Desktop:     64rem (1024px) — largest text, wider spacing
     */
-    @media (min-width: 30rem) {
+    @media (min-width: 400px) {
         :root {
-            --cta-height: 5.625rem;
+            --cta-height: 4.125rem;
         }
     }
 
@@ -270,5 +270,4 @@
         letter-spacing: inherit;
         text-transform: inherit;
     }
-
 }
